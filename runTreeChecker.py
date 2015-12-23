@@ -24,11 +24,14 @@ def compileMacro(macroName):
 	subprocess.call(["root", "-l", "-q", macro])
 
 # get the tree specified by argument 1
-file = TFile(argv[1])
-tree = file.Get("ntuplizer/tree")
 
 # call the compiling function to compile the treeChecker, then run its Loop() method
 compileMacro("treeChecker")
 gSystem.Load('treeChecker_C')
-checker = treeChecker(tree)
+if len(argv) > 1:
+	file = TFile(argv[1])
+	tree = file.Get("ntuplizer/tree")
+        checker = treeChecker(tree)
+else:
+	checker = treeChecker()
 checker.Loop()
