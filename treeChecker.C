@@ -11,8 +11,8 @@ using namespace std;
 void treeChecker::Loop()
 {
   bool debugFlag       = true ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
-  bool checkTrigger    = true ;
-  int  entriesToCheck  = 10   ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
+  bool checkTrigger    = false ;
+  int  entriesToCheck  = 500   ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
 
   //   In a ROOT session, you can do:
   //      root> .L treeChecker.C
@@ -47,15 +47,20 @@ void treeChecker::Loop()
     if (ientry < 0) break;
 
     // print out trigger information
-  if (jentry%1000==0) {
+    if (jentry%1000==0) {
       cout << fixed << setw(3) << setprecision(1) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << endl;
     }
-    if (debugFlag && checkTrigger) cout << "\n \n Trigger info for entry number " << jentry << ":" << endl;
-    for(map<string,bool>::iterator it = HLT_isFired->begin(); it != HLT_isFired->end(); ++it) {
-      if (debugFlag && checkTrigger) { 
-        cout << it->first << " = " << it->second << endl;
+    if (debugFlag && checkTrigger) {
+      cout << "\n \n Trigger info for entry number " << jentry << ":" << endl;
+      for(map<string,bool>::iterator it = HLT_isFired->begin(); it != HLT_isFired->end(); ++it) {
+        if (debugFlag && checkTrigger) { 
+          cout << it->first << " = " << it->second << endl;
+
+        }
       }
     }
+    cout << "HLT_isFired[HLT_Photon175_v2] is: " << (*HLT_isFired)[string("HLT_Photon175_v2")] << endl;
+    
 
     nb = fChain->GetEntry(jentry);   nbytes += nb;
     // if (Cut(ientry) < 0) continue;
