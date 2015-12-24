@@ -8,11 +8,19 @@
 
 using namespace std;
 
-void treeChecker::Loop()
+void treeChecker::Loop(string outputFileName)
 {
-  bool debugFlag       = true ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
-  bool checkTrigger    = false ;
-  int  entriesToCheck  = 500   ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
+  bool debugFlag           = false  ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
+  bool checkTrigger        = false ;
+  int  entriesToCheck      = 10    ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
+
+  TFile* outputFile        = new TFile(outputFileName.c_str(), "RECREATE");
+  TH1F*  leadingPhPtHist   = new TH1F("leadingPhPtHist", "Leading photon pT", 700, 0, 7000);
+  float leadingPhPt        = 0.    ;
+  TH1F*  leadingJetPtHist  = new TH1F("leadingJetPtHist", "Leading AK8 jet pT", 700, 0, 7000);
+  float leadingJetPt       = 0.    ;
+  TH1F*  HThist            = new TH1F("HThist", "Scalar sum of jet PT", 700, 0, 7000);
+  float HT                 = 0.    ;
 
   //   In a ROOT session, you can do:
   //      root> .L treeChecker.C
@@ -32,8 +40,10 @@ void treeChecker::Loop()
   //
   //       To read only selected branches, Insert statements like:
   // METHOD1:
-  //    fChain->SetBranchStatus("*",0);  // disable all branches
-  //    fChain->SetBranchStatus("branchname",1);  // activate branchname
+    fChain->SetBranchStatus("*",0);  // disable all branches
+    fChain->SetBranchStatus("HLT_isFired",1);  // activate branchname
+    fChain->SetBranchStatus("ph_pt",1);  // activate branchname
+    fChain->SetBranchStatus("jetAK8_pt",1);  // activate branchname
   // METHOD2: replace line
   //    fChain->GetEntry(jentry);       //read all branches
   //by  b_branchname->GetEntry(ientry); //read only this branch
@@ -46,8 +56,13 @@ void treeChecker::Loop()
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
 
+
+    leadingPhPt    = 0.    ;
+    leadingJetPt   = 0.    ;
+    HT             = 0.    ;
+
     // print out trigger information
-    if (jentry%1000==0) {
+    if (jentry%10000==0) {
       cout << fixed << setw(3) << setprecision(1) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << endl;
     }
     if (debugFlag && checkTrigger) {
@@ -59,11 +74,30 @@ void treeChecker::Loop()
         }
       }
     }
-    cout << "HLT_isFired[HLT_Photon175_v2] is: " << (*HLT_isFired)[string("HLT_Photon175_v2")] << endl;
+    //cout << "HLT_isFired[HLT_Photon175_v2] is: " << (*HLT_isFired)[string("HLT_Photon175_v2")] << endl;
+    if (debugFlag) cout << "In event number " << jentry << ":" << endl;
     
+    for (uint iPh = 0; iPh<ph_pt->size() ; ++iPh) { 
+      if (debugFlag) cout << "    Photon " << iPh << " has pT " << ph_pt->at(iPh) << endl;
+      if (ph_pt->at(iPh) > leadingPhPt) leadingPhPt = ph_pt->at(iPh);
+    }
+    leadingPhPtHist->Fill(leadingPhPt);
+    
+    for (uint iJet = 0; iJet<jetAK8_pt->size() ; ++iJet) { 
+      if (debugFlag) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_pt->at(iJet) << endl;
+      if (jetAK8_pt->at(iJet) > leadingJetPt) leadingJetPt = jetAK8_pt->at(iJet);
+      HT+=jetAK8_pt->at(iJet);
+    }
+    leadingJetPtHist->Fill(leadingJetPt);
+    HThist->Fill(HT);
 
     nb = fChain->GetEntry(jentry);   nbytes += nb;
     // if (Cut(ientry) < 0) continue;
     if (debugFlag && entriesToCheck == jentry) break;
   }
+  outputFile->cd();
+  leadingPhPtHist->Write();
+  leadingJetPtHist->Write();
+  HThist->Write();
+  outputFile->Close();
 }

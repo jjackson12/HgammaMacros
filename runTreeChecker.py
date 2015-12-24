@@ -1,16 +1,18 @@
 # Macro to check a tree in the WZgamma ntuples
-# This macro takes either 0 or 1 arguments:
-# With zero arguments, it will check hardcoded default tree
-# With one argument, the tree that will be checked is the "ntuplizer/tree" tree
-# in the root file specified in the argument
+# This macro takes two arguments
+# The first argument is the input file, the tree that will be checked is the "ntuplizer/tree" tree
+# The second argument is the output file
 # Example: 
-# python runTreeChecker.py myWZgammaNtuple.root
+# python runTreeChecker.py myWZgammaNtuple.root myOutputFile.root
 
 from ROOT import *
 import os, subprocess
 from sys import argv
 
 # function to compile a C/C++ macro for loading into a pyroot session
+if len(argv) != 3:
+        print "please supply two arguments to the macro: the input ntuple and the output filename."	
+        exit(1)
 def compileMacro(macroName):
         # remove the previously compiled libraries
 	if os.path.exists(macroName+"_C_ACLiC_dict_rdict.pcm"):
@@ -28,10 +30,7 @@ def compileMacro(macroName):
 # call the compiling function to compile the treeChecker, then run its Loop() method
 compileMacro("treeChecker")
 gSystem.Load('treeChecker_C')
-if len(argv) > 1:
-	file = TFile(argv[1])
-	tree = file.Get("ntuplizer/tree")
-        checker = treeChecker(tree)
-else:
-	checker = treeChecker()
-checker.Loop()
+file = TFile(argv[1])
+tree = file.Get("ntuplizer/tree")
+checker = treeChecker(tree)
+checker.Loop(argv[2])
