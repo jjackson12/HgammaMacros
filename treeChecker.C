@@ -10,29 +10,35 @@ using namespace std;
 
 void treeChecker::Loop(string outputFileName)
 {
-  bool debugFlag             = false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
-  bool checkTrigger          = false ;
-  int  entriesToCheck        = 10    ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
+  bool debugFlag                  = false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
+  bool checkTrigger               = false ;
+  int  entriesToCheck             = 10    ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
 
-  float endcap_phoMVAcut     = 0.679 ;  // See here: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariatePhotonIdentificationRun2#Recipes_for_74X_and_on_Phys14_tu
-  float barrel_phoMVAcut     = 0.593 ;  // These should change once we move to CMSSW_7_4_16
-  bool  eventHasTightPho     = false ; 
+  bool  eventHasTightPho          = false ; 
+  float endcap_phoMVAcut          = 0.679 ;  // See https://twiki.cern.ch/twiki/bin/view/CMS/MultivariatePhotonIdentificationRun2#Recipes_for_74X_and_on_Phys14_tu
+  float barrel_phoMVAcut          = 0.593 ;  // These should change once we move to CMSSW_7_4_16
 
-  TFile* outputFile          = new TFile(outputFileName.c_str(), "RECREATE");
-  TH1F*  leadingPhPtHist     = new TH1F("leadingPhPtHist", "Leading photon pT", 700, 0, 7000);
-  float leadingPhPt          = 0.    ;
-  TH1F*  leadingJetPtHist    = new TH1F("leadingJetPtHist", "Leading AK8 jet pT", 700, 0, 7000);
-  float leadingJetPt         = 0.    ;
-  TH1F*  HThist              = new TH1F("HThist", "Scalar sum of jet PT", 700, 0, 7000);
-  float HT                   = 0.    ;
-  float leadingJetTau1       = -999.    ;
-  float leadingJetTau2       = -999.    ;
-  float leadingJetTau3       = -999.    ;
-  TH1F*  leadingJetTau1Hist  = new TH1F("leadingJetTau1Hist", "Leading jet #tau_{1}",      110, -0.05, 1.05);
-  TH1F*  leadingJetTau2Hist  = new TH1F("leadingJetTau2Hist", "Leading jet #tau_{2}",      110, -0.05, 1.05);
-  TH1F*  leadingJetTau3Hist  = new TH1F("leadingJetTau3Hist", "Leading jet #tau_{3}",      110, -0.05, 1.05);
-  TH1F*  leadingJetT2T1      = new TH1F("leadingJetT2T1", "Leading jet #tau_{2}/#tau_{1}", 110, -0.05, 1.05);
-  TH1F*  leadingJetT3T2      = new TH1F("leadingJetT3T2", "Leading jet #tau_{3}/#tau_{2}", 110, -0.05, 1.05);
+  float leadingPhPt               =    0. ;
+  float leadingJetPt              =    0. ;
+  float HT                        =    0. ;
+  float leadingJetTau1            = -999. ;
+  float leadingJetTau2            = -999. ;
+  float leadingJetTau3            = -999. ;
+  float leadingPhMVA              =    0. ;
+  float leadingPhCat              =    0. ;
+
+  TH1F*  leadingPhPtHist          = new TH1F( "leadingPhPtHist"         , "Leading photon pT"             ,  700 ,      0 ,  7000 );
+  TH1F*  leadingJetPtHist         = new TH1F( "leadingJetPtHist"        , "Leading AK8 jet pT"            ,  700 ,      0 ,  7000 );
+  TH1F*  HThist                   = new TH1F( "HThist"                  , "Scalar sum of jet PT"          ,  700 ,      0 ,  7000 );
+  TH1F*  leadingJetTau1Hist       = new TH1F( "leadingJetTau1Hist"      , "Leading jet #tau_{1}"          ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetTau2Hist       = new TH1F( "leadingJetTau2Hist"      , "Leading jet #tau_{2}"          ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetTau3Hist       = new TH1F( "leadingJetTau3Hist"      , "Leading jet #tau_{3}"          ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetT2T1           = new TH1F( "leadingJetT2T1"          , "Leading jet #tau_{2}/#tau_{1}" ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetT3T2           = new TH1F( "leadingJetT3T2"          , "Leading jet #tau_{3}/#tau_{2}" ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingPhMVAhist_endcap  = new TH1F( "leadingPhMVAhist_endcap" , "Leading photon MVA"            ,  210 ,  -1.05 ,  1.05 );
+  TH1F*  leadingPhMVAhist_barrel  = new TH1F( "leadingPhMVAhist_barrel" , "Leading photon MVA"            ,  210 ,  -1.05 ,  1.05 );
+
+  TFile* outputFile               = new TFile(outputFileName.c_str(), "RECREATE");
 
   //   In a ROOT session, you can do:
   //      root> .L treeChecker.C
@@ -52,16 +58,16 @@ void treeChecker::Loop(string outputFileName)
   //
   //       To read only selected branches, Insert statements like:
   // METHOD1:
-    fChain->SetBranchStatus("*",0);  // disable all branches
-    fChain->SetBranchStatus("HLT_isFired",1);  // activate branchname
-    fChain->SetBranchStatus("ph_pt",1);  
-    fChain->SetBranchStatus("ph_eta",1);  
-    fChain->SetBranchStatus("ph_mvaVal",1);
-    fChain->SetBranchStatus("ph_mvaCat",1);
-    fChain->SetBranchStatus("jetAK8_pt",1);  
-    fChain->SetBranchStatus("jetAK8_tau1",1);  
-    fChain->SetBranchStatus("jetAK8_tau2",1);  
-    fChain->SetBranchStatus("jetAK8_tau3",1);  
+  fChain->SetBranchStatus( "*"           ,  0 );  // disable all branches
+  fChain->SetBranchStatus( "HLT_isFired" ,  1 );  // activate branchname
+  fChain->SetBranchStatus( "ph_pt"       ,  1 );  
+  fChain->SetBranchStatus( "ph_eta"      ,  1 );  
+  fChain->SetBranchStatus( "ph_mvaVal"   ,  1 );
+  fChain->SetBranchStatus( "ph_mvaCat"   ,  1 );
+  fChain->SetBranchStatus( "jetAK8_pt"   ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_tau1" ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_tau2" ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_tau3" ,  1 );  
   // METHOD2: replace line
   //    fChain->GetEntry(jentry);       //read all branches
   //by  b_branchname->GetEntry(ientry); //read only this branch
@@ -82,6 +88,8 @@ void treeChecker::Loop(string outputFileName)
     leadingJetTau3   = 0.    ;
     HT               = 0.    ;
     eventHasTightPho = false ;
+    leadingPhMVA     = -999. ;
+    leadingPhCat     = -999. ;
 
     // print out trigger information
     if (jentry%10000==0) {
@@ -98,17 +106,27 @@ void treeChecker::Loop(string outputFileName)
     }
     //cout << "HLT_isFired[HLT_Photon175_v2] is: " << (*HLT_isFired)[string("HLT_Photon175_v2")] << endl;
     if (debugFlag) cout << "In event number " << jentry << ":" << endl;
-    
+
     for (uint iPh = 0; iPh<ph_pt->size() ; ++iPh) { 
       if (debugFlag) {
         cout << "    Photon " << iPh << " has pT " << ph_pt->at(iPh)  << ", eta =" << ph_eta->at(iPh) << ", ph_mvaVal = " << ph_mvaVal->at(iPh) << ", ph_mvaCat = " << ph_mvaCat->at(iPh) << endl;
       }
-      eventHasTightPho = (ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=barrel_phoMVAcut) || (ph_mvaCat->at(iPh)==1 && ph_mvaVal->at(iPh)>=endcap_phoMVAcut);
-      if (debugFlag && eventHasTightPho) cout << "    This event has a tight photon." << endl;
-      if (ph_pt->at(iPh) > leadingPhPt) leadingPhPt = ph_pt->at(iPh);
+      eventHasTightPho |= (ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=barrel_phoMVAcut) || (ph_mvaCat->at(iPh)==1 && ph_mvaVal->at(iPh)>=endcap_phoMVAcut);
+      if (ph_pt->at(iPh) > leadingPhPt) {
+        leadingPhPt = ph_pt->at(iPh);
+        leadingPhMVA = ph_mvaVal->at(iPh);
+        leadingPhCat = ph_mvaCat->at(iPh);
+      }
     }
+    if (debugFlag && eventHasTightPho) cout << "    This event has a tight photon." << endl;
     leadingPhPtHist->Fill(leadingPhPt);
-    
+    if (leadingPhCat == 0) {
+      leadingPhMVAhist_barrel->Fill(leadingPhMVA);
+    }
+    else if (leadingPhCat == 1) {
+      leadingPhMVAhist_endcap->Fill(leadingPhMVA);
+    }
+
     for (uint iJet = 0; iJet<jetAK8_pt->size() ; ++iJet) { 
       if (debugFlag) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_pt->at(iJet) << endl;
       if (jetAK8_pt->at(iJet) > leadingJetPt) {
@@ -142,5 +160,7 @@ void treeChecker::Loop(string outputFileName)
   leadingJetTau3Hist->Write();
   leadingJetT2T1->Write();
   leadingJetT3T2->Write();
+  leadingPhMVAhist_endcap->Write();
+  leadingPhMVAhist_barrel->Write();
   outputFile->Close();
 }
