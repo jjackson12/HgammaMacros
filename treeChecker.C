@@ -10,7 +10,7 @@ using namespace std;
 
 void treeChecker::Loop(string outputFileName)
 {
-  bool debugFlag           = false  ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
+  bool debugFlag           = true  ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
   bool checkTrigger        = false ;
   int  entriesToCheck      = 10    ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
 
@@ -42,8 +42,10 @@ void treeChecker::Loop(string outputFileName)
   // METHOD1:
     fChain->SetBranchStatus("*",0);  // disable all branches
     fChain->SetBranchStatus("HLT_isFired",1);  // activate branchname
-    fChain->SetBranchStatus("ph_pt",1);  // activate branchname
-    fChain->SetBranchStatus("jetAK8_pt",1);  // activate branchname
+    fChain->SetBranchStatus("ph_pt",1);  
+    fChain->SetBranchStatus("ph_mvaVal",1);
+    fChain->SetBranchStatus("ph_mvaCat",1);
+    fChain->SetBranchStatus("jetAK8_pt",1);  
   // METHOD2: replace line
   //    fChain->GetEntry(jentry);       //read all branches
   //by  b_branchname->GetEntry(ientry); //read only this branch
@@ -78,7 +80,9 @@ void treeChecker::Loop(string outputFileName)
     if (debugFlag) cout << "In event number " << jentry << ":" << endl;
     
     for (uint iPh = 0; iPh<ph_pt->size() ; ++iPh) { 
-      if (debugFlag) cout << "    Photon " << iPh << " has pT " << ph_pt->at(iPh) << endl;
+      if (debugFlag) {
+        cout << "    Photon " << iPh << " has pT " << ph_pt->at(iPh)  << ", ph_mvaVal = " << ph_mvaVal->at(iPh) << ", ph_mvaCat = " << ph_mvaCat->at(iPh) << endl;
+      }
       if (ph_pt->at(iPh) > leadingPhPt) leadingPhPt = ph_pt->at(iPh);
     }
     leadingPhPtHist->Fill(leadingPhPt);
