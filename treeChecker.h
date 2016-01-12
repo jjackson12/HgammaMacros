@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Mon Jan 11 13:21:57 2016 by ROOT version 6.02/05
+// Tue Jan 12 12:03:22 2016 by ROOT version 6.02/05
 // from TTree tree/tree
 // found on file: flatTuple.root
 //////////////////////////////////////////////////////////
@@ -85,27 +85,6 @@ public :
    vector<float>   *el_pt;
    vector<float>   *el_et;
    vector<float>   *el_superCluster_eta;
-   vector<int>     *el_passConversionVeto;
-   vector<float>   *el_full5x5_sigmaIetaIeta;
-   vector<float>   *el_dEtaIn;
-   vector<float>   *el_dPhiIn;
-   vector<float>   *el_hOverE;
-   vector<float>   *el_relIsoWithDBeta;
-   vector<float>   *el_ooEmooP;
-   vector<int>     *el_expectedMissingInnerHits;
-   vector<float>   *el_d0;
-   vector<float>   *el_dz;
-   vector<float>   *el_dr03EcalRecHitSumEt;
-   vector<float>   *el_dr03HcalDepth1TowerSumEt;
-   vector<float>   *el_rho;
-   vector<bool>    *el_ecalDriven;
-   vector<float>   *el_dEtaInSeed;
-   vector<float>   *el_full5x5_e2x5Max;
-   vector<float>   *el_full5x5_e5x5;
-   vector<float>   *el_full5x5_e1x5;
-   vector<float>   *el_dr03TkSumPt;
-   vector<float>   *el_superCluster_e;
-   vector<float>   *el_hadronicOverEm;
    vector<int>     *el_isVetoElectron;
    vector<int>     *el_isMediumElectron;
    vector<int>     *el_isTightElectron;
@@ -131,15 +110,6 @@ public :
    vector<int>     *mu_isLooseMuon;
    vector<int>     *mu_isPFMuon;
    vector<int>     *mu_isSoftMuon;
-   vector<float>   *mu_d0;
-   vector<float>   *mu_bestTrack_pt;
-   vector<float>   *mu_bestTrack_ptErr;
-   vector<float>   *mu_normChi2;
-   vector<int>     *mu_isGlobalMuon;
-   vector<int>     *mu_trackerHits;
-   vector<int>     *mu_matchedStations;
-   vector<int>     *mu_pixelHits;
-   vector<int>     *mu_globalHits;
    Float_t         rho;
    Int_t           jetAK4_N;
    vector<float>   *jetAK4_pt;
@@ -307,27 +277,6 @@ public :
    TBranch        *b_el_pt;   //!
    TBranch        *b_el_et;   //!
    TBranch        *b_el_superCluster_eta;   //!
-   TBranch        *b_el_passConversionVeto;   //!
-   TBranch        *b_el_full5x5_sigmaIetaIeta;   //!
-   TBranch        *b_el_dEtaIn;   //!
-   TBranch        *b_el_dPhiIn;   //!
-   TBranch        *b_el_hOverE;   //!
-   TBranch        *b_el_relIsoWithDBeta;   //!
-   TBranch        *b_el_ooEmooP;   //!
-   TBranch        *b_el_expectedMissingInnerHits;   //!
-   TBranch        *b_el_d0;   //!
-   TBranch        *b_el_dz;   //!
-   TBranch        *b_el_dr03EcalRecHitSumEt;   //!
-   TBranch        *b_el_dr03HcalDepth1TowerSumEt;   //!
-   TBranch        *b_el_rho;   //!
-   TBranch        *b_el_ecalDriven;   //!
-   TBranch        *b_el_dEtaInSeed;   //!
-   TBranch        *b_el_full5x5_e2x5Max;   //!
-   TBranch        *b_el_full5x5_e5x5;   //!
-   TBranch        *b_el_full5x5_e1x5;   //!
-   TBranch        *b_el_dr03TkSumPt;   //!
-   TBranch        *b_el_superCluster_e;   //!
-   TBranch        *b_el_hadronicOverEm;   //!
    TBranch        *b_el_isVetoElectron;   //!
    TBranch        *b_el_isMediumElectron;   //!
    TBranch        *b_el_isTightElectron;   //!
@@ -353,15 +302,6 @@ public :
    TBranch        *b_mu_isLooseMuon;   //!
    TBranch        *b_mu_isPFMuon;   //!
    TBranch        *b_mu_isSoftMuon;   //!
-   TBranch        *b_mu_d0;   //!
-   TBranch        *b_mu_bestTrack_pt;   //!
-   TBranch        *b_mu_bestTrack_ptErr;   //!
-   TBranch        *b_mu_normChi2;   //!
-   TBranch        *b_mu_isGlobalMuon;   //!
-   TBranch        *b_mu_trackerHits;   //!
-   TBranch        *b_mu_matchedStations;   //!
-   TBranch        *b_mu_pixelHits;   //!
-   TBranch        *b_mu_globalHits;   //!
    TBranch        *b_rho;   //!
    TBranch        *b_jetAK4_N;   //!
    TBranch        *b_jetAK4_pt;   //!
@@ -586,27 +526,6 @@ void treeChecker::Init(TTree *tree)
    el_pt = 0;
    el_et = 0;
    el_superCluster_eta = 0;
-   el_passConversionVeto = 0;
-   el_full5x5_sigmaIetaIeta = 0;
-   el_dEtaIn = 0;
-   el_dPhiIn = 0;
-   el_hOverE = 0;
-   el_relIsoWithDBeta = 0;
-   el_ooEmooP = 0;
-   el_expectedMissingInnerHits = 0;
-   el_d0 = 0;
-   el_dz = 0;
-   el_dr03EcalRecHitSumEt = 0;
-   el_dr03HcalDepth1TowerSumEt = 0;
-   el_rho = 0;
-   el_ecalDriven = 0;
-   el_dEtaInSeed = 0;
-   el_full5x5_e2x5Max = 0;
-   el_full5x5_e5x5 = 0;
-   el_full5x5_e1x5 = 0;
-   el_dr03TkSumPt = 0;
-   el_superCluster_e = 0;
-   el_hadronicOverEm = 0;
    el_isVetoElectron = 0;
    el_isMediumElectron = 0;
    el_isTightElectron = 0;
@@ -631,15 +550,6 @@ void treeChecker::Init(TTree *tree)
    mu_isLooseMuon = 0;
    mu_isPFMuon = 0;
    mu_isSoftMuon = 0;
-   mu_d0 = 0;
-   mu_bestTrack_pt = 0;
-   mu_bestTrack_ptErr = 0;
-   mu_normChi2 = 0;
-   mu_isGlobalMuon = 0;
-   mu_trackerHits = 0;
-   mu_matchedStations = 0;
-   mu_pixelHits = 0;
-   mu_globalHits = 0;
    jetAK4_pt = 0;
    jetAK4_eta = 0;
    jetAK4_mass = 0;
@@ -786,27 +696,6 @@ void treeChecker::Init(TTree *tree)
    fChain->SetBranchAddress("el_pt", &el_pt, &b_el_pt);
    fChain->SetBranchAddress("el_et", &el_et, &b_el_et);
    fChain->SetBranchAddress("el_superCluster_eta", &el_superCluster_eta, &b_el_superCluster_eta);
-   fChain->SetBranchAddress("el_passConversionVeto", &el_passConversionVeto, &b_el_passConversionVeto);
-   fChain->SetBranchAddress("el_full5x5_sigmaIetaIeta", &el_full5x5_sigmaIetaIeta, &b_el_full5x5_sigmaIetaIeta);
-   fChain->SetBranchAddress("el_dEtaIn", &el_dEtaIn, &b_el_dEtaIn);
-   fChain->SetBranchAddress("el_dPhiIn", &el_dPhiIn, &b_el_dPhiIn);
-   fChain->SetBranchAddress("el_hOverE", &el_hOverE, &b_el_hOverE);
-   fChain->SetBranchAddress("el_relIsoWithDBeta", &el_relIsoWithDBeta, &b_el_relIsoWithDBeta);
-   fChain->SetBranchAddress("el_ooEmooP", &el_ooEmooP, &b_el_ooEmooP);
-   fChain->SetBranchAddress("el_expectedMissingInnerHits", &el_expectedMissingInnerHits, &b_el_expectedMissingInnerHits);
-   fChain->SetBranchAddress("el_d0", &el_d0, &b_el_d0);
-   fChain->SetBranchAddress("el_dz", &el_dz, &b_el_dz);
-   fChain->SetBranchAddress("el_dr03EcalRecHitSumEt", &el_dr03EcalRecHitSumEt, &b_el_dr03EcalRecHitSumEt);
-   fChain->SetBranchAddress("el_dr03HcalDepth1TowerSumEt", &el_dr03HcalDepth1TowerSumEt, &b_el_dr03HcalDepth1TowerSumEt);
-   fChain->SetBranchAddress("el_rho", &el_rho, &b_el_rho);
-   fChain->SetBranchAddress("el_ecalDriven", &el_ecalDriven, &b_el_ecalDriven);
-   fChain->SetBranchAddress("el_dEtaInSeed", &el_dEtaInSeed, &b_el_dEtaInSeed);
-   fChain->SetBranchAddress("el_full5x5_e2x5Max", &el_full5x5_e2x5Max, &b_el_full5x5_e2x5Max);
-   fChain->SetBranchAddress("el_full5x5_e5x5", &el_full5x5_e5x5, &b_el_full5x5_e5x5);
-   fChain->SetBranchAddress("el_full5x5_e1x5", &el_full5x5_e1x5, &b_el_full5x5_e1x5);
-   fChain->SetBranchAddress("el_dr03TkSumPt", &el_dr03TkSumPt, &b_el_dr03TkSumPt);
-   fChain->SetBranchAddress("el_superCluster_e", &el_superCluster_e, &b_el_superCluster_e);
-   fChain->SetBranchAddress("el_hadronicOverEm", &el_hadronicOverEm, &b_el_hadronicOverEm);
    fChain->SetBranchAddress("el_isVetoElectron", &el_isVetoElectron, &b_el_isVetoElectron);
    fChain->SetBranchAddress("el_isMediumElectron", &el_isMediumElectron, &b_el_isMediumElectron);
    fChain->SetBranchAddress("el_isTightElectron", &el_isTightElectron, &b_el_isTightElectron);
@@ -832,15 +721,6 @@ void treeChecker::Init(TTree *tree)
    fChain->SetBranchAddress("mu_isLooseMuon", &mu_isLooseMuon, &b_mu_isLooseMuon);
    fChain->SetBranchAddress("mu_isPFMuon", &mu_isPFMuon, &b_mu_isPFMuon);
    fChain->SetBranchAddress("mu_isSoftMuon", &mu_isSoftMuon, &b_mu_isSoftMuon);
-   fChain->SetBranchAddress("mu_d0", &mu_d0, &b_mu_d0);
-   fChain->SetBranchAddress("mu_bestTrack_pt", &mu_bestTrack_pt, &b_mu_bestTrack_pt);
-   fChain->SetBranchAddress("mu_bestTrack_ptErr", &mu_bestTrack_ptErr, &b_mu_bestTrack_ptErr);
-   fChain->SetBranchAddress("mu_normChi2", &mu_normChi2, &b_mu_normChi2);
-   fChain->SetBranchAddress("mu_isGlobalMuon", &mu_isGlobalMuon, &b_mu_isGlobalMuon);
-   fChain->SetBranchAddress("mu_trackerHits", &mu_trackerHits, &b_mu_trackerHits);
-   fChain->SetBranchAddress("mu_matchedStations", &mu_matchedStations, &b_mu_matchedStations);
-   fChain->SetBranchAddress("mu_pixelHits", &mu_pixelHits, &b_mu_pixelHits);
-   fChain->SetBranchAddress("mu_globalHits", &mu_globalHits, &b_mu_globalHits);
    fChain->SetBranchAddress("rho", &rho, &b_rho);
    fChain->SetBranchAddress("jetAK4_N", &jetAK4_N, &b_jetAK4_N);
    fChain->SetBranchAddress("jetAK4_pt", &jetAK4_pt, &b_jetAK4_pt);
