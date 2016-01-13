@@ -13,7 +13,7 @@ from sys import argv
 if len(argv) != 3:
         print "please supply two arguments to the macro: the input ntuple and the output filename."	
         exit(1)
-def compileMacro(macroName):
+def deleteLibs(macroName):
         # remove the previously compiled libraries
 	if os.path.exists(macroName+"_C_ACLiC_dict_rdict.pcm"):
     		os.remove(macroName+"_C_ACLiC_dict_rdict.pcm")
@@ -22,13 +22,14 @@ def compileMacro(macroName):
 	if os.path.exists(macroName+"_C.so"):
     		os.remove(macroName+"_C.so")
         # compile the macro using g++
-	macro = macroName + ".C++g"
-	subprocess.call(["root", "-l", "-q", macro])
+	#macro = macroName + ".C++g"
+	#subprocess.call(["root", "-l", "-q", macro])
 
 # get the tree specified by argument 1
 
 # call the compiling function to compile the treeChecker, then run its Loop() method
-compileMacro("treeChecker")
+deleteLibs("treeChecker")
+gSystem.CompileMacro("treeChecker.C")
 gSystem.Load('treeChecker_C')
 file = TFile(argv[1])
 tree = file.Get("ntuplizer/tree")

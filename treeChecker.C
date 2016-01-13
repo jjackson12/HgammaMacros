@@ -12,10 +12,10 @@ using namespace std;
 void treeChecker::Loop(string outputFileName)
 {
   // Flags for running this macro
-  bool debugFlag                    = true ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
+  bool debugFlag                    = false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
   bool checkTrigger                 = false ;
   int  entriesToCheck               = -1    ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
-  int  reportEvery                  = 10    ;
+  int  reportEvery                  = 500    ;
 
   
   // Photon MVA id cut values
