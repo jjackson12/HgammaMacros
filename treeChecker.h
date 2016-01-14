@@ -11,6 +11,12 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <iostream>
+#include <iomanip>
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TLorentzVector.h>
 
 // Header file for the classes stored in the TTree if any.
 #include "vector"
@@ -20,6 +26,75 @@ class treeChecker {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
+
+  // Variables calculated using events
+  bool  triggerFired                = false ; 
+  bool  phoIsTight                  = false ; 
+  bool  phoEtaPassesCut             = false ; 
+  bool  eventHasTightPho            = false ; 
+  bool  eventHasMatchedRawJet       = false ; 
+  bool  eventHasMatchedPrunedJet    = false ; 
+  bool  eventHasMatchedSoftdropJet  = false ; 
+  int   eventsWithTightPho          =    0  ;
+  int   eventsWithLooseJet          =    0  ;
+  int   eventsWtightPhoAndLooseJet  =    0  ;
+  int   eventsWithJetInWZmassCuts   =    0  ;
+  int   eventsPassingFinalSelection =    0  ;
+  float leadingJetPt                =    0. ;
+  float leadingJetE                 =    0. ;
+  float leadingJetM                 =    0. ;
+  float leadingJetPrunedM           =    0. ; 
+  float leadingJetSoftdropM         =    0. ;
+  float HT                          =    0. ;
+  float leadingJetTau1              = -999. ;
+  float raw_matchedJetTau1          = -999. ;
+  float pruned_matchedJetTau1       = -999. ;
+  float softdrop_matchedJetTau1     = -999. ;
+  float leadingJetTau2              = -999. ;
+  float raw_matchedJetTau2          = -999. ;
+  float pruned_matchedJetTau2       = -999. ;
+  float softdrop_matchedJetTau2     = -999. ;
+  float leadingJetTau3              = -999. ;
+  float raw_matchedJetTau3          = -999. ;
+  float pruned_matchedJetTau3       = -999. ;
+  float softdrop_matchedJetTau3     = -999. ;
+  float leadingPhPt                 =    0. ;
+  float leadingPhEta                =    0. ;
+  float leadingPhPhi                =    0. ;
+  float leadingPhPt_noID            =    0. ;
+  float leadingPhE                  =    0. ;
+  float leadingPhMVA                =    0. ;
+  float leadingPhCat                =    0. ;
+  TLorentzVector leadingPhoton              ;
+  TLorentzVector matchedJet_raw             ;
+  TLorentzVector matchedJet_pruned          ;
+  TLorentzVector matchedJet_softdrop        ;
+  TLorentzVector sumVector                  ;
+  
+  // Output histograms
+  TH1F*  leadingPhPtHist            = new TH1F( "leadingPhPtHist"            , "Leading photon pT"                    ,  700 ,      0 ,  7000 );
+  TH1F*  leadingPhEtaHist           = new TH1F( "leadingPhEtaHist"           , "Leading photon #eta"                  ,  200 ,     -6 ,     6 );
+  TH1F*  leadingPhPhiHist           = new TH1F( "leadingPhPhiHist"           , "Leading photon #Phi"                  ,  200 ,  -3.18 ,  3.18 );
+  TH1F*  leadingPhPtHist_noTrig     = new TH1F( "leadingPhPtHist_noTrig"     , "Leading photon pT"                    ,  400 ,      0 ,  2000 );
+  TH1F*  leadingPhPtHist_trig       = new TH1F( "leadingPhPtHist_trig"       , "Leading photon pT (triggered, no ID)" ,  400 ,      0 ,  2000 );
+  TH1F*  leadingPhPt_noIDHist       = new TH1F( "leadingPhPt_noIDHist"       , "Leading photon pT (no ID)"            ,  400 ,      0 ,  2000 );
+  TH1F*  leadingPhPt_noIDHist_trig  = new TH1F( "leadingPhPt_noIDHist_trig"  , "Leading photon pT (triggered, no ID)" ,  400 ,      0 ,  2000 );
+  TH1F*  leadingPhMVAhist_endcap    = new TH1F( "leadingPhMVAhist_endcap"    , "Leading photon MVA"                   ,  210 ,  -1.05 ,  1.05 );
+  TH1F*  leadingPhMVAhist_barrel    = new TH1F( "leadingPhMVAhist_barrel"    , "Leading photon MVA"                   ,  210 ,  -1.05 ,  1.05 );
+  TH1F*  leadingPhMassHist          = new TH1F( "leadingPhMassHist"          , "Leading photon inv. mass"             ,  700 ,      0 ,  7000 );
+  TH1F*  leadingJetPtHist           = new TH1F( "leadingJetPtHist"           , "Leading AK8 jet pT"                   ,  700 ,      0 ,  7000 );
+  TH1F*  HThist                     = new TH1F( "HThist"                     , "Scalar sum of jet PT"                 ,  700 ,      0 ,  7000 );
+  TH1F*  leadingJetTau1Hist         = new TH1F( "leadingJetTau1Hist"         , "Leading jet #tau_{1}"                 ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetTau2Hist         = new TH1F( "leadingJetTau2Hist"         , "Leading jet #tau_{2}"                 ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetTau3Hist         = new TH1F( "leadingJetTau3Hist"         , "Leading jet #tau_{3}"                 ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetT2T1             = new TH1F( "leadingJetT2T1"             , "Leading jet #tau_{2}/#tau_{1}"        ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetT3T2             = new TH1F( "leadingJetT3T2"             , "Leading jet #tau_{3}/#tau_{2}"        ,  110 ,  -0.05 ,  1.05 );
+  TH1F*  leadingJetMassHist         = new TH1F( "leadingJetMassHist"         , "Leading AK8 jet inv. mass"            ,  700 ,      0 ,  7000 );
+  TH1F*  leadingJetPrunedMassHist   = new TH1F( "leadingJetPrunedMassHist"   , "Leading AK8 pruned jet inv. mass"     ,  700 ,      0 ,  7000 );
+  TH1F*  leadingJetSoftdropMassHist = new TH1F( "leadingJetSoftdropMassHist" , "Leading AK8 softdrop jet inv. mass"   ,  700 ,      0 ,  7000 );
+  TH1F*  phJetInvMassHist_raw       = new TH1F( "phJetInvMassHist_raw"       , "Photon+Jet invariant mass (raw)"      ,  700 ,      0 ,  7000 );
+  TH1F*  phJetInvMassHist_pruned    = new TH1F( "phJetInvMassHist_pruned"    , "Photon+Jet invariant mass (pruned)"   ,  700 ,      0 ,  7000 );
+  TH1F*  phJetInvMassHist_softdrop  = new TH1F( "phJetInvMassHist_softdrop"  , "Photon+Jet invariant mass (softdrop)" ,  700 ,      0 ,  7000 );
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
    const Int_t kMaxpassFilter_HBHE = 1;
