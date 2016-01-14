@@ -16,12 +16,21 @@ void treeChecker::Loop(string outputFileName)
   float endcap_phoMVAcut            = 0.336 ;  // See https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2015
   float barrel_phoMVAcut            = 0.374 ;
   float phoEtaMax                   =   2.4 ;
+  float phoEtaRanges[5]             = {0, 0.75, 1.479, 2.4, 3.0};
 
   // W/Z jet mass matching
   float WZmassCutLow                =   65. ;  // Z mass +- 15 GeV
   float WZmassCutHigh               =  105. ;
 
   TFile* outputFile                 = new TFile(outputFileName.c_str(), "RECREATE");
+
+
+  // Create TProfiles
+  char *profTitle = new char[15];
+  for (uint iProf=0; iProf<sizeof(phMVAvsEProf)/sizeof(phMVAvsEProf[0]); ++iProf) { 
+    sprintf(profTitle, "phMVAvsEProf%d", iProf);
+    phMVAvsEProf[iProf] = new TProfile(profTitle, "Photon ID MVA value profile vs. E_{#gamma}", 400, 0, 4000);
+  }
 
   // Branches from EXOVVNtuplizer tree
   fChain->SetBranchStatus( "*"                     ,  0 );  // disable all branches
@@ -62,6 +71,9 @@ void treeChecker::Loop(string outputFileName)
     leadingPhPhi               = -999  ;
     leadingPhPt_noID           = 0.    ;
     leadingPhE                 = 0.    ;
+    leadingPhE_noID            = 0.    ;
+    leadingPhEta_noID          = -999. ;
+    leadingPhMVA_noID          = -999. ;
     leadingJetPt               = 0.    ;
     leadingJetE                = 0.    ;
     leadingJetEta              = -999. ;
@@ -125,6 +137,9 @@ void treeChecker::Loop(string outputFileName)
       // Fill the leading photon variables, requiring the photon to pass the ID requirements
       if (ph_pt->at(iPh) > leadingPhPt_noID ) {
         leadingPhPt_noID  = ph_pt     ->  at(iPh) ;
+        leadingPhE_noID   = ph_e      ->  at(iPh) ;
+        leadingPhEta_noID = ph_eta    ->  at(iPh) ;
+        leadingPhMVA_noID = ph_mvaVal ->  at(iPh) ;
       }
       if (ph_pt->at(iPh) > leadingPhPt && phoIsTight && phoEtaPassesCut ) {
         leadingPhPt  = ph_pt     ->  at(iPh) ;
@@ -147,6 +162,10 @@ void treeChecker::Loop(string outputFileName)
     }
     else if (leadingPhCat == 1) {
       leadingPhMVAhist_endcap->Fill(leadingPhMVA);
+    }
+
+    for (uint iProf=0; iProf<sizeof(phMVAvsEProf)/sizeof(phMVAvsEProf[0]); ++iProf) { 
+      if (abs(leadingPhEta_noID) > phoEtaRanges[iProf] && abs(leadingPhEta_noID) < phoEtaRanges[iProf+1]) phMVAvsEProf[iProf]->Fill(leadingPhE_noID, leadingPhMVA_noID );
     }
 
     // Loop over jets
@@ -297,6 +316,9 @@ void treeChecker::Loop(string outputFileName)
   phJetInvMassHist_raw       -> Write();
   phJetInvMassHist_pruned    -> Write();
   phJetInvMassHist_softdrop  -> Write();
+  for (uint iProf=0; iProf<sizeof(phMVAvsEProf)/sizeof(phMVAvsEProf[0]); ++iProf) { 
+    phMVAvsEProf[iProf]->Write();
+  }
 
   outputFile->Close();
   cout << fixed << setw(4) << setprecision(2) << "100% done: Scanned " << nentries << " events." << endl;

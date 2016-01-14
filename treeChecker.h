@@ -16,6 +16,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TProfile.h>
 #include <TLorentzVector.h>
 
 // Header file for the classes stored in the TTree if any.
@@ -65,7 +66,10 @@ public :
   float leadingPhPhi                =    0. ;
   float leadingPhPt_noID            =    0. ;
   float leadingPhE                  =    0. ;
+  float leadingPhE_noID             =    0. ;
+  float leadingPhEta_noID           = -999. ;
   float leadingPhMVA                =    0. ;
+  float leadingPhMVA_noID           = -999. ;
   float leadingPhCat                =    0. ;
   TLorentzVector leadingPhoton              ;
   TLorentzVector matchedJet_raw             ;
@@ -99,6 +103,8 @@ public :
   TH1F*  phJetInvMassHist_raw       = new TH1F( "phJetInvMassHist_raw"       , "Photon+Jet invariant mass (raw)"      ,  700 ,      0 ,  7000 );
   TH1F*  phJetInvMassHist_pruned    = new TH1F( "phJetInvMassHist_pruned"    , "Photon+Jet invariant mass (pruned)"   ,  700 ,      0 ,  7000 );
   TH1F*  phJetInvMassHist_softdrop  = new TH1F( "phJetInvMassHist_softdrop"  , "Photon+Jet invariant mass (softdrop)" ,  700 ,      0 ,  7000 );
+
+  TProfile* phMVAvsEProf[4];
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
    const Int_t kMaxpassFilter_HBHE = 1;
