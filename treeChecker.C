@@ -10,7 +10,7 @@ void treeChecker::Loop(string outputFileName)
   bool checkTrigger                 = false ;
   bool dumpEventInfo                = false ;
   int  entriesToCheck               =   100 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
-  int  reportEvery                  =    25 ;
+  int  reportEvery                  =  2000 ;
 
   // Photon id cut values
   float endcap_phoMVAcut            = 0.336 ;  // See https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2015
@@ -49,6 +49,7 @@ void treeChecker::Loop(string outputFileName)
   Long64_t nentries = fChain->GetEntriesFast();
   Long64_t nbytes = 0, nb = 0;
 
+  cout << "\n\nStarting treeChecker::Loop().\n" << endl;
   // Loop over all events
   for (Long64_t jentry=0; jentry<nentries;++jentry) {
     Long64_t ientry = LoadTree(jentry);
@@ -63,6 +64,8 @@ void treeChecker::Loop(string outputFileName)
     leadingPhE                 = 0.    ;
     leadingJetPt               = 0.    ;
     leadingJetE                = 0.    ;
+    leadingJetEta              = -999. ;
+    leadingJetPhi              = -999  ;
     leadingJetM                = 0.    ;
     leadingJetPrunedM          = 0.    ;
     leadingJetSoftdropM        = 0.    ;
@@ -96,7 +99,7 @@ void treeChecker::Loop(string outputFileName)
     sumVector           .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     // Print out trigger information
     if (jentry%reportEvery==0) {
-      cout << fixed << setw(5) << setprecision(3) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << endl;
+      cout << fixed << setw(4) << setprecision(2) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << endl;
     }
     if (debugFlag) cout << "\nIn event number " << jentry << ":" << endl;
     if (checkTrigger) cout << "     Trigger info is: " << endl;
@@ -155,6 +158,8 @@ void treeChecker::Loop(string outputFileName)
       // Get leading jet variables, requiring loose jet ID
         if (jetAK8_pt->at(iJet) > leadingJetPt) {
           leadingJetPt   = jetAK8_pt->at(iJet);
+          leadingJetEta  = jetAK8_eta->at(iJet);
+          leadingJetPhi  = jetAK8_phi->at(iJet);
           //if (leadingJetE > jetAK8_e->at(iJet)) cout << "A leading jet (highest pT) had lower energy than another jet.";
           leadingJetE          = jetAK8_e             ->  at(iJet) ;
           leadingJetM          = jetAK8_mass          ->  at(iJet) ;
@@ -207,7 +212,9 @@ void treeChecker::Loop(string outputFileName)
         HT+=jetAK8_pt->at(iJet);
      } 
     }
-    leadingJetPtHist->Fill(leadingJetPt);
+    leadingJetPtHist  ->  Fill(leadingJetPt)  ;
+    leadingJetEtaHist ->  Fill(leadingJetEta) ;
+    leadingJetPhiHist ->  Fill(leadingJetPhi) ;
     HThist->Fill(HT);
 
     if (debugFlag && dumpEventInfo) {  // Print some checks
@@ -273,6 +280,8 @@ void treeChecker::Loop(string outputFileName)
   leadingPhPt_noIDHist       -> Write();
   leadingPhPt_noIDHist_trig  -> Write();
   leadingJetPtHist           -> Write();
+  leadingJetEtaHist          -> Write();
+  leadingJetPhiHist          -> Write();
   HThist                     -> Write();
   leadingJetTau1Hist         -> Write();
   leadingJetTau2Hist         -> Write();
@@ -290,4 +299,6 @@ void treeChecker::Loop(string outputFileName)
   phJetInvMassHist_softdrop  -> Write();
 
   outputFile->Close();
+  cout << fixed << setw(4) << setprecision(2) << "100% done: Scanned " << nentries << " events." << endl;
+  cout << "\nCompleted output file is " << outputFileName.c_str() <<".\n" << endl;
 }
