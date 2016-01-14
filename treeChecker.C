@@ -14,7 +14,7 @@ void treeChecker::Loop(string outputFileName)
 
   // Photon id cut values
   float endcap_phoMVAcut            = 0.336 ;  // See https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2015
-  float barrel_phoMVAcut            = 0.374 ;  // These should change once we move to CMSSW_7_4_16
+  float barrel_phoMVAcut            = 0.374 ;
   float phoEtaMax                   =   2.4 ;
 
   // W/Z jet mass matching
