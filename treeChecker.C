@@ -291,36 +291,53 @@ void treeChecker::Loop(string outputFileName)
 
   outputFile->cd();
 
-  leadingPhPtHist            -> Write();
-  leadingPhEtaHist           -> Write();
-  leadingPhPhiHist           -> Write();
-  leadingPhPtHist_trig       -> Write();
-  leadingPhPtHist_noTrig     -> Write();
-  leadingPhPt_noIDHist       -> Write();
-  leadingPhPt_noIDHist_trig  -> Write();
-  leadingJetPtHist           -> Write();
-  leadingJetEtaHist          -> Write();
-  leadingJetPhiHist          -> Write();
-  HThist                     -> Write();
-  leadingJetTau1Hist         -> Write();
-  leadingJetTau2Hist         -> Write();
-  leadingJetTau3Hist         -> Write();
-  leadingJetT2T1             -> Write();
-  leadingJetT3T2             -> Write();
-  leadingPhMVAhist_endcap    -> Write();
-  leadingPhMVAhist_barrel    -> Write();
-  leadingJetMassHist         -> Write();
-  leadingJetPrunedMassHist   -> Write();
-  leadingJetSoftdropMassHist -> Write();
-  leadingPhMassHist          -> Write();
-  phJetInvMassHist_raw       -> Write();
-  phJetInvMassHist_pruned    -> Write();
-  phJetInvMassHist_softdrop  -> Write();
+  outputFile -> mkdir("Photon_kinematics") ;
+  outputFile ->    cd("Photon_kinematics") ;
+  leadingPhPtHist               -> Write() ;
+  leadingPhEtaHist              -> Write() ;
+  leadingPhPhiHist              -> Write() ;
+  leadingPhMassHist             -> Write() ;
+
+  outputFile ->         mkdir("Photon_id") ;
+  outputFile ->            cd("Photon_id") ;
+  leadingPhMVAhist_endcap       -> Write() ;
+  leadingPhMVAhist_barrel       -> Write() ;
   for (uint iProf=0; iProf<sizeof(phMVAvsEProf)/sizeof(phMVAvsEProf[0]); ++iProf) { 
     phMVAvsEProf[iProf]->Write();
   }
 
+  outputFile ->    mkdir("Jet_kinematics") ;
+  outputFile ->       cd("Jet_kinematics") ;
+  leadingJetPtHist              -> Write() ;
+  leadingJetEtaHist             -> Write() ;
+  leadingJetPhiHist             -> Write() ;
+  leadingJetMassHist            -> Write() ;
+  HThist                        -> Write() ;
+
+  outputFile ->  mkdir("Jet_substructure") ;
+  outputFile ->     cd("Jet_substructure") ;
+  leadingJetTau1Hist            -> Write() ;
+  leadingJetTau2Hist            -> Write() ;
+  leadingJetTau3Hist            -> Write() ;
+  leadingJetT2T1                -> Write() ;
+  leadingJetT3T2                -> Write() ;
+  leadingJetPrunedMassHist      -> Write() ;
+  leadingJetSoftdropMassHist    -> Write() ;
+
+  outputFile ->         mkdir("Resonance") ;
+  outputFile ->            cd("Resonance") ;
+  phJetInvMassHist_raw          -> Write() ;
+  phJetInvMassHist_pruned       -> Write() ;
+  phJetInvMassHist_softdrop     -> Write() ;
+
+  outputFile ->    mkdir("Trigger_turnon") ;
+  outputFile ->       cd("Trigger_turnon") ;
+  leadingPhPtHist_trig          -> Write() ;
+  leadingPhPtHist_noTrig        -> Write() ;
+  leadingPhPt_noIDHist          -> Write() ;
+  leadingPhPt_noIDHist_trig     -> Write() ;
+
   outputFile->Close();
-  cout << fixed << setw(4) << setprecision(2) << "100% done: Scanned " << nentries << " events." << endl;
+  cout << "100% done: Scanned " << nentries << " events." << endl;
   cout << "\nCompleted output file is " << outputFileName.c_str() <<".\n" << endl;
 }
