@@ -9,7 +9,7 @@ void treeChecker::Loop(string outputFileName)
   bool debugFlag                    = false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
   bool checkTrigger                 = false ;
   bool dumpEventInfo                = false ;
-  int  entriesToCheck               =   100 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
+  int  entriesToCheck               =   -1  ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
   int  reportEvery                  =  2000 ;
 
   // Photon id cut values
@@ -41,6 +41,8 @@ void treeChecker::Loop(string outputFileName)
   fChain->SetBranchStatus( "ph_phi"                   ,  1 );  
   fChain->SetBranchStatus( "ph_mvaVal"                ,  1 );
   fChain->SetBranchStatus( "ph_mvaCat"                ,  1 );
+  fChain->SetBranchStatus( "jetAK4_pt"                ,  1 );  
+  fChain->SetBranchStatus( "jetAK4_IDLoose"           ,  1 );  
   fChain->SetBranchStatus( "jetAK8_pt"                ,  1 );  
   fChain->SetBranchStatus( "jetAK8_mass"              ,  1 );  
   fChain->SetBranchStatus( "jetAK8_pruned_massCorr"   ,  1 );
@@ -74,6 +76,7 @@ void treeChecker::Loop(string outputFileName)
     leadingPhE_noID            = 0.    ;
     leadingPhEta_noID          = -999. ;
     leadingPhMVA_noID          = -999. ;
+    leadingPhCat_noID          = -1    ;
     leadingJetPt               = 0.    ;
     leadingJetE                = 0.    ;
     leadingJetEta              = -999. ;
@@ -96,6 +99,7 @@ void treeChecker::Loop(string outputFileName)
     softdrop_matchedJetTau2    = -999. ;
     softdrop_matchedJetTau3    = -999. ;
     HT                         = 0.    ;
+    HT_ak4                     = 0.    ;
     phoIsTight                 = false ;
     phoEtaPassesCut            = false ;
     eventHasTightPho           = false ;
@@ -103,6 +107,8 @@ void treeChecker::Loop(string outputFileName)
     leadingPhMVA               = -999. ;
     leadingPhCat               = -999. ;
     triggerFired               = false ; 
+    trigger2_Fired             = false ; 
+    trigger3_Fired             = false ; 
 
     leadingPhoton       .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     matchedJet_raw      .SetPtEtaPhiE( 0., 0., 0., 0.) ;
@@ -123,7 +129,19 @@ void treeChecker::Loop(string outputFileName)
         if (debugFlag) cout << "    " << it->first << " has value: " << it->second << endl;
         triggerFired = (1==it->second);
       }
+      if (it->first == "HLT_Photon165_HE10_v1") {
+        if (debugFlag) cout << "    " << it->first << " has value: " << it->second << endl;
+        trigger2_Fired = (1==it->second);
+      }
+      if (it->first == "HLT_Photon90_CaloIdL_PFHT500_v1") {
+        if (debugFlag) cout << "    " << it->first << " has value: " << it->second << endl;
+        trigger3_Fired = (1==it->second);
+      }
     }
+    if (triggerFired) ++eventsPassingTrigger;
+    if (trigger2_Fired) ++eventsPassingTrigger_2;
+    if (trigger3_Fired) ++eventsPassingTrigger_3;
+    if (triggerFired || trigger3_Fired) ++eventsPassingTrigger_13;
     
     // Loop over photons
     for (uint iPh = 0; iPh<ph_pt->size() ; ++iPh) { 
@@ -134,13 +152,17 @@ void treeChecker::Loop(string outputFileName)
       phoIsTight = (ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=barrel_phoMVAcut) || (ph_mvaCat->at(iPh)==1 && ph_mvaVal->at(iPh)>=endcap_phoMVAcut);
       phoEtaPassesCut = ( abs(ph_eta->at(iPh))<phoEtaMax );
       eventHasTightPho |= (phoIsTight && phoEtaPassesCut) ;      
-      // Fill the leading photon variables, requiring the photon to pass the ID requirements
+
+      // Fill the leading photon variables, regardless of the ID
       if (ph_pt->at(iPh) > leadingPhPt_noID ) {
         leadingPhPt_noID  = ph_pt     ->  at(iPh) ;
         leadingPhE_noID   = ph_e      ->  at(iPh) ;
         leadingPhEta_noID = ph_eta    ->  at(iPh) ;
         leadingPhMVA_noID = ph_mvaVal ->  at(iPh) ;
+        leadingPhCat_noID = ph_mvaCat ->  at(iPh) ;
       }
+
+      // Fill the leading photon variables, requiring the photon to pass the ID requirements
       if (ph_pt->at(iPh) > leadingPhPt && phoIsTight && phoEtaPassesCut ) {
         leadingPhPt  = ph_pt     ->  at(iPh) ;
         leadingPhE   = ph_e      ->  at(iPh) ;
@@ -151,24 +173,34 @@ void treeChecker::Loop(string outputFileName)
         leadingPhoton.SetPtEtaPhiE(ph_pt->at(iPh), ph_eta->at(iPh), ph_phi->at(iPh), ph_e->at(iPh));
       }
     }
+
+    if (leadingPhCat_noID == 0) {
+      leadingPhMVAhist_barrel->Fill(leadingPhMVA_noID);
+    }
+    else if (leadingPhCat_noID == 1) {
+      leadingPhMVAhist_endcap->Fill(leadingPhMVA_noID);
+    }
+
     if (debugFlag && eventHasTightPho && dumpEventInfo) cout << "    This event has a tight photon." << endl;
     leadingPhPtHist->Fill(leadingPhPt);
     leadingPhEtaHist->Fill(leadingPhEta);
     leadingPhPhiHist->Fill(leadingPhPhi);
     leadingPhPtHist_noTrig->Fill(leadingPhPt);
     if(triggerFired) leadingPhPtHist_trig->Fill(leadingPhPt);
-    if (leadingPhCat == 0) {
-      leadingPhMVAhist_barrel->Fill(leadingPhMVA);
-    }
-    else if (leadingPhCat == 1) {
-      leadingPhMVAhist_endcap->Fill(leadingPhMVA);
-    }
 
     for (uint iProf=0; iProf<sizeof(phMVAvsEProf)/sizeof(phMVAvsEProf[0]); ++iProf) { 
       if (abs(leadingPhEta_noID) > phoEtaRanges[iProf] && abs(leadingPhEta_noID) < phoEtaRanges[iProf+1]) phMVAvsEProf[iProf]->Fill(leadingPhE_noID, leadingPhMVA_noID );
     }
 
-    // Loop over jets
+    // Loop over AK4 jets
+    for (uint iJet = 0; iJet<jetAK4_pt->size() ; ++iJet) { 
+      if (jetAK4_IDLoose->at(iJet) == 1) { 
+        HT_ak4+=jetAK4_pt->at(iJet);
+      }
+    }
+    HT_ak4hist->Fill(HT_ak4);
+
+    // Loop over AK8 jets
     for (uint iJet = 0; iJet<jetAK8_pt->size() ; ++iJet) { 
       if (debugFlag && dumpEventInfo) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_pt->at(iJet) << endl;
       if (debugFlag && dumpEventInfo) cout << "    jetAK8_IDLoose[" << iJet << "] is : " << jetAK8_IDLoose->at(iJet) << endl;
@@ -188,6 +220,7 @@ void treeChecker::Loop(string outputFileName)
           leadingJetTau2       = jetAK8_tau2              ->  at(iJet) ;
           leadingJetTau3       = jetAK8_tau3              ->  at(iJet) ;
         }
+
         if (jetAK8_mass->at(iJet) > WZmassCutLow  && jetAK8_mass->at(iJet) < WZmassCutHigh && !eventHasMatchedRawJet) {
           if(debugFlag && dumpEventInfo) {
             cout << "    raw matched AK8 jet e is: "    << jetAK8_e    -> at(iJet) << endl ;
@@ -231,7 +264,7 @@ void treeChecker::Loop(string outputFileName)
           softdrop_matchedJetTau3 = jetAK8_tau3 ->  at(iJet) ;
         }
         HT+=jetAK8_pt->at(iJet);
-     } 
+      } 
     }
     leadingJetPtHist  ->  Fill(leadingJetPt)  ;
     leadingJetEtaHist ->  Fill(leadingJetEta) ;
@@ -245,6 +278,7 @@ void treeChecker::Loop(string outputFileName)
     if (debugFlag) cout <<  "Leading photon with no ID has pT: " << leadingPhPt_noID << " and triggerFired is: " << triggerFired << endl;
     leadingPhPt_noIDHist->Fill(leadingPhPt_noID);
     if (triggerFired) leadingPhPt_noIDHist_trig->Fill(leadingPhPt_noID);   
+
     // Fill histograms with events that have a photon passing ID and a loose jet
     if (eventHasTightPho) {
       if (leadingJetPt > 0) {
@@ -289,7 +323,6 @@ void treeChecker::Loop(string outputFileName)
     if (debugFlag && entriesToCheck == jentry) break; // when debugFlag is true, break the event loop after reaching entriesToCheck 
   }
 
-
   outputFile->cd();
 
   outputFile -> mkdir("Photon_kinematics") ;
@@ -314,6 +347,7 @@ void treeChecker::Loop(string outputFileName)
   leadingJetPhiHist             -> Write() ;
   leadingJetMassHist            -> Write() ;
   HThist                        -> Write() ;
+  HT_ak4hist                    -> Write() ;
 
   outputFile ->  mkdir("Jet_substructure") ;
   outputFile ->     cd("Jet_substructure") ;
@@ -339,6 +373,14 @@ void treeChecker::Loop(string outputFileName)
   leadingPhPt_noIDHist_trig     -> Write() ;
 
   outputFile->Close();
+
   cout << "100% done: Scanned " << nentries << " events." << endl;
+  cout << "The trigger fired " << eventsPassingTrigger << " times" << endl;
+  cout << "The trigger2 fired " << eventsPassingTrigger_2 << " times" << endl;
+  cout << "The trigger3 fired " << eventsPassingTrigger_3 << " times" << endl;
+  cout << "The trigger efficiency was " << (float) eventsPassingTrigger/ (float)nentries << endl;
+  cout << "The trigger_2 efficiency was " << (float) eventsPassingTrigger_2/ (float)nentries << endl;
+  cout << "The trigger_3 efficiency was " << (float) eventsPassingTrigger_3/ (float)nentries << endl;
+  cout << "The trigger_13 efficiency was " << (float) eventsPassingTrigger_13/ (float)nentries << endl;
   cout << "\nCompleted output file is " << outputFileName.c_str() <<".\n" << endl;
 }

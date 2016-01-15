@@ -30,12 +30,18 @@ public :
 
   // Variables calculated using events
   bool  triggerFired                = false ; 
+  bool  trigger2_Fired              = false ; 
+  bool  trigger3_Fired              = false ; 
   bool  phoIsTight                  = false ; 
   bool  phoEtaPassesCut             = false ; 
   bool  eventHasTightPho            = false ; 
   bool  eventHasMatchedRawJet       = false ; 
   bool  eventHasMatchedPrunedJet    = false ; 
   bool  eventHasMatchedSoftdropJet  = false ; 
+  int   eventsPassingTrigger        =    0  ;
+  int   eventsPassingTrigger_2      =    0  ;
+  int   eventsPassingTrigger_3      =    0  ;
+  int   eventsPassingTrigger_13     =    0  ;
   int   eventsWithTightPho          =    0  ;
   int   eventsWithLooseJet          =    0  ;
   int   eventsWtightPhoAndLooseJet  =    0  ;
@@ -49,6 +55,7 @@ public :
   float leadingJetPrunedM           =    0. ; 
   float leadingJetSoftdropM         =    0. ;
   float HT                          =    0. ;
+  float HT_ak4                      =    0. ;
   float leadingJetTau1              = -999. ;
   float raw_matchedJetTau1          = -999. ;
   float pruned_matchedJetTau1       = -999. ;
@@ -71,6 +78,7 @@ public :
   float leadingPhMVA                =    0. ;
   float leadingPhMVA_noID           = -999. ;
   float leadingPhCat                =    0. ;
+  float leadingPhCat_noID           = -999. ;
   TLorentzVector leadingPhoton              ;
   TLorentzVector matchedJet_raw             ;
   TLorentzVector matchedJet_pruned          ;
@@ -89,9 +97,10 @@ public :
   TH1F*  leadingPhMVAhist_barrel    = new TH1F( "leadingPhMVAhist_barrel"    , "Leading photon MVA"                   ,  210 ,  -1.05 ,  1.05 );
   TH1F*  leadingPhMassHist          = new TH1F( "leadingPhMassHist"          , "Leading photon inv. mass"             ,  700 ,      0 ,  7000 );
   TH1F*  leadingJetPtHist           = new TH1F( "leadingJetPtHist"           , "Leading AK8 jet pT"                   ,  700 ,      0 ,  7000 );
-  TH1F*  leadingJetEtaHist          = new TH1F( "leadingJetEtaHist"          , "Leading AK8 jet #eta"                 ,  200 ,  -3.25 ,  3.25 );
+  TH1F*  leadingJetEtaHist          = new TH1F( "leadingJetEtaHist"          , "Leading AK8 jet #eta"                 ,  200 ,     -6 ,     6 );
   TH1F*  leadingJetPhiHist          = new TH1F( "leadingJetPhiHist"          , "Leading AK8 jet #phi"                 ,  200 ,    -6. ,    6. );
   TH1F*  HThist                     = new TH1F( "HThist"                     , "Scalar sum of jet PT"                 ,  700 ,      0 ,  7000 );
+  TH1F*  HT_ak4hist                 = new TH1F( "HT_ak4hist"                 , "Scalar sum of jet PT"                 ,  700 ,      0 ,  7000 );
   TH1F*  leadingJetTau1Hist         = new TH1F( "leadingJetTau1Hist"         , "Leading jet #tau_{1}"                 ,  110 ,  -0.05 ,  1.05 );
   TH1F*  leadingJetTau2Hist         = new TH1F( "leadingJetTau2Hist"         , "Leading jet #tau_{2}"                 ,  110 ,  -0.05 ,  1.05 );
   TH1F*  leadingJetTau3Hist         = new TH1F( "leadingJetTau3Hist"         , "Leading jet #tau_{3}"                 ,  110 ,  -0.05 ,  1.05 );

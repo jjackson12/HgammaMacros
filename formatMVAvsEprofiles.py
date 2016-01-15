@@ -20,4 +20,22 @@ for i in range(0,4):
 	canvases[i].cd()
 	profiles.append(histFile.Get("Photon_id/phMVAvsEProf%i"%i))
 	profiles[i].Draw()
+	profiles[i].SetTitle("Leading #gamma MVA, %.3f#leq|#eta|<%.3f"%(etaRanges[i], etaRanges[i+1]))
+	profiles[i].GetXaxis().SetTitle("Leading #gamma p_{T} (GeV)")
+	profiles[i].GetYaxis().SetTitle("MVA value")
+	canvases[i].Update()
+	statsbox = profiles[i].FindObject("stats")
+	statsbox.SetX1NDC(0.679648)
+	statsbox.SetX2NDC(0.880653)
+	statsbox.SetY1NDC(0.134367)
+	statsbox.SetY2NDC(0.374677)
+	canvases[i].Update()
 	canvases[i].Print("output/photonMVAvsE%i.pdf"%i)
+
+# Trick to keep graphical output open
+#if __name__ == '__main__':          
+#   rep = ''
+#   while not rep in [ 'q', 'Q' ]:
+#      rep = raw_input( 'enter "q" to quit: ' )
+#      if 1 < len(rep):
+#         rep = rep[0]

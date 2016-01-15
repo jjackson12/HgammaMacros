@@ -16,12 +16,23 @@ outputPlotNames = [ "triggerTurnOn_IDapplied.pdf", "triggerTurnOn_noID.pdf" ]
 ratios = []
 canvases = []
 for i in range (0, 2):
-  trigHist = histsfile.Get("Trigger_turnon/%s"%inputHistNames[i][0])
-  noTrigHist = histsfile.Get("Trigger_turnon/%s"%inputHistNames[i][1])
-  ratios.append(TGraphAsymmErrors())
-  ratios[i].Divide(trigHist, noTrigHist)
-  canvases.append(TCanvas("canvas%i"%i, "Trigger Efficiency", 800, 800))
-  canvases[i].cd()
-  ratios[i].Draw()
-  canvases[i].Print("output/%s"%outputPlotNames[i])
+	trigHist = histsfile.Get("Trigger_turnon/%s"%inputHistNames[i][0])
+	noTrigHist = histsfile.Get("Trigger_turnon/%s"%inputHistNames[i][1])
+	ratios.append(TGraphAsymmErrors())
+	ratios[i].Divide(trigHist, noTrigHist)
+	canvases.append(TCanvas("canvas%i"%i, "Trigger Efficiency", 800, 800))
+	canvases[i].cd()
+	ratios[i].GetXaxis().SetTitle("Leading #gamma p_{T} (GeV)")
+	ratios[i].GetYaxis().SetTitle("Efficiency")
+	ratios[i].SetTitle("HLT_Photon_175_v1 Trigger Efficiency")
+	ratios[i].Draw("ap")
+	canvases[i].Print("output/%s"%outputPlotNames[i])
 
+
+## Trick to keep plot open
+#if __name__ == '__main__':
+#   rep = ''
+#   while not rep in [ 'q', 'Q' ]:
+#      rep = raw_input( 'enter "q" to quit: ' )
+#      if 1 < len(rep):
+#         rep = rep[0]
