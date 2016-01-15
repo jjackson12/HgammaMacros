@@ -33,25 +33,25 @@ void treeChecker::Loop(string outputFileName)
   }
 
   // Branches from EXOVVNtuplizer tree
-  fChain->SetBranchStatus( "*"                     ,  0 );  // disable all branches
-  fChain->SetBranchStatus( "HLT_isFired"           ,  1 );  // activate select branches
-  fChain->SetBranchStatus( "ph_pt"                 ,  1 );  
-  fChain->SetBranchStatus( "ph_e"                  ,  1 );  
-  fChain->SetBranchStatus( "ph_eta"                ,  1 );  
-  fChain->SetBranchStatus( "ph_phi"                ,  1 );  
-  fChain->SetBranchStatus( "ph_mvaVal"             ,  1 );
-  fChain->SetBranchStatus( "ph_mvaCat"             ,  1 );
-  fChain->SetBranchStatus( "jetAK8_pt"             ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_mass"           ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_e"              ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_eta"            ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_phi"            ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_pruned_mass"    ,  1 );
-  fChain->SetBranchStatus( "jetAK8_softdrop_mass"  ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_tau1"           ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_tau2"           ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_tau3"           ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_IDLoose"        ,  1 );  
+  fChain->SetBranchStatus( "*"                        ,  0 );  // disable all branches
+  fChain->SetBranchStatus( "HLT_isFired"              ,  1 );  // activate select branches
+  fChain->SetBranchStatus( "ph_pt"                    ,  1 );  
+  fChain->SetBranchStatus( "ph_e"                     ,  1 );  
+  fChain->SetBranchStatus( "ph_eta"                   ,  1 );  
+  fChain->SetBranchStatus( "ph_phi"                   ,  1 );  
+  fChain->SetBranchStatus( "ph_mvaVal"                ,  1 );
+  fChain->SetBranchStatus( "ph_mvaCat"                ,  1 );
+  fChain->SetBranchStatus( "jetAK8_pt"                ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_mass"              ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_pruned_massCorr"   ,  1 );
+  fChain->SetBranchStatus( "jetAK8_softdrop_massCorr" ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_e"                 ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_eta"               ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_phi"               ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_tau1"              ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_tau2"              ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_tau3"              ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_IDLoose"           ,  1 );  
 
   if (fChain == 0) return;
 
@@ -180,11 +180,13 @@ void treeChecker::Loop(string outputFileName)
           leadingJetEta  = jetAK8_eta->at(iJet);
           leadingJetPhi  = jetAK8_phi->at(iJet);
           //if (leadingJetE > jetAK8_e->at(iJet)) cout << "A leading jet (highest pT) had lower energy than another jet.";
-          leadingJetE          = jetAK8_e             ->  at(iJet) ;
-          leadingJetM          = jetAK8_mass          ->  at(iJet) ;
-          leadingJetTau1       = jetAK8_tau1          ->  at(iJet) ;
-          leadingJetTau2       = jetAK8_tau2          ->  at(iJet) ;
-          leadingJetTau3       = jetAK8_tau3          ->  at(iJet) ;
+          leadingJetE          = jetAK8_e                 ->  at(iJet) ;
+          leadingJetM          = jetAK8_mass              ->  at(iJet) ;
+          leadingJetPrunedM    = jetAK8_pruned_massCorr   ->  at(iJet);
+          leadingJetSoftdropM  = jetAK8_softdrop_massCorr ->  at(iJet);
+          leadingJetTau1       = jetAK8_tau1              ->  at(iJet) ;
+          leadingJetTau2       = jetAK8_tau2              ->  at(iJet) ;
+          leadingJetTau3       = jetAK8_tau3              ->  at(iJet) ;
         }
         if (jetAK8_mass->at(iJet) > WZmassCutLow  && jetAK8_mass->at(iJet) < WZmassCutHigh && !eventHasMatchedRawJet) {
           if(debugFlag && dumpEventInfo) {
@@ -200,7 +202,7 @@ void treeChecker::Loop(string outputFileName)
           raw_matchedJetTau2 = jetAK8_tau2 ->  at(iJet) ;
           raw_matchedJetTau3 = jetAK8_tau3 ->  at(iJet) ;
         }
-        if (jetAK8_pruned_mass->at(iJet) > WZmassCutLow  && jetAK8_pruned_mass->at(iJet) < WZmassCutHigh && !eventHasMatchedPrunedJet) {
+        if (jetAK8_pruned_massCorr->at(iJet) > WZmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < WZmassCutHigh && !eventHasMatchedPrunedJet) {
           if(debugFlag && dumpEventInfo) {
             cout << "    pruned matched AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
             cout << "    pruned matched AK8 jet mass is: " << jetAK8_mass->at(iJet) << endl ;
@@ -214,7 +216,7 @@ void treeChecker::Loop(string outputFileName)
           pruned_matchedJetTau2 = jetAK8_tau2 ->  at(iJet) ;
           pruned_matchedJetTau3 = jetAK8_tau3 ->  at(iJet) ;
         }
-        if (jetAK8_softdrop_mass->at(iJet) > WZmassCutLow  && jetAK8_softdrop_mass->at(iJet) < WZmassCutHigh && !eventHasMatchedSoftdropJet) {
+        if (jetAK8_softdrop_massCorr->at(iJet) > WZmassCutLow  && jetAK8_softdrop_massCorr->at(iJet) < WZmassCutHigh && !eventHasMatchedSoftdropJet) {
           if(debugFlag && dumpEventInfo) {
             cout << "    softdrop matched AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
             cout << "    softdrop matched AK8 jet mass is: " << jetAK8_mass->at(iJet) << endl ;
@@ -243,7 +245,6 @@ void treeChecker::Loop(string outputFileName)
     if (debugFlag) cout <<  "Leading photon with no ID has pT: " << leadingPhPt_noID << " and triggerFired is: " << triggerFired << endl;
     leadingPhPt_noIDHist->Fill(leadingPhPt_noID);
     if (triggerFired) leadingPhPt_noIDHist_trig->Fill(leadingPhPt_noID);   
-     
     // Fill histograms with events that have a photon passing ID and a loose jet
     if (eventHasTightPho) {
       if (leadingJetPt > 0) {

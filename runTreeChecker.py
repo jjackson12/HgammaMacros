@@ -30,13 +30,18 @@ def deleteLibs(macroName):
 
 # call the compiling function to compile the treeChecker, then run its Loop() method
 deleteLibs("treeChecker")
-gSystem.CompileMacro("treeChecker.C", "gOc")
-print "\ntreeChecker compiled successfully."
-gSystem.Load('treeChecker_C')
-file = TFile(argv[1])
-
-# get the ntuplizer/tree tree from the file specified by argument 1
-tree = file.Get("ntuplizer/tree")
-checker = treeChecker(tree)
-checker.Loop(argv[2])
+exitCode = gSystem.CompileMacro("treeChecker.C", "gOc")
+if not exitCode==1:
+	print "\nError... treeChecker failed to compile. :-("
+	print "Make sure you're using an up-to-date version of ROOT by running cmsenv in a 7_4_X>=16 CMSSW area."
+	exit(1)
+else:
+	print "\ntreeChecker compiled successfully."
+	gSystem.Load('treeChecker_C')
+	file = TFile(argv[1])
+	
+	# get the ntuplizer/tree tree from the file specified by argument 1
+	tree = file.Get("ntuplizer/tree")
+	checker = treeChecker(tree)
+	checker.Loop(argv[2])
 
