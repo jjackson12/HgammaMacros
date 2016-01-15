@@ -1,8 +1,20 @@
+# Script to format a the basic kinematic variables plots
+# This script requires one argument: the input filename Example:
+# python formatPreSelectionPlots.py myFlatTuple.root -b
+# John Hakala 1/15/2016
+
 from ROOT import *
-inFile = TFile("all2015.root")
-leadingPhHist  = inFile.Get("leadingPhPtHist")
-leadingJetHist = inFile.Get("leadingJetPtHist")
-HThist         = inFile.Get("HThist")
+from sys import argv
+
+if not len(argv)>1:
+	print "Please supply one argument to this macro: the name of the input root file."
+	exit(1)
+
+inFile = TFile(argv[1])
+
+leadingPhHist  = inFile.Get("Photon_kinematics/leadingPhPtHist")
+leadingJetHist = inFile.Get("Jet_kinematics/leadingJetPtHist")
+HThist         = inFile.Get("Jet_kinematics/HThist")
 
 canvas1 = TCanvas("canvas1", "canvas1", 800, 800)
 canvas2 = TCanvas("canvas2", "canvas2", 800, 800)
@@ -26,6 +38,6 @@ leadingJetHist .Draw()
 canvas3.cd()
 HThist         .Draw()
 
-canvas1.Print("leadingPhPt.pdf")
-canvas2.Print("leadingJetPt.pdf")
-canvas3.Print("HT.pdf")
+canvas1.Print("output/leadingPhPt.pdf")
+canvas2.Print("output/leadingJetPt.pdf")
+canvas3.Print("output/HT.pdf")

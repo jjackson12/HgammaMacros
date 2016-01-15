@@ -1,17 +1,27 @@
+# This script formats jet substructure plots and also some leading photon MVA id variables
+# it takes one argument: the input filename
+# Example: python formatSubjetVarsPlots.py myFlatTuple.root
+# John Hakala 1/15/2016
+
 from ROOT import *
+from sys import argv
 
-inFile = TFile("allJetVars.root")
+if not len(argv)>1:
+	print "Please supply one argument to this macro: the name of the input root file."
+	exit(1)
 
-leadingJetTau1             = inFile.Get("leadingJetTau1Hist")
-leadingJetTau2             = inFile.Get("leadingJetTau2Hist")
-leadingJetTau3             = inFile.Get("leadingJetTau3Hist")
-leadingJetT2T1             = inFile.Get("leadingJetT2T1")
-leadingJetT3T2             = inFile.Get("leadingJetT3T2")
-leadingJetMass             = inFile.Get("leadingJetMass")
-leadingJetPrunedCorrMass   = inFile.Get("leadingJetPrunedCorrMass")
-leadingJetSoftdropCorrMass = inFile.Get("leadingJetSoftdropCorrMass")
-leadingPhMVAhist_barrel    = inFile.Get("leadingPhMVAhist_barrel")
-leadingPhMVAhist_endcap    = inFile.Get("leadingPhMVAhist_endcap")
+inFile = TFile(argv[1])
+
+leadingJetTau1             = inFile.Get("Jet_substructure/leadingJetTau1Hist")
+leadingJetTau2             = inFile.Get("Jet_substructure/leadingJetTau2Hist")
+leadingJetTau3             = inFile.Get("Jet_substructure/leadingJetTau3Hist")
+leadingJetT2T1             = inFile.Get("Jet_substructure/leadingJetT2T1")
+leadingJetT3T2             = inFile.Get("Jet_substructure/leadingJetT3T2")
+leadingJetPrunedCorrMass   = inFile.Get("Jet_substructure/leadingJetPrunedMassHist")
+leadingJetSoftdropCorrMass = inFile.Get("Jet_substructure/leadingJetSoftdropMassHist")
+leadingJetMass             = inFile.Get("Jet_kinematics/leadingJetMassHist")
+leadingPhMVAhist_barrel    = inFile.Get("Photon_id/leadingPhMVAhist_barrel")
+leadingPhMVAhist_endcap    = inFile.Get("Photon_id/leadingPhMVAhist_endcap")
 
 canvas1 = TCanvas("canvas1", "canvas1", 800, 800)
 canvas2 = TCanvas("canvas2", "canvas2", 800, 800)
@@ -126,13 +136,13 @@ endcapMVAstats.SetY2NDC(0.759379)
 endcapMVAstats.SetTextColor(kRed)
 canvas7.Update()
 
-canvas1.Print(              "LeadingJetTau1.pdf" )
-canvas2.Print(              "LeadingJetTau2.pdf" )
-canvas3.Print(              "LeadingJetTau3.pdf" )
-canvas4.Print(              "LeadingJetT2T1.pdf" )
-canvas5.Print(              "LeadingJetT3T2.pdf" )
-canvas6.Print( "JetMass_raw+softdrop+pruned.pdf" )
-canvas7.Print(             "PhotonIDmvaVals.pdf" )
+canvas1.Print(              "output/LeadingJetTau1.pdf" )
+canvas2.Print(              "output/LeadingJetTau2.pdf" )
+canvas3.Print(              "output/LeadingJetTau3.pdf" )
+canvas4.Print(              "output/LeadingJetT2T1.pdf" )
+canvas5.Print(              "output/LeadingJetT3T2.pdf" )
+canvas6.Print( "output/JetMass_raw+softdrop+pruned.pdf" )
+canvas7.Print(             "output/PhotonIDmvaVals.pdf" )
 
 #if __name__ == '__main__':
 #   rep = ''

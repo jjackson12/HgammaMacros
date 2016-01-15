@@ -4,6 +4,7 @@
 # The second argument is the output file
 # Example: 
 # python runTreeChecker.py myWZgammaNtuple.root myOutputFile.root
+# John Hakala 1/15/2016
 
 from ROOT import *
 import os, subprocess
