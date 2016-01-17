@@ -18,6 +18,7 @@ cmsenv
 ##3) Create histograms using treeChecker.
 The EXOVVNtuples are processed by the `treeChecker` class, defined in `treeChecker.C` and `treeChecker.h`. This class is compiled, loaded, and its `Loop` method to process the ntuple is called using the python script `runTreeChecker.py`. `runTreeChecker.py` requires two arguments: the input ntuple and a name for the output file.
 ```
+cd ~/my/example/dir/WZgammaMacros
 python runTreeChecker.py myInputNtuple.root myHistograms.root
 ```
 
@@ -28,7 +29,12 @@ The following python scripts format the histograms in the output from the last s
 * `formatSubjetVarsPlots.py`
 * `makeTriggerTurnOnPlot.py`
 
-All of these take one argument, the input histograms file. For example:
+First create the `output` directory:
+```
+cd ~/my/example/dir/WZgammaMacros
+mkdir output
+```
+Then to run a formatting script, supply it one argument: the input histograms file. For example:
 ```
 python formatPreSelectionPlots.py myHistograms.root
 ```
@@ -36,7 +42,6 @@ Or, to suppress pyroot's crazy flashing plots:
 ```
 python formatPreSelectionPlots.py myHistograms.root -b
 ```
-
 The python script `makeAllPlots.py` will run all of the above scripts, and similarly it takes one argument, the histograms file:
 ```
 python makeAllPlots.py myHistograms.root
