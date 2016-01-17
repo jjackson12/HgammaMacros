@@ -23,10 +23,11 @@ python runTreeChecker.py myInputNtuple.root myHistograms.root
 
 ##4) Format histograms using the python scripts
 The following python scripts format the histograms in the output from the last step into pretty pdfs which are placed into a directory named `output`:
-* formatMVAvsEprofiles.py
-* formatPreSelectionPlots.py
-* formatSubjetVarsPlots.py
-* makeTriggerTurnOnPlot.py
+* `formatMVAvsEprofiles.py`
+* `formatPreSelectionPlots.py`
+* `formatSubjetVarsPlots.py`
+* `makeTriggerTurnOnPlot.py`
+
 All of these take one argument, the input histograms file. For example:
 ```
 python formatPreSelectionPlots.py myHistograms.root
