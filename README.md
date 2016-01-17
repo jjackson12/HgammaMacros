@@ -15,7 +15,7 @@ cmsrel CMSSW_7_4_16_patch1
 cd CMSSW_7_4_16_patch1/src
 cmsenv
 ```
-##3) Create histograms using treeChecker.
+##3) Create histograms using treeChecker
 The EXOVVNtuples are processed by the `treeChecker` class, defined in `treeChecker.C` and `treeChecker.h`. This class is compiled, loaded, and its `Loop` method to process the ntuple is called using the python script `runTreeChecker.py`. `runTreeChecker.py` requires two arguments: the input ntuple and a name for the output file.
 ```
 cd ~/my/example/dir/WZgammaMacros
