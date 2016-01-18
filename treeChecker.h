@@ -57,6 +57,9 @@ public :
   float HT                          =    0. ;
   float HT_ak4                      =    0. ;
   float leadingJetTau1              = -999. ;
+  float matchedRawJetMass           = -999. ;
+  float matchedPrunedJetCorrMass    = -999. ;
+  float matchedSoftdropJetCorrMass  = -999. ;
   float raw_matchedJetTau1          = -999. ;
   float pruned_matchedJetTau1       = -999. ;
   float softdrop_matchedJetTau1     = -999. ;
@@ -109,6 +112,12 @@ public :
   TH1F*  leadingJetMassHist         = new TH1F( "leadingJetMassHist"         , "Leading AK8 jet inv. mass"            ,  700 ,      0 ,  7000 );
   TH1F*  leadingJetPrunedMassHist   = new TH1F( "leadingJetPrunedMassHist"   , "Leading AK8 pruned jet inv. mass"     ,  700 ,      0 ,  7000 );
   TH1F*  leadingJetSoftdropMassHist = new TH1F( "leadingJetSoftdropMassHist" , "Leading AK8 softdrop jet inv. mass"   ,  700 ,      0 ,  7000 );
+  TH1F*  matchedJetMassHist         = new TH1F( "matchedJetMassHist"         , "Matched AK8 jet inv. mass"            ,  300 ,      0 ,   300 );
+  TH1F*  matchedJetPrunedMassHist   = new TH1F( "matchedJetPrunedMassHist"   , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  matchedJetSoftdropMassHist = new TH1F( "matchedJetSoftdropMassHist" , "Matched AK8 softdrop jet inv. mass"   ,  300 ,      0 ,   300 );
+  TH1F*  matchedJetMassHist_noPho         = new TH1F( "matchedJetMassHist_noPho"         , "Matched AK8 jet inv. mass, no photon required"           ,  300 ,  0 ,  300 );
+  TH1F*  matchedJetPrunedMassHist_noPho   = new TH1F( "matchedJetPrunedMassHist_noPho"   , "Matched AK8 pruned jet inv. mass, no photon required"    ,  300 ,  0 ,  300 );
+  TH1F*  matchedJetSoftdropMassHist_noPho = new TH1F( "matchedJetSoftdropMassHist_noPho" , "Matched AK8 softdrop jet inv. mass, no photon required"  ,  300 ,  0 ,  300 );
   TH1F*  phJetInvMassHist_raw       = new TH1F( "phJetInvMassHist_raw"       , "Photon+Jet invariant mass (raw)"      ,  700 ,      0 ,  7000 );
   TH1F*  phJetInvMassHist_pruned    = new TH1F( "phJetInvMassHist_pruned"    , "Photon+Jet invariant mass (pruned)"   ,  700 ,      0 ,  7000 );
   TH1F*  phJetInvMassHist_softdrop  = new TH1F( "phJetInvMassHist_softdrop"  , "Photon+Jet invariant mass (softdrop)" ,  700 ,      0 ,  7000 );

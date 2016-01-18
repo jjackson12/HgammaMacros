@@ -9,13 +9,15 @@ void treeChecker::Loop(string outputFileName)
   bool debugFlag                    = false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
   bool checkTrigger                 = false ;
   bool dumpEventInfo                = false ;
-  int  entriesToCheck               =   -1  ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
-  int  reportEvery                  =  2000 ;
+  int  entriesToCheck               =   100 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
+  int  reportEvery                  =  5000 ;
 
   // Photon id cut values
   float endcap_phoMVAcut            = 0.336 ;  // See https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2015
   float barrel_phoMVAcut            = 0.374 ;
   float phoEtaMax                   =   2.4 ;
+  float jetEtaMax                   =   2.4 ;
+  float jetT2T1Max                  =   0.5 ;
   float phoEtaRanges[5]             = {0, 0.75, 1.479, 2.4, 3.0};
 
   // W/Z jet mass matching
@@ -89,6 +91,9 @@ void treeChecker::Loop(string outputFileName)
     leadingJetTau3             = -999. ;
     eventHasMatchedPrunedJet   = false ;
     eventHasMatchedSoftdropJet = false ;
+    matchedRawJetMass          = -999. ;
+    matchedPrunedJetCorrMass   = -999. ;
+    matchedSoftdropJetCorrMass = -999. ;
     raw_matchedJetTau1         = -999. ;
     raw_matchedJetTau2         = -999. ;
     raw_matchedJetTau3         = -999. ;
@@ -231,6 +236,7 @@ void treeChecker::Loop(string outputFileName)
           }
           eventHasMatchedRawJet = true;
           matchedJet_raw.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
+          matchedRawJetMass =  jetAK8_mass ->  at(iJet);
           raw_matchedJetTau1 = jetAK8_tau1 ->  at(iJet) ;
           raw_matchedJetTau2 = jetAK8_tau2 ->  at(iJet) ;
           raw_matchedJetTau3 = jetAK8_tau3 ->  at(iJet) ;
@@ -245,6 +251,7 @@ void treeChecker::Loop(string outputFileName)
           }
           eventHasMatchedPrunedJet = true;
           matchedJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
+          matchedPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
           pruned_matchedJetTau1 = jetAK8_tau1 ->  at(iJet) ;
           pruned_matchedJetTau2 = jetAK8_tau2 ->  at(iJet) ;
           pruned_matchedJetTau3 = jetAK8_tau3 ->  at(iJet) ;
@@ -259,6 +266,7 @@ void treeChecker::Loop(string outputFileName)
           }
           eventHasMatchedSoftdropJet = true;
           matchedJet_softdrop.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
+          matchedSoftdropJetCorrMass = jetAK8_softdrop_massCorr->at(iJet);
           softdrop_matchedJetTau1 = jetAK8_tau1 ->  at(iJet) ;
           softdrop_matchedJetTau2 = jetAK8_tau2 ->  at(iJet) ;
           softdrop_matchedJetTau3 = jetAK8_tau3 ->  at(iJet) ;
@@ -279,6 +287,16 @@ void treeChecker::Loop(string outputFileName)
     leadingPhPt_noIDHist->Fill(leadingPhPt_noID);
     if (triggerFired) leadingPhPt_noIDHist_trig->Fill(leadingPhPt_noID);   
 
+    if(eventHasMatchedRawJet && matchedJet_raw.Pt() > 0 && abs(matchedJet_raw.Eta()) < 2.4) {
+      matchedJetMassHist_noPho ->Fill(matchedRawJetMass);
+    }
+    if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 0 && abs(matchedJet_pruned.Eta()) < 2.4) {
+      matchedJetPrunedMassHist_noPho ->Fill(matchedPrunedJetCorrMass);
+    }
+    if(eventHasMatchedSoftdropJet && matchedJet_softdrop.Pt() > 0 && abs(matchedJet_softdrop.Eta()) < 2.4) {
+      matchedJetSoftdropMassHist_noPho ->Fill(matchedSoftdropJetCorrMass);
+    }
+
     // Fill histograms with events that have a photon passing ID and a loose jet
     if (eventHasTightPho) {
       if (leadingJetPt > 0) {
@@ -292,7 +310,8 @@ void treeChecker::Loop(string outputFileName)
         leadingJetSoftdropMassHist ->  Fill(leadingJetSoftdropM)              ;
         leadingPhMassHist          ->  Fill(leadingPhE)                       ;
       }
-      if(eventHasMatchedRawJet && matchedJet_raw.Pt() > 0) {
+      if(eventHasMatchedRawJet && matchedJet_raw.Pt() > 0 && abs(matchedJet_raw.Eta()) < 2.4 && abs(leadingPhoton.Eta()) < 2.4) {
+        matchedJetMassHist ->Fill(matchedRawJetMass);
         sumVector = leadingPhoton + matchedJet_raw;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with raw,      sumvector E is: " << sumVector.E() << endl;
@@ -301,7 +320,8 @@ void treeChecker::Loop(string outputFileName)
         }
         if (raw_matchedJetTau2/raw_matchedJetTau1<0.5) phJetInvMassHist_raw->Fill(sumVector.M());
       }
-      if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 0) {
+      if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 0 && abs(matchedJet_pruned.Eta()) < 2.4 && abs(leadingPhoton.Eta()) < 2.4) {
+        matchedJetPrunedMassHist ->Fill(matchedPrunedJetCorrMass);
         sumVector = leadingPhoton + matchedJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -310,7 +330,8 @@ void treeChecker::Loop(string outputFileName)
         }
         if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5) phJetInvMassHist_pruned->Fill(sumVector.M());
       }
-      if(eventHasMatchedSoftdropJet && matchedJet_softdrop.Pt() > 0) {
+      if(eventHasMatchedSoftdropJet && matchedJet_softdrop.Pt() > 0 && abs(matchedJet_softdrop.Eta()) < 2.4 && abs(leadingPhoton.Eta()) < 2.4) {
+        matchedJetSoftdropMassHist ->Fill(matchedSoftdropJetCorrMass);
         sumVector = leadingPhoton + matchedJet_softdrop;
         if (debugFlag && dumpEventInfo)  {
           cout << "    using matching with softdrop, sumvector E is: " << sumVector.E() << endl;
@@ -364,6 +385,13 @@ void treeChecker::Loop(string outputFileName)
   phJetInvMassHist_raw          -> Write() ;
   phJetInvMassHist_pruned       -> Write() ;
   phJetInvMassHist_softdrop     -> Write() ;
+  matchedJetMassHist            -> Write() ;
+  matchedJetPrunedMassHist      -> Write() ;
+  matchedJetSoftdropMassHist    -> Write() ;
+  matchedJetMassHist_noPho      -> Write() ;
+  matchedJetPrunedMassHist_noPho-> Write() ;
+  matchedJetSoftdropMassHist_noPho->Write();
+
 
   outputFile ->    mkdir("Trigger_turnon") ;
   outputFile ->       cd("Trigger_turnon") ;
