@@ -23,6 +23,14 @@ cd ~/my/example/dir/WZgammaMacros
 python runTreeChecker.py myInputNtuple.root myHistograms.root
 ```
 
+The WZgamma ntuples are stored on lxplus eos in the directory `/store/group/phys_b2g/WZgamma2016`. The easiest way to access them is:
+```
+mkdir ~/my/eosMountpoint
+eosmount ~/my/eosMountpoint
+# and for example:
+root -l ~/my/eosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_zJetsToQQHT600toInf_Jan14/flatTuple_1.root
+```
+
 ##4) Format histograms using the python scripts
 The following python scripts format the histograms in the output from the last step into pretty pdfs which are placed into a directory named `output`:
 * `formatMVAvsEprofiles.py`
