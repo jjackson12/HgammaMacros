@@ -1,6 +1,7 @@
 # Script to make a WZgamma stack plot
 # It takes one argument: the filename for a text file specifying the file for each sample
-# An example file is included on the github repository, stackPlotInputs.tx
+# The file for each sample is produced by the treeChecker
+# An example text file is included on the github repository, stackPlotInputs.tx
 # Example: python makeStackPlot.py myStackPlotInputs.tx
 # John Hakala, 1/20/2016
 
