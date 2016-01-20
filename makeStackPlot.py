@@ -10,6 +10,13 @@ from dictmaker import makeInputsDict
 from sys import argv
 
 samplesDict = makeInputsDict(argv[1])
+
+# Check the dict for all the keys:
+keys = ["zJets", "wJets", "QCD", "gammaJets", "M-750", "M-2000", "data"]
+for key in keys:
+	if not key in samplesDict.keys():
+		exit("\nError: a file for sample %s was not found in %s.\n"%(key, argv[1]))
+
 infiles = [
 	[ "zJets"     ,  samplesDict["zJets"]     ,  kMagenta, "bg"   ],
 	[ "wJets"     ,  samplesDict["wJets"]     ,  kGreen  , "bg"   ],
