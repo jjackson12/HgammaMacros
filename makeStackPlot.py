@@ -11,10 +11,10 @@ from sys import argv
 
 samplesDict = makeInputsDict(argv[1])
 infiles = [
-	[ "gammaJets" ,  samplesDict["gammaJets"] ,  kBlue   , "bg"   ],
-	[ "QCD"       ,  samplesDict["QCD"]       ,  kRed    , "bg"   ],
-	[ "wJets"     ,  samplesDict["wJets"]     ,  kGreen  , "bg"   ],
 	[ "zJets"     ,  samplesDict["zJets"]     ,  kMagenta, "bg"   ],
+	[ "wJets"     ,  samplesDict["wJets"]     ,  kGreen  , "bg"   ],
+	[ "QCD"       ,  samplesDict["QCD"]       ,  kRed    , "bg"   ],
+	[ "gammaJets" ,  samplesDict["gammaJets"] ,  kBlue   , "bg"   ],
 	[ "M-750"     ,  samplesDict["M-750"]     ,  kCyan   , "sig"  ],
 	[ "M-2000"    ,  samplesDict["M-2000"]    ,  kViolet , "sig"  ]
 ]
