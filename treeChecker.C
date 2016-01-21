@@ -7,12 +7,14 @@ void treeChecker::Loop(string outputFileName)
 {
   // Flags for running this macro
   bool debugFlag                    = false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
-  bool checkTrigger                 = false ;
+  bool checkTrigger                 = true ;
   bool dumpEventInfo                = false ;
-  int  entriesToCheck               =   100 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
+  int  entriesToCheck               =   1   ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
   int  reportEvery                  =  5000 ;
 
   // Photon id cut values
+  //float endcap_phoMVAcut            = 0.336 ;  // See https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2015
+  //float barrel_phoMVAcut            = 0.374 ;
   float endcap_phoMVAcut            = 0.336 ;  // See https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2015
   float barrel_phoMVAcut            = 0.374 ;
   float phoEtaMax                   =   2.4 ;
@@ -125,12 +127,12 @@ void treeChecker::Loop(string outputFileName)
       cout << fixed << setw(4) << setprecision(2) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << endl;
     }
     if (debugFlag) cout << "\nIn event number " << jentry << ":" << endl;
-    if (checkTrigger) cout << "     Trigger info is: " << endl;
+    if (checkTrigger && debugFlag) cout << "     Trigger info is: " << endl;
     for(map<string,bool>::iterator it = HLT_isFired->begin(); it != HLT_isFired->end(); ++it) {
-      if (checkTrigger) { 
+      if (checkTrigger && debugFlag) { 
         cout << "       " << it->first << " = " << it->second << endl;
       }
-      if (it->first == "HLT_Photon175_v1") {
+      if (it->first == "HLT_Photon175_v2") {
         if (debugFlag) cout << "    " << it->first << " has value: " << it->second << endl;
         triggerFired = (1==it->second);
       }
@@ -318,7 +320,7 @@ void treeChecker::Loop(string outputFileName)
           cout << "                                  sumvector M is: " << sumVector.M() << endl;
           cout << "                                    tau2/tau1 is: " << raw_matchedJetTau2/raw_matchedJetTau1 << endl;
         }
-        if (raw_matchedJetTau2/raw_matchedJetTau1<0.5) phJetInvMassHist_raw->Fill(sumVector.M());
+        if (raw_matchedJetTau2/raw_matchedJetTau1<0.5 && triggerFired && leadingPhoton.Pt() > 200) phJetInvMassHist_raw->Fill(sumVector.M());
       }
       if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 0 && abs(matchedJet_pruned.Eta()) < 2.4 && abs(leadingPhoton.Eta()) < 2.4) {
         matchedJetPrunedMassHist ->Fill(matchedPrunedJetCorrMass);
@@ -328,7 +330,8 @@ void treeChecker::Loop(string outputFileName)
           cout << "                                  sumvector M is: " << sumVector.M() << endl;
           cout << "                                    tau2/tau1 is: " << pruned_matchedJetTau2/pruned_matchedJetTau1 << endl;
         }
-        if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5) phJetInvMassHist_pruned->Fill(sumVector.M());
+        if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5 && triggerFired && leadingPhoton.Pt() > 200) phJetInvMassHist_pruned->Fill(sumVector.M());
+        if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5 ) phJetInvMassHist_pruned_noTrig->Fill(sumVector.M());
       }
       if(eventHasMatchedSoftdropJet && matchedJet_softdrop.Pt() > 0 && abs(matchedJet_softdrop.Eta()) < 2.4 && abs(leadingPhoton.Eta()) < 2.4) {
         matchedJetSoftdropMassHist ->Fill(matchedSoftdropJetCorrMass);
@@ -338,7 +341,7 @@ void treeChecker::Loop(string outputFileName)
           cout << "                                  sumvector M is: " << sumVector.M() << endl;
           cout << "                                    tau2/tau1 is: " <<softdrop_matchedJetTau2/softdrop_matchedJetTau1 << endl;
         }
-        if (softdrop_matchedJetTau2/softdrop_matchedJetTau1<0.5) phJetInvMassHist_softdrop->Fill(sumVector.M());
+        if (softdrop_matchedJetTau2/softdrop_matchedJetTau1<0.5 && triggerFired && leadingPhoton.Pt() > 200) phJetInvMassHist_softdrop->Fill(sumVector.M());
       }
     }
     if (debugFlag && entriesToCheck == jentry) break; // when debugFlag is true, break the event loop after reaching entriesToCheck 
@@ -384,6 +387,7 @@ void treeChecker::Loop(string outputFileName)
   outputFile ->            cd("Resonance") ;
   phJetInvMassHist_raw          -> Write() ;
   phJetInvMassHist_pruned       -> Write() ;
+  phJetInvMassHist_pruned_noTrig-> Write() ;
   phJetInvMassHist_softdrop     -> Write() ;
   matchedJetMassHist            -> Write() ;
   matchedJetPrunedMassHist      -> Write() ;
