@@ -32,8 +32,8 @@ root -l ~/my/eosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_zJets
 ```
 Since TChains are slow, I recommend processing a complete dataset by first using `hadd` to combine all the ntuples from a given dataset into a single giant ntuple. For example:
 ```
-hadd myBigGJetsHT100to200nTuple.root ~/my/eosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_gJetsHT100to200_Jan13/*.root
-python makeAllPlots.py myBigGJetsHT100to200nTuple.root
+hadd myGJets100to200tuple.root ~/my/eosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_gJetsHT100to200_Jan13/*.root
+python makeAllPlots.py myGJets100to200tuple.root
 ```
 
 ##4) Format histograms using the python scripts
