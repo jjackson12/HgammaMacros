@@ -30,9 +30,9 @@ eosmount ~/my/eosMountpoint
 # and for example:
 root -l ~/my/eosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_zJetsToQQHT600toInf_Jan14/flatTuple_1.root
 ```
-Since TChains are slow, I recommend processing a complete dataset by first using `hadd` to combine all the ntuples from a given dataset into a single giant ntuple.
+Since TChains are slow, I recommend processing a complete dataset by first using `hadd` to combine all the ntuples from a given dataset into a single giant ntuple. For example:
 ```
-hadd myBigZjetsNtuple.root ~/my/eosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_gJetsHT100to200_Jan13/*.root
+hadd myBigGJetsHT100to200nTuple.root ~/my/eosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_gJetsHT100to200_Jan13/*.root
 python makeAllPlots.py myBigGJetsHT100to200nTuple.root
 ```
 
