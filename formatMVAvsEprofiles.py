@@ -5,10 +5,14 @@
 
 from ROOT import *
 from sys import argv
+from os import path, makedirs
 
 if not len(argv)>1:
 	print "Please supply one argument to this macro: the name of the input root file."
 	exit(1)
+
+if not path.exists("output"):
+	makedirs("output")
 
 etaRanges = [0, 0.75, 1.479, 2.4, 3.0]  # This comes from treeChecker.C, which considers four regions: the inner and outer halves of both EE and EB
 

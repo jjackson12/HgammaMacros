@@ -5,10 +5,14 @@
 
 from ROOT import *
 from sys import argv
+from os import path, makedirs
 
 if not len(argv)>1:
 	print "Please supply one argument to this macro: the name of the input root file."
 	exit(1)
+
+if not path.exists("output"):
+	makedirs("output")
 
 inFile = TFile(argv[1])
 

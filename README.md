@@ -38,12 +38,7 @@ The following python scripts format the histograms in the output from the last s
 * `formatSubjetVarsPlots.py`
 * `makeTriggerTurnOnPlot.py`
 
-First create the `output` directory:
-```
-cd ~/my/example/dir/WZgammaMacros
-mkdir output
-```
-Then to run a formatting script, supply it one argument: the input histograms file. For example:
+To run a formatting script, supply it one argument: the input histograms file. For example:
 ```
 python formatPreSelectionPlots.py myHistograms.root
 ```

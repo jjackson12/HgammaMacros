@@ -8,6 +8,14 @@
 from ROOT import *
 from dictmaker import makeInputsDict
 from sys import argv
+from os import path, makedirs
+
+if not len(argv)>1:
+	print "Please supply one argument to this macro: the name of the input text file defining the inputs."
+	exit(1)
+
+if not path.exists("output"):
+	makedirs("output")
 
 samplesDict = makeInputsDict(argv[1])
 

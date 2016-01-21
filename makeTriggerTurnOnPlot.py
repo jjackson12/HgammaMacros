@@ -4,11 +4,15 @@
 # John Hakala 1/15/2016
 
 from sys import argv
+from os import path, makedirs
 from ROOT import *
 
 if not len(argv)>1 :
 	print "Please supply one argument to this macro: the name of the input root file."
 	exit(1)
+
+if not path.exists("output"):
+	makedirs("output")
 
 histsfile = TFile(argv[1],"r")
 inputHistNames  = [ ["leadingPhPtHist_trig", "leadingPhPtHist_noTrig"], ["leadingPhPt_noIDHist_trig","leadingPhPt_noIDHist"] ] 
