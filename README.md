@@ -59,7 +59,7 @@ python makeAllPlots.py myHistograms.root
 Once you've done step 3 for all the samples, I recommend combining all the background MC histograms with their corresponding weights using `haddws`, which can be checked out from github here: https://github.com/hkaushalya/haddws
 Follow the instructions there to combine the gJets and qcd background histograms.
 
-Once you have combined the background samples by `haddws`ing them with appropriate weights, make a stack plot using [`makestackplot.py`](makestackplot.py). First, create a text file that defines your input files for the backgrounds, signals, and data: an example is in [`stackPlotInputs.tx`](stackPlotInputs.tx).
+Once you have combined the background samples by `haddws`ing them with appropriate weights, make a stack plot using [`makeStackPlot.py`](makeStackPlot.py). First, create a text file that defines your input files for the backgrounds, signals, and data: an example is in [`stackPlotInputs.tx`](stackPlotInputs.tx).
 
 Then make the stackplot:
 ```
