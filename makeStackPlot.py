@@ -52,9 +52,9 @@ dataHist.Rebin(10)
 
 for i in range(0, len(infiles)):
 	tFiles.append(TFile(infiles[i][1], "r"))
-  if argv[2] is "requireTrigger":
+	if argv[2] is "requireTrigger":
 		invMassHists.append(tFiles[i].Get("Resonance/phJetInvMassHist_pruned"))
-  elif argv[2] is "noTrigger":
+	elif argv[2] is "noTrigger":
 		invMassHists.append(tFiles[i].Get("Resonance/phJetInvMassHist_pruned_noTrig"))
 	invMassHists[i].Rebin(10)
 	names.append(infiles[i][0])
