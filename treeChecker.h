@@ -120,6 +120,7 @@ public :
   TH1F*  matchedJetSoftdropMassHist_noPho = new TH1F( "matchedJetSoftdropMassHist_noPho" , "Matched AK8 softdrop jet inv. mass, no photon required"  ,  300 ,  0 ,  300 );
   TH1F*  phJetInvMassHist_raw       = new TH1F( "phJetInvMassHist_raw"       , "Photon+Jet invariant mass (raw)"      ,  700 ,      0 ,  7000 );
   TH1F*  phJetInvMassHist_pruned    = new TH1F( "phJetInvMassHist_pruned"    , "Photon+Jet invariant mass (pruned)"   ,  700 ,      0 ,  7000 );
+  TH1F*  phJetInvMassHist_pruned_noTrig    = new TH1F( "phJetInvMassHist_pruned_noTrig"    , "Photon+Jet invariant mass (pruned)"   ,  700 ,      0 ,  7000 );
   TH1F*  phJetInvMassHist_softdrop  = new TH1F( "phJetInvMassHist_softdrop"  , "Photon+Jet invariant mass (softdrop)" ,  700 ,      0 ,  7000 );
 
   TProfile* phMVAvsEProf[4];
