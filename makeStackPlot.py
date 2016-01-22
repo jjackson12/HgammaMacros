@@ -10,8 +10,8 @@ from dictmaker import makeInputsDict
 from sys import argv
 from os import path, makedirs
 
-if not len(argv)>1:
-	print "Please supply one argument to this macro: the name of the input text file defining the inputs."
+if not len(argv)>2:
+	print "Please supply two arguments to this macro: the name of the input text file defining the inputs, and 'requireTrigger' or 'noTrigger'."
 	exit(1)
 
 if not path.exists("output"):
@@ -52,7 +52,10 @@ dataHist.Rebin(10)
 
 for i in range(0, len(infiles)):
 	tFiles.append(TFile(infiles[i][1], "r"))
-	invMassHists.append(tFiles[i].Get("Resonance/phJetInvMassHist_pruned"))
+	if argv[2] is "requireTrigger":
+		invMassHists.append(tFiles[i].Get("Resonance/phJetInvMassHist_pruned"))
+	elif argv[2] is "noTrigger":
+		invMassHists.append(tFiles[i].Get("Resonance/phJetInvMassHist_pruned_noTrig"))
 	invMassHists[i].Rebin(10)
 	names.append(infiles[i][0])
 	colors.append(infiles[i][2])

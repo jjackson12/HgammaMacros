@@ -61,8 +61,10 @@ Follow the instructions there to combine the gJets and qcd background histograms
 
 Once you have combined the background samples by `haddws`ing them with appropriate weights, make a stack plot using [`makeStackPlot.py`](makeStackPlot.py). First, create a text file that defines your input files for the backgrounds, signals, and data: an example is in [`stackPlotInputs.tx`](stackPlotInputs.tx).
 
-Then make the stackplot:
+Then make the stackplot, specifying whether you require the trigger defined in treeChecker.C to be fired:
 ```
-python makeStackPlot.py myStackPlotInputs.txt
+python makeStackPlot.py myStackPlotInputs.txt requireTrigger
+# or
+python makeStackPlot.py myStackPlotInputs.txt noTrigger
 ```
 
