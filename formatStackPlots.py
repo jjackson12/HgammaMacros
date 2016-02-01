@@ -3,6 +3,7 @@ from sys import argv
 from ROOT import *
 
 canvasDict = makeCanvasDict(argv[1])
+print canvasDict
 #for key in canvasDict.keys():
 #    print "key is %s" % key
 #    print "x-axis lower bound is %s" % canvasDict[key][0]
@@ -14,13 +15,15 @@ canvasDict = makeCanvasDict(argv[1])
 #    print "plot title is %s"         % canvasDict[key][6]
 #    print "legend title is %s"       % canvasDict[key][7]
 for key in canvasDict.keys():
+    print "working on canvas %s" % key
     canvasFile = TFile("output/%s.root"%key)
     canvas = canvasFile.Get("canvas")
     canvas.Draw()
     stackPlot=canvas.GetPrimitive("stackPlot")
     stackPlot.GetXaxis().SetRangeUser(float(canvasDict[key][0]), float(canvasDict[key][1]))
     stackPlot.GetXaxis().SetTitle(canvasDict[key][2])
-    stackPlot.GetYaxis().SetRangeUser(float(canvasDict[key][3]), float(canvasDict[key][4]))
+    stackPlot.SetMinimum(float(canvasDict[key][3]))
+    stackPlot.SetMaximum(float(canvasDict[key][4]))
     stackPlot.GetYaxis().SetTitle(canvasDict[key][5])
     stackPlot.SetTitle(canvasDict[key][6])
     canvas.Print("output/%s.pdf"%key)

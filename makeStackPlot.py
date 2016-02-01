@@ -33,12 +33,12 @@ for key in keys:
       exit("\nError: a file for sample %s was not found in %s.\n"%(key, argv[1]))
 
 infiles = [
-   [ "wJets"     ,  samplesDict["wJets"]     ,  kGreen  , "bg"   ],
-   [ "zJets"     ,  samplesDict["zJets"]     ,  kMagenta, "bg"   ],
-   [ "QCD"       ,  samplesDict["QCD"]       ,  kRed    , "bg"   ],
-   [ "gammaJets" ,  samplesDict["gammaJets"] ,  kBlue   , "bg"   ],
-   [ "M-750"     ,  samplesDict["M-750"]     ,  kCyan   , "sig"  ],
-   [ "M-2000"    ,  samplesDict["M-2000"]    ,  kViolet , "sig"  ]
+   [ "wJets"     ,  samplesDict["wJets"]     ,  kGreen+1   , "bg"   ],
+   [ "zJets"     ,  samplesDict["zJets"]     ,  kMagenta+2 , "bg"   ],
+   [ "QCD"       ,  samplesDict["QCD"]       ,  kRed-4     , "bg"   ],
+   [ "gammaJets" ,  samplesDict["gammaJets"] ,  kBlue    , "bg"   ],
+   [ "M-750"     ,  samplesDict["M-750"]     ,  kTeal+1    , "sig"  ],
+   [ "M-2000"    ,  samplesDict["M-2000"]    ,  kViolet  , "sig"  ]
 ]
 
 rebin=int(argv[5])
@@ -54,7 +54,7 @@ colors       = []
 kinds        = []
 
 legend = TLegend(0.5, 0.7, 0.9, 0.9)
-legend.SetHeader("Invariant mass of leading #gamma plus z-jet.")
+legend.SetHeader("")
 
 dataFile = TFile(samplesDict["data"],"r")
 print "histName is: %s"%histName
@@ -62,7 +62,6 @@ dataHist = dataFile.Get(histName)
 dataHist.Rebin(rebin)
 
 for i in range(0, len(infiles)):
-   print "i is %i"%i
    print "working on sample: %s"%infiles[i][0]
    tFiles.append(TFile(infiles[i][1], "r"))
    invMassHists.append(tFiles[i].Get(histName))
@@ -70,15 +69,18 @@ for i in range(0, len(infiles)):
    names.append(infiles[i][0])
    colors.append(infiles[i][2])
    kinds.append(infiles[i][3])
+   invMassHists[i].SetTitle("")
    if kinds[i] is "bg":
       print "sample %s has kind %s"%(names[i], kinds[i])
       invMassHists[i].SetFillColor(colors[i])
+      stackPlot.Add(invMassHists[i])
    elif kinds[i] is "sig":
       print "sample %s has kind %s"%(names[i], kinds[i])
       invMassHists[i].SetLineColor(colors[i])
       invMassHists[i].SetLineStyle(3)
-   stackPlot.Add(invMassHists[i])
+      invMassHists[i].SetLineWidth(3)
    legend.AddEntry(invMassHists[i], names[i], "f")
+
 
 dataHist.SetMarkerColor(kBlack)
 dataHist.SetMarkerStyle(20)
@@ -92,8 +94,14 @@ stackPlot.Draw()
 #stackPlot.GetYaxis().SetTitleOffset(1.2)
 #stackPlot.GetYaxis().SetTitle("Events / 100 GeV")
 #stackPlot.SetMinimum(5e-1)
+dataHist.SetTitle("")
 dataHist.Draw("apE1 SAME")
-#legend.Draw()
+for i in range(0, len(infiles)):
+   if kinds[i] is "sig":
+      invMassHists[i].SetTitle("")
+      invMassHists[i].Draw("SAME")
+
+legend.Draw()
 canvas.Update()
 
 canvas.SaveAs("output/%s.root"%argv[3])
