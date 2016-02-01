@@ -182,7 +182,7 @@ void treeChecker::Loop(string outputFileName)
       // Check if this event has a photon passing ID requirements
       phoIsTight = (ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=barrel_phoMVAcut) || (ph_mvaCat->at(iPh)==1 && ph_mvaVal->at(iPh)>=endcap_phoMVAcut);
       phoEtaPassesCut = ( abs(ph_eta->at(iPh))<phoEtaMax );
-      phoPtPassesCut = ( ph_pt->at(iPh)>30 );
+      phoPtPassesCut = ( ph_pt->at(iPh)>100 );
       eventHasTightPho |= (phoIsTight && phoEtaPassesCut && phoPtPassesCut) ;      
 
       // Fill the leading photon variables, regardless of the ID
@@ -214,12 +214,6 @@ void treeChecker::Loop(string outputFileName)
     }
 
     if (debugFlag && eventHasTightPho && dumpEventInfo) cout << "    This event has a tight photon." << endl;
-    leadingPhPtHist_noTrig->Fill(leadingPhPt);
-    if(triggerFired) {
-      leadingPhPtHist->Fill(leadingPhPt);
-      leadingPhEtaHist->Fill(leadingPhEta);
-      leadingPhPhiHist->Fill(leadingPhPhi);
-    }
 
     for (uint iProf=0; iProf<sizeof(phMVAvsEProf)/sizeof(phMVAvsEProf[0]); ++iProf) { 
       if (abs(leadingPhEta_noID) > phoEtaRanges[iProf] && abs(leadingPhEta_noID) < phoEtaRanges[iProf+1]) phMVAvsEProf[iProf]->Fill(leadingPhE_noID, leadingPhMVA_noID );
@@ -280,10 +274,16 @@ void treeChecker::Loop(string outputFileName)
             cout << "    pruned matched AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
           }
           matchedJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          matchedPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
-          pruned_matchedJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-          pruned_matchedJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-          pruned_matchedJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+          if (matchedJet_pruned.DeltaR(leadingPhoton) < 0.8) {
+            matchedJet_pruned.SetPtEtaPhiE(0,0,0,0);
+            eventHasMatchedPrunedJet = false;
+          }
+          else {
+            matchedPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+            pruned_matchedJetTau1 = jetAK8_tau1 ->  at(iJet) ;
+            pruned_matchedJetTau2 = jetAK8_tau2 ->  at(iJet) ;
+            pruned_matchedJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+          }
         }
         if (jetAK8_pruned_massCorr->at(iJet) > sideLowCutLow  && jetAK8_pruned_massCorr->at(iJet) < sideLowCutHigh && !eventHasSideLowPrunedJet) {
           eventHasSideLowPrunedJet = true;
@@ -295,10 +295,16 @@ void treeChecker::Loop(string outputFileName)
             cout << "    pruned sideLow AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
           }
           sideLowJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          sideLowPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
-          pruned_sideLowJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-          pruned_sideLowJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-          pruned_sideLowJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+          if (sideLowJet_pruned.DeltaR(leadingPhoton) < 0.8) {
+            sideLowJet_pruned.SetPtEtaPhiE(0,0,0,0);
+            eventHasSideLowPrunedJet = false;
+          }
+          else {
+            sideLowPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+            pruned_sideLowJetTau1 = jetAK8_tau1 ->  at(iJet) ;
+            pruned_sideLowJetTau2 = jetAK8_tau2 ->  at(iJet) ;
+            pruned_sideLowJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+          }
         }
         if (jetAK8_pruned_massCorr->at(iJet) > sideHiCutLow  && jetAK8_pruned_massCorr->at(iJet) < sideHiCutHigh && !eventHasSideHiPrunedJet) {
           eventHasSideHiPrunedJet = true;
@@ -310,10 +316,16 @@ void treeChecker::Loop(string outputFileName)
             cout << "    pruned sideHi AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
           }
           sideHiJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          sideHiPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
-          pruned_sideHiJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-          pruned_sideHiJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-          pruned_sideHiJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+          if (sideHiJet_pruned.DeltaR(leadingPhoton) < 0.8) {
+            sideHiJet_pruned.SetPtEtaPhiE(0,0,0,0);
+            eventHasSideHiPrunedJet = false;
+          }
+          else {
+            sideHiPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+            pruned_sideHiJetTau1 = jetAK8_tau1 ->  at(iJet) ;
+            pruned_sideHiJetTau2 = jetAK8_tau2 ->  at(iJet) ;
+            pruned_sideHiJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+          }
         }
         if (jetAK8_softdrop_massCorr->at(iJet) > WZmassCutLow  && jetAK8_softdrop_massCorr->at(iJet) < WZmassCutHigh && !eventHasMatchedSoftdropJet) {
           if(debugFlag && dumpEventInfo) {
@@ -443,17 +455,12 @@ void treeChecker::Loop(string outputFileName)
           if (triggerFired)phCorrJetInvMassHist_pruned_sideHi->Fill(sumVector.M());
         }
       }
-      if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 30 && abs(matchedJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>30 && abs(leadingPhoton.Eta()) < 2.4) {
+      if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 100 && abs(matchedJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>100 && abs(leadingPhoton.Eta()) < 2.4) {
         matchedJetPrunedMassHist_noTrig ->Fill(matchedPrunedJetCorrMass);
         phJetDeltaPhi_pruned_noTrig->Fill(leadingPhoton.DeltaPhi(matchedJet_pruned));
         phJetDeltaEta_pruned_noTrig->Fill(abs( leadingPhoton.Eta() - matchedJet_pruned.Eta() ));
         phJetDeltaR_pruned_noTrig->Fill(leadingPhoton.DeltaR(matchedJet_pruned));
-        if (triggerFired) {
-          matchedJetPrunedMassHist ->Fill(matchedPrunedJetCorrMass);
-          phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(matchedJet_pruned));
-          phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - matchedJet_pruned.Eta() ));
-          phJetDeltaR_pruned->Fill(leadingPhoton.DeltaR(matchedJet_pruned));
-        }
+        leadingPhPtHist_noTrig->Fill(leadingPhPt);
         sumVector = leadingPhoton + matchedJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -470,8 +477,15 @@ void treeChecker::Loop(string outputFileName)
         }
         if (triggerFired ) {
           matchedJett2t1Hist->Fill(pruned_matchedJetTau2/pruned_matchedJetTau1);
-          if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5 ) {
+          if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5 && leadingPhoton.DeltaR(matchedJet_pruned)>0.8) {
+            phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(matchedJet_pruned));
+            phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - matchedJet_pruned.Eta() ));
+            phJetDeltaR_pruned->Fill(leadingPhoton.DeltaR(matchedJet_pruned));
+            leadingPhPtHist->Fill(leadingPhPt);
+            leadingPhEtaHist->Fill(leadingPhEta);
+            leadingPhPhiHist->Fill(leadingPhPhi);
             phJetInvMassHist_pruned_sig->Fill(sumVector.M());
+            matchedJetPrunedMassHist ->Fill(matchedPrunedJetCorrMass);
             matchedJetPtHist->Fill( matchedJet_pruned.Pt());
             matchedJetEtaHist->Fill(matchedJet_pruned.Eta());
             matchedJetPhiHist->Fill(matchedJet_pruned.Phi());
