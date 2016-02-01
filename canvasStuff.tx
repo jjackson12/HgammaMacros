@@ -1,0 +1,8 @@
+gjetInvMass          ,  0    ,  5000  ,  m_{#gammaj}                    ,  0   ,  0  ,  Events, Invariant mass of #gamma+jet       , Invariant mass of #gamma+jet
+gjetDeltaR           ,  0    ,  5000  ,  #deltaR(#gamma j)             ,  0   ,  0  ,  Events, #deltaR between #gamma and jet     , #deltaR between #gamma and jet
+gjetDeltaPhi         ,  0    ,  5000  ,  #delta#phi(#gamma j)          ,  0   ,  0  ,  Events, #delta#phi between #gamma and jet  , #delta#phi between #gamma and jet
+gjetDeltaEta         ,  0    ,  5000  ,  #delta#eta(#gamma j)          ,  0   ,  0  ,  Events, #delta#eta between #gamma and jet  , #delta#eta between #gamma and jet
+matchedJetPrunedMass ,  70    ,  110  ,  m_{j} pruned                  ,  0   ,  0  ,  Events, Invariant mass of matched jet      , Invariant mass of matched jet
+matchedJetPt         ,  0    ,  1500  ,  Jet p_{T}                      ,  0   ,  0  ,  Events, p_{T} of matched jet               , p_{T} of matched jet
+leadingPhPt          ,  0    ,  1000  ,  leading #gamma p_{T}           ,  0   ,  0  ,  Events, p_{T} of leading #gamma            , p_{T} of leading #gamma
+matchedJetT2T1       ,  0    ,  5000  ,  matched jet #tau_{2}/#tau_{1}  ,  0   ,  0  ,  Events, Matched jet #tau_{1}/#tau_{2}      , Matched jet #tau_{1}/#tau_{2}
