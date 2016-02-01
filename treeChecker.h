@@ -94,6 +94,7 @@ public :
   float leadingPhCat                =    0. ;
   float leadingPhCat_noID           = -999. ;
   TLorentzVector leadingPhoton              ;
+  TLorentzVector tmpLeadingJet              ;
   TLorentzVector matchedJet_raw             ;
   TLorentzVector matchedJet_pruned          ;
   TLorentzVector sideLowJet_pruned          ;
@@ -129,6 +130,7 @@ public :
   TH1F*  leadingJetSoftdropMassHist        = new TH1F( "leadingJetSoftdropMassHist"       , "Leading AK8 softdrop jet inv. mass"   ,  700 ,      0 ,  7000 );
   TH1F*  matchedJetMassHist                = new TH1F( "matchedJetMassHist"               , "Matched AK8 jet inv. mass"            ,  300 ,      0 ,   300 );
   TH1F*  matchedJetPrunedMassHist          = new TH1F( "matchedJetPrunedMassHist"         , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  matchedJetPrunedMassHist_noTrig          = new TH1F( "matchedJetPrunedMassHist_noTrig"         , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
   TH1F*  sideLowJetPrunedMassHist          = new TH1F( "sideLowJetPrunedMassHist"         , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
   TH1F*  sideHiJetPrunedMassHist          = new TH1F( "sideHiJetPrunedMassHist"          , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
   TH1F*  matchedJetSoftdropMassHist        = new TH1F( "matchedJetSoftdropMassHist"       , "Matched AK8 softdrop jet inv. mass"   ,  300 ,      0 ,   300 );
@@ -159,6 +161,9 @@ public :
   TH1F*  matchedJetMassHist_noPho          = new TH1F( "matchedJetMassHist_noPho"         , "Matched AK8 jet inv. mass, no photon required"           ,  300 ,  0 ,  300 );
   TH1F*  matchedJetPrunedMassHist_noPho    = new TH1F( "matchedJetPrunedMassHist_noPho"   , "Matched AK8 pruned jet inv. mass, no photon required"    ,  300 ,  0 ,  300 );
   TH1F*  matchedJetSoftdropMassHist_noPho  = new TH1F( "matchedJetSoftdropMassHist_noPho" , "Matched AK8 softdrop jet inv. mass, no photon required"  ,  300 ,  0 ,  300 );
+  TH1F*  phJetDeltaR_pruned_noTrig                = new TH1F( "phJetDeltaR_pruned_noTrig"               , "#deltaR(#gamma, j)"                   ,   200 ,      0 ,    10 );  
+  TH1F*  phJetDeltaPhi_pruned_noTrig              = new TH1F( "phJetDeltaPhi_pruned_noTrig"             , "#delta#phi(#gamma, j)"                ,   200 ,      0 ,     4 );
+  TH1F*  phJetDeltaEta_pruned_noTrig              = new TH1F( "phJetDeltaEta_pruned_noTrig"             , "#delta#eta(#gamma, j)"                ,   200 ,      0 ,    10 );
   TH1F*  phJetDeltaR_pruned                = new TH1F( "phJetDeltaR_pruned"               , "#deltaR(#gamma, j)"                   ,   200 ,      0 ,    10 );  
   TH1F*  phJetDeltaPhi_pruned              = new TH1F( "phJetDeltaPhi_pruned"             , "#delta#phi(#gamma, j)"                ,   200 ,      0 ,     4 );
   TH1F*  phJetDeltaEta_pruned              = new TH1F( "phJetDeltaEta_pruned"             , "#delta#eta(#gamma, j)"                ,   200 ,      0 ,    10 );

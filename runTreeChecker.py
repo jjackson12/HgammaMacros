@@ -31,6 +31,7 @@ def deleteLibs(macroName):
 # call the compiling function to compile the treeChecker, then run its Loop() method
 deleteLibs("treeChecker")
 exitCode = gSystem.CompileMacro("treeChecker.C", "gOc")
+#exitCode = gSystem.Load('treeChecker_C')
 if not exitCode==1:
 	print "\nError... treeChecker failed to compile. :-("
 	print "Make sure you're using an up-to-date version of ROOT by running cmsenv in a 7_4_X>=16 CMSSW area."
