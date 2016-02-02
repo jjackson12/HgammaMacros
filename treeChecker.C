@@ -27,12 +27,12 @@ void treeChecker::Loop(string outputFileName)
   float WZmassCutHigh               =  105. ;
 
   // Z jet mass matching
+  float sideLowCutLow              =   60. ;  
+  float sideLowCutHigh             =   80. ;
   float ZmassCutLow                =   80. ;  // Z mass +- 10 GeV
   float ZmassCutHigh               =  100. ;
-  float sideLowCutLow              =   60. ;  
-  float sideLowCutHigh             =   70. ;
   float sideHiCutLow               =  100. ;  
-  float sideHiCutHigh              =  110. ;
+  float sideHiCutHigh              =  120. ;
 
   TFile* outputFile                 = new TFile(outputFileName.c_str(), "RECREATE");
 
@@ -391,8 +391,7 @@ void treeChecker::Loop(string outputFileName)
         }
         if (raw_matchedJetTau2/raw_matchedJetTau1<0.5 && triggerFired && leadingPhoton.Pt() > 30) phJetInvMassHist_raw->Fill(sumVector.M());
       }
-      if(eventHasSideLowPrunedJet && sideLowJet_pruned.Pt() > 30 && abs(sideLowJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>30 && abs(leadingPhoton.Eta()) < 2.4) {
-        sideLowJetPrunedMassHist ->Fill(matchedPrunedJetCorrMass);
+      if(eventHasSideLowPrunedJet && sideLowJet_pruned.Pt() > 100 && abs(sideLowJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>200 && abs(leadingPhoton.Eta()) < 2.4) {
         sumVector = leadingPhoton + sideLowJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -424,7 +423,6 @@ void treeChecker::Loop(string outputFileName)
         }
       }
       if(eventHasSideHiPrunedJet && sideHiJet_pruned.Pt() > 30 && abs(sideHiJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>30 && abs(leadingPhoton.Eta()) < 2.4) {
-        sideHiJetPrunedMassHist ->Fill(matchedPrunedJetCorrMass);
         sumVector = leadingPhoton + sideHiJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -455,7 +453,7 @@ void treeChecker::Loop(string outputFileName)
           if (triggerFired)phCorrJetInvMassHist_pruned_sideHi->Fill(sumVector.M());
         }
       }
-      if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 100 && abs(matchedJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>100 && abs(leadingPhoton.Eta()) < 2.4) {
+      if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 100 && abs(matchedJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>200 && abs(leadingPhoton.Eta()) < 2.4) {
         matchedJetPrunedMassHist_noTrig ->Fill(matchedPrunedJetCorrMass);
         phJetDeltaPhi_pruned_noTrig->Fill(leadingPhoton.DeltaPhi(matchedJet_pruned));
         phJetDeltaEta_pruned_noTrig->Fill(abs( leadingPhoton.Eta() - matchedJet_pruned.Eta() ));
@@ -486,9 +484,11 @@ void treeChecker::Loop(string outputFileName)
             leadingPhPhiHist->Fill(leadingPhPhi);
             phJetInvMassHist_pruned_sig->Fill(sumVector.M());
             matchedJetPrunedMassHist ->Fill(matchedPrunedJetCorrMass);
+            bigWindowJetPrunedMassHist->Fill(matchedPrunedJetCorrMass);
             matchedJetPtHist->Fill( matchedJet_pruned.Pt());
             matchedJetEtaHist->Fill(matchedJet_pruned.Eta());
             matchedJetPhiHist->Fill(matchedJet_pruned.Phi());
+            phPtOverMgammajHist->Fill(leadingPhPt/sumVector.M());
           }
         }
         if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5) {
@@ -496,6 +496,22 @@ void treeChecker::Loop(string outputFileName)
           sumVector = leadingPhoton + matchedJet_pruned;
           phCorrJetInvMassHist_pruned_sig_noTrig->Fill(sumVector.M());
           if (triggerFired)phCorrJetInvMassHist_pruned_sig->Fill(sumVector.M());
+        }
+      }
+      if(eventHasSideHiPrunedJet && sideHiJet_pruned.Pt() > 100 && abs(sideHiJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>200 && abs(leadingPhoton.Eta()) < 2.4) {
+        if (triggerFired ) {
+          if (pruned_sideHiJetTau2/pruned_sideHiJetTau1<0.5 && leadingPhoton.DeltaR(sideHiJet_pruned)>0.8) {
+            sideHiJetPrunedMassHist ->Fill(sideHiPrunedJetCorrMass);
+            bigWindowJetPrunedMassHist->Fill(sideHiPrunedJetCorrMass);
+          }
+        }
+      }
+      if(eventHasSideLowPrunedJet && sideLowJet_pruned.Pt() > 100 && abs(sideLowJet_pruned.Eta()) < 2.4 && leadingPhoton.Pt()>200 && abs(leadingPhoton.Eta()) < 2.4) {
+        if (triggerFired ) {
+          if (pruned_sideLowJetTau2/pruned_sideLowJetTau1<0.5 && leadingPhoton.DeltaR(sideLowJet_pruned)>0.8) {
+            sideLowJetPrunedMassHist ->Fill(sideLowPrunedJetCorrMass);
+            bigWindowJetPrunedMassHist->Fill(sideLowPrunedJetCorrMass);
+          }
         }
       }
       if(eventHasMatchedSoftdropJet && matchedJet_softdrop.Pt() > 0 && abs(matchedJet_softdrop.Eta()) < 2.4 && abs(leadingPhoton.Eta()) < 2.4) {
@@ -575,15 +591,19 @@ void treeChecker::Loop(string outputFileName)
   phJetInvMassHist_pruned_sig      -> Write() ;
   phJetInvMassHist_pruned_sideHi   -> Write() ;
   phJetInvMassHist_pruned_sideLow  -> Write() ;
-  //phCorrJetInvMassHist_pruned_sig            -> Write() ;
-  //phCorrJetInvMassHist_pruned_sideHi         -> Write() ;
-  //phCorrJetInvMassHist_pruned_sideLow        -> Write() ;
+  sideHiJetPrunedMassHist          -> Write() ;
+  sideLowJetPrunedMassHist         -> Write() ;
+  bigWindowJetPrunedMassHist       -> Write() ;
+  phCorrJetInvMassHist_pruned_sig            -> Write() ;
+  phCorrJetInvMassHist_pruned_sideHi         -> Write() ;
+  phCorrJetInvMassHist_pruned_sideLow        -> Write() ;
   phJetInvMassHist_pruned_sig_noTrig         -> Write() ;
   phJetInvMassHist_pruned_sideHi_noTrig      -> Write() ;
   phJetInvMassHist_pruned_sideLow_noTrig     -> Write() ;
-  //phCorrJetInvMassHist_pruned_sig_noTrig      -> Write() ;
-  //phCorrJetInvMassHist_pruned_sideHi_noTrig   -> Write() ;
-  //phCorrJetInvMassHist_pruned_sideLow_noTrig  -> Write() ;
+  phCorrJetInvMassHist_pruned_sig_noTrig     -> Write() ;
+  phCorrJetInvMassHist_pruned_sideHi_noTrig  -> Write() ;
+  phCorrJetInvMassHist_pruned_sideLow_noTrig -> Write() ;
+  phPtOverMgammajHist                        -> Write() ;
 
   outputFile ->       mkdir("Trigger_turnon") ;
   outputFile ->          cd("Trigger_turnon") ;
