@@ -1,7 +1,7 @@
-gammaJets   inputs/allgJets.root
-QCD         inputs/allQCD.root
-wJets       inputs/allwJets.root
-zJets       inputs/allzJets.root
+gammaJets   inputs/gJets_feb1v2.root
+QCD         inputs/qcd_feb1v2.root
+wJets       inputs/wJets600toInfHistos.root
+zJets       inputs/zJets600toInfHistos.root
 M-750       inputs/M-750Histos.root
 M-2000      inputs/M-2000Histos.root
-data        inputs/all2015Data.root
+data        inputs/all2015data_feb1v2.root
