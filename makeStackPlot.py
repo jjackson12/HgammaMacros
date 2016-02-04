@@ -61,6 +61,7 @@ for i in range(0, len(infiles)):
    print "i is %i"%i
    print "working on sample: %s"%infiles[i][0]
    tFiles.append(TFile(infiles[i][1], "r"))
+   print "using file %s"%tFiles[i]
    invMassHists.append(tFiles[i].Get(histName))
    invMassHists[i].Rebin(10)
    names.append(infiles[i][0])
