@@ -145,8 +145,8 @@ map<string, bool> photonID::diphotonIDmap(float eta, float phi, float sigmaIetaI
     decisions[ "sigmaIEtaIEta" ] = ( sigmaIetaIeta < 0.0105 );
     decisions[ "isoGammaBar"   ] = ( isoGammaBar   < 2.75   );
   }
-  //Category 3:
   else if ( std::abs(eta)>1.566 && std::abs(eta)<2.5 ) {
+    //Category 3:
     if ( std::abs(eta)<2.0) {
       isoGammaBar = 2.5 + isoGamma - rho*0.11 - 4.5e-3*pT;
     }
@@ -161,6 +161,6 @@ map<string, bool> photonID::diphotonIDmap(float eta, float phi, float sigmaIetaI
     decisions[ "sigmaIEtaIEta" ] = ( sigmaIetaIeta < 0.028 );
     decisions[ "isoGammaBar"   ] = ( isoGammaBar   < 2.0   );
   }
-  decisions[ "allCuts" ] = (decisions["hOverE"] && decisions["isoCh"] && decisions["isoGammaBar"] && decisions["isoGammaBar"] && decisions["eleVeto"]);
+  decisions[ "allCuts" ] = (decisions["hOverE"] && decisions["isoCh"] && decisions["isoGammaBar"] && decisions["sigmaIEtaIEta"] && decisions["eleVeto"]);
   return decisions;
 }
