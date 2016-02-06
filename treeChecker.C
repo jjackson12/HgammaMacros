@@ -27,12 +27,12 @@ void treeChecker::Loop(string outputFileName)
   float WZmassCutHigh               =  105. ;
 
   // Z jet mass matching
-  float sideLowCutLow              =   60. ;  
+  float sideLowCutLow              =   0.  ;  
   float sideLowCutHigh             =   80. ;
   float ZmassCutLow                =   80. ;  // Z mass +- 10 GeV
   float ZmassCutHigh               =  100. ;
   float sideHiCutLow               =  100. ;  
-  float sideHiCutHigh              =  120. ;
+  float sideHiCutHigh              =  200. ;
 
   TFile* outputFile                 = new TFile(outputFileName.c_str(), "RECREATE");
 
@@ -135,6 +135,7 @@ void treeChecker::Loop(string outputFileName)
     triggerFired               = false ; 
     trigger2_Fired             = false ; 
     trigger3_Fired             = false ; 
+    cosThetaStar               =   -99 ; 
 
     leadingPhoton       .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     matchedJet_raw      .SetPtEtaPhiE( 0., 0., 0., 0.) ;
@@ -143,6 +144,8 @@ void treeChecker::Loop(string outputFileName)
     sideLowJet_pruned   .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     matchedJet_softdrop .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     sumVector           .SetPtEtaPhiE( 0., 0., 0., 0.) ;
+    boostedJet           .SetPtEtaPhiE( 0., 0., 0., 0.) ;
+    boostedPho           .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     // Print out trigger information
     if (jentry%reportEvery==0) {
       cout << fixed << setw(4) << setprecision(2) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << endl;
@@ -489,6 +492,10 @@ void treeChecker::Loop(string outputFileName)
             matchedJetEtaHist->Fill(matchedJet_pruned.Eta());
             matchedJetPhiHist->Fill(matchedJet_pruned.Phi());
             phPtOverMgammajHist->Fill(leadingPhPt/sumVector.M());
+            boostedPho = leadingPhoton.Boost(-(sumVector.BoostVector()));
+            boostedJet = leadingPhoton.Boost(-(sumVector.BoostVector()));
+            cosThetaStar = boostedPho.Pz()/boostedPho.P();
+            cosThetaStarHist.Fill(cosThetaStar);
           }
         }
         if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5) {
@@ -604,6 +611,7 @@ void treeChecker::Loop(string outputFileName)
   phCorrJetInvMassHist_pruned_sideHi_noTrig  -> Write() ;
   phCorrJetInvMassHist_pruned_sideLow_noTrig -> Write() ;
   phPtOverMgammajHist                        -> Write() ;
+  cosThetaStarHist                           -> Write() ;
 
   outputFile ->       mkdir("Trigger_turnon") ;
   outputFile ->          cd("Trigger_turnon") ;

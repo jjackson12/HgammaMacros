@@ -93,6 +93,7 @@ public :
   float leadingPhMVA_noID           = -999. ;
   float leadingPhCat                =    0. ;
   float leadingPhCat_noID           = -999. ;
+  float cosThetaStar                =  -99  ;
   TLorentzVector leadingPhoton              ;
   TLorentzVector tmpLeadingJet              ;
   TLorentzVector matchedJet_raw             ;
@@ -101,6 +102,8 @@ public :
   TLorentzVector sideHiJet_pruned          ;
   TLorentzVector matchedJet_softdrop        ;
   TLorentzVector sumVector                  ;
+  TLorentzVector boostedJet                 ;
+  TLorentzVector boostedPho                 ;
   
   // Output histograms
   TH1F*  leadingPhPtHist                   = new TH1F( "leadingPhPtHist"                  , "Leading photon pT"                    ,  700 ,      0 ,  7000 );
@@ -187,6 +190,7 @@ public :
   TH1F*  phCorrJetInvMassHist_pruned_sideHi_noTrig    = new TH1F( "phCorrJetInvMassHist_pruned_sideHi_noTrig"   , "m_{#gammaj} for upper sideband events (jet p0 = 90 GeV)",  1400 ,      0 ,  7000 );
   TH1F*  phCorrJetInvMassHist_pruned_sideLow_noTrig   = new TH1F( "phCorrJetInvMassHist_pruned_sideLow_noTrig"  , "m_{#gammaj} for lower sideband events (jet p0 = 90 GeV)",  1400 ,      0 ,  7000 );
   TH1F*  phPtOverMgammajHist                         = new TH1F( "phPtOverMgammajHist"   , "Photon p_{T}/m_{#gammaj}" ,  10000 ,      0 ,  100 );
+  TH1F*  cosThetaStarHist                         = new TH1F( "cosThetaStarHist"   , "Photon p_{z}/p" ,  1000 ,      0 ,  1 );
 
   TProfile* phMVAvsEProf[4];
 
