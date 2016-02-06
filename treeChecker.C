@@ -492,10 +492,12 @@ void treeChecker::Loop(string outputFileName)
             matchedJetEtaHist->Fill(matchedJet_pruned.Eta());
             matchedJetPhiHist->Fill(matchedJet_pruned.Phi());
             phPtOverMgammajHist->Fill(leadingPhPt/sumVector.M());
-            boostedPho = leadingPhoton.Boost(-(sumVector.BoostVector()));
-            boostedJet = leadingPhoton.Boost(-(sumVector.BoostVector()));
+            boostedPho = leadingPhoton;
+            boostedPho.Boost(-(sumVector.BoostVector()));
+            boostedJet = matchedJet_pruned;
+            boostedJet.Boost(-(sumVector.BoostVector()));
             cosThetaStar = boostedPho.Pz()/boostedPho.P();
-            cosThetaStarHist.Fill(cosThetaStar);
+            cosThetaStarHist->Fill(cosThetaStar);
           }
         }
         if (pruned_matchedJetTau2/pruned_matchedJetTau1<0.5) {
