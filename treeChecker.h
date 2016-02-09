@@ -39,6 +39,9 @@ public :
   bool  eventHasMatchedRawJet       = false ; 
   bool  eventHasMatchedPrunedJet    = false ; 
   bool  eventHasSideLowPrunedJet    = false ; 
+  bool  eventHasSideLowOnePrunedJet    = false ; 
+  bool  eventHasSideLowTwoPrunedJet    = false ; 
+  bool  eventHasSideLowThreePrunedJet    = false ; 
   bool  eventHasSideHiPrunedJet    = false ; 
   bool  eventHasMatchedSoftdropJet  = false ; 
   int   eventsPassingTrigger        =    0  ;
@@ -63,23 +66,35 @@ public :
   float matchedRawJetMass           = -999. ;
   float matchedPrunedJetCorrMass    = -999. ;
   float sideLowPrunedJetCorrMass    = -999. ;
+  float sideLowOnePrunedJetCorrMass    = -999. ;
+  float sideLowTwoPrunedJetCorrMass    = -999. ;
+  float sideLowThreePrunedJetCorrMass    = -999. ;
   float sideHiPrunedJetCorrMass     = -999. ;
   float matchedSoftdropJetCorrMass  = -999. ;
   float raw_matchedJetTau1          = -999. ;
   float pruned_matchedJetTau1       = -999. ;
   float pruned_sideLowJetTau1       = -999. ;
+  float pruned_sideLowOneJetTau1       = -999. ;
+  float pruned_sideLowTwoJetTau1       = -999. ;
+  float pruned_sideLowThreeJetTau1       = -999. ;
   float pruned_sideHiJetTau1        = -999. ;
   float softdrop_matchedJetTau1     = -999. ;
   float leadingJetTau2              = -999. ;
   float raw_matchedJetTau2          = -999. ;
   float pruned_matchedJetTau2       = -999. ;
   float pruned_sideLowJetTau2       = -999. ;
+  float pruned_sideLowOneJetTau2       = -999. ;
+  float pruned_sideLowTwoJetTau2       = -999. ;
+  float pruned_sideLowThreeJetTau2       = -999. ;
   float pruned_sideHiJetTau2        = -999. ;
   float softdrop_matchedJetTau2     = -999. ;
   float leadingJetTau3              = -999. ;
   float raw_matchedJetTau3          = -999. ;
   float pruned_matchedJetTau3       = -999. ;
   float pruned_sideLowJetTau3       = -999. ;
+  float pruned_sideLowOneJetTau3       = -999. ;
+  float pruned_sideLowTwoJetTau3       = -999. ;
+  float pruned_sideLowThreeJetTau3       = -999. ;
   float pruned_sideHiJetTau3        = -999. ;
   float softdrop_matchedJetTau3     = -999. ;
   float leadingPhPt                 =    0. ;
@@ -93,12 +108,37 @@ public :
   float leadingPhMVA_noID           = -999. ;
   float leadingPhCat                =    0. ;
   float leadingPhCat_noID           = -999. ;
+  float matchedJett2t1              = -999  ;
+  float sideLowOneJett2t1              = -999  ;
+  float sideLowTwoJett2t1              = -999  ;
+  float sideLowThreeJett2t1              = -999  ;
+  float matchedJet_pruned_abseta    = -999  ;
+  float sideLowOneJet_pruned_abseta    = -999  ;
+  float sideLowTwoJet_pruned_abseta    = -999  ;
+  float sideLowThreeJet_pruned_abseta    = -999  ;
+  float leadingPhAbsEta             = -999  ;
   float cosThetaStar                =  -99  ;
+  float phJetInvMass_pruned_sig                =  -99  ;
+  float phJetInvMass_pruned_sideLowOne                =  -99  ;
+  float phJetInvMass_pruned_sideLowTwo                =  -99  ;
+  float phJetInvMass_pruned_sideLowThree                =  -99  ;
+  float phJetDeltaR_sig                =  -99  ;
+  float phJetDeltaR_sideLowOne                =  -99  ;
+  float phJetDeltaR_sideLowTwo                =  -99  ;
+  float phJetDeltaR_sideLowThree                =  -99  ;
+
+
+
+
+
   TLorentzVector leadingPhoton              ;
   TLorentzVector tmpLeadingJet              ;
   TLorentzVector matchedJet_raw             ;
   TLorentzVector matchedJet_pruned          ;
   TLorentzVector sideLowJet_pruned          ;
+  TLorentzVector sideLowOneJet_pruned          ;
+  TLorentzVector sideLowTwoJet_pruned          ;
+  TLorentzVector sideLowThreeJet_pruned          ;
   TLorentzVector sideHiJet_pruned          ;
   TLorentzVector matchedJet_softdrop        ;
   TLorentzVector sumVector                  ;
@@ -248,6 +288,7 @@ public :
    vector<int>     *ph_passMediumId;
    vector<float>   *ph_mvaVal;
    vector<float>   *ph_mvaCat;
+   vector<bool>    *ph_passEleVeto;
    Int_t           el_N;
    vector<int>     *el_pdgId;
    vector<float>   *el_charge;
@@ -440,6 +481,7 @@ public :
    TBranch        *b_ph_passMediumId;   //!
    TBranch        *b_ph_mvaVal;   //!
    TBranch        *b_ph_mvaCat;   //!
+   TBranch        *b_ph_passEleVeto;   //!
    TBranch        *b_el_N;   //!
    TBranch        *b_el_pdgId;   //!
    TBranch        *b_el_charge;   //!
@@ -614,11 +656,11 @@ treeChecker::treeChecker(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("flatTuple.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("root://cmsio6.rc.ufl.edu//store/user/lshchuts/ZGamma/SilverJson.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("flatTuple.root");
+         f = new TFile("root://cmsio6.rc.ufl.edu//store/user/lshchuts/ZGamma/SilverJson.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("flatTuple.root:/ntuplizer");
+      TDirectory * dir = (TDirectory*)f->Get("root://cmsio6.rc.ufl.edu//store/user/lshchuts/ZGamma/SilverJson.root");
       dir->GetObject("tree",tree);
 
    }
@@ -690,6 +732,7 @@ void treeChecker::Init(TTree *tree)
    ph_passMediumId = 0;
    ph_mvaVal = 0;
    ph_mvaCat = 0;
+   ph_passEleVeto = 0;
    el_pdgId = 0;
    el_charge = 0;
    el_e = 0;
@@ -859,6 +902,7 @@ void treeChecker::Init(TTree *tree)
    fChain->SetBranchAddress("ph_passMediumId", &ph_passMediumId, &b_ph_passMediumId);
    fChain->SetBranchAddress("ph_mvaVal", &ph_mvaVal, &b_ph_mvaVal);
    fChain->SetBranchAddress("ph_mvaCat", &ph_mvaCat, &b_ph_mvaCat);
+   fChain->SetBranchAddress("ph_passEleVeto", &ph_passEleVeto, &b_ph_passEleVeto);
    fChain->SetBranchAddress("el_N", &el_N, &b_el_N);
    fChain->SetBranchAddress("el_pdgId", &el_pdgId, &b_el_pdgId);
    fChain->SetBranchAddress("el_charge", &el_charge, &b_el_charge);
