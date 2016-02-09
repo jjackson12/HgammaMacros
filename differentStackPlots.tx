@@ -9,7 +9,9 @@ matchedJetPt          Resonance/matchedJetPtHist                  5      log
 leadingPhPt           Photon_kinematics/leadingPhPtHist           5      log
 leadingPhEta          Photon_kinematics/leadingPhEtaHist          5      log
 leadingPhPhi          Photon_kinematics/leadingPhPhiHist          5      log
-leadingPhPhi          Photon_kinematics/leadingPhPhiHist          5      log
 matchedJetEta         Resonance/matchedJetEtaHist                 5      log
 matchedJetPhi         Resonance/matchedJetPhiHist                 5      log
 matchedJetT2T1        Jet_substructure/matchedJett2t1Hist         2      log
+JetPrunedMass         Resonance/bigWindowJetPrunedMassHist        10      log
+phPtOverMgammaj       Resonance/phPtOverMgammajHist               2      log
+cosThetaStar          Resonance/cosThetaStarHist                  50     lin

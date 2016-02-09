@@ -96,6 +96,16 @@ stackPlot.Draw()
 #stackPlot.GetYaxis().SetTitle("Events / 100 GeV")
 #stackPlot.SetMinimum(5e-1)
 dataHist.SetTitle("")
+if histName=="Resonance/phJetInvMassHist_pruned_sig":
+    lower750blindedBin  = dataHist.FindBin(700)
+    upper750blindedBin  = dataHist.FindBin(800)
+    lower2000blindedBin = dataHist.FindBin(1800)
+    upper2000blindedBin = dataHist.FindBin(2400)
+    for blindedBin in range(lower750blindedBin, upper750blindedBin+1):
+        dataHist.SetBinContent(blindedBin,0)
+    for blindedBin in range(lower2000blindedBin, upper2000blindedBin+1):
+        dataHist.SetBinContent(blindedBin,0)
+
 dataHist.Draw("apE1 SAME")
 for i in range(0, len(infiles)):
    if kinds[i] is "sig":
