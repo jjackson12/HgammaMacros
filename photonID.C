@@ -3,11 +3,6 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
-#include <iostream>
-#include <iomanip>
-#include <TVector3.h>
-
-using namespace std;
 
 void photonID::Loop()
 {
@@ -42,16 +37,14 @@ void photonID::Loop()
     fChain->SetBranchStatus("ph_mvaCat"           ,  1);
     fChain->SetBranchStatus("ph_mvaVal"           ,  1);
     fChain->SetBranchStatus("genParticle_pdgId"   ,  1);
+    fChain->SetBranchStatus("genParticle_eta"      ,  1);
     fChain->SetBranchStatus("genParticle_px"      ,  1);
     fChain->SetBranchStatus("genParticle_py"      ,  1);
     fChain->SetBranchStatus("genParticle_pz"      ,  1);
     fChain->SetBranchStatus("genParticle_mother"  ,  1);
 
-
-
    if (fChain == 0) return;
 
-   bool debugFlag = false;
    Long64_t nentries = fChain->GetEntriesFast();
 
    Long64_t nbytes = 0, nb = 0;
@@ -78,37 +71,20 @@ void photonID::Loop()
                                                                  ph_rho              ->at(iPh) ,
                                                                  ph_pt               ->at(iPh) ,
                                                                  ph_passEleVeto      ->at(iPh)   );
-          if (debugFlag) {
-            cout << "\nIn event number " << jentry << ", value from decisions for photon " << iPh << " is:" << endl; 
-            cout << "            hOverE: " <<  diphotonIDdecisions[ "hOverE"        ] << endl;
-            cout << "             isoCh: " <<  diphotonIDdecisions[ "isoCh"         ] << endl;
-            cout << "     sigmaIEtaIEta: " <<  diphotonIDdecisions[ "sigmaIEtaIEta" ] << endl;
-            cout << "       isoGammaBar: " <<  diphotonIDdecisions[ "isoGammaBar"   ] << endl;
-            cout << "           eleVeto: " <<  diphotonIDdecisions[ "eleVeto"       ] << endl;
-            cout << "           allCuts: " <<  diphotonIDdecisions[ "allCuts"       ] << endl;
-          }
-          if (std::abs(ph_eta->at(iPh)) < 1.479) {
-            noCutEbHist            ->Fill(ph_pt->at(iPh));
-            if( diphotonIDdecisions["allCuts"]                      ) diphotonCutsEbHist   ->  Fill(ph_pt->at(iPh));
-            if( ph_passLooseId->at(iPh)                             ) cutbasedLooseEbHist  ->  Fill(ph_pt->at(iPh));
-            if( ph_passMediumId->at(iPh)                            ) cutbasedMediumEbHist ->  Fill(ph_pt->at(iPh));
-            if( ph_passTightId->at(iPh)                             ) cutbasedTightEbHist  ->  Fill(ph_pt->at(iPh));
-            if( ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=0.374  ) mvaEbHist            ->  Fill(ph_pt->at(iPh));
-          }
-  
-          if (std::abs(ph_eta->at(iPh)) < 2.4) {
-            noCutEeHist            ->Fill(ph_pt->at(iPh));
-            if( diphotonIDdecisions["allCuts"]                      ) diphotonCutsEeHist     ->Fill(ph_pt->at(iPh));
-            if( ph_passLooseId->at(iPh)                             ) cutbasedLooseEeHist    ->Fill(ph_pt->at(iPh));
-            if( ph_passMediumId->at(iPh)                            ) cutbasedMediumEeHist   ->Fill(ph_pt->at(iPh));
-            if( ph_passTightId->at(iPh)                             ) cutbasedTightEeHist    ->Fill(ph_pt->at(iPh));
-            if( ph_mvaCat->at(iPh)==1 && ph_mvaVal->at(iPh)>=0.336  ) mvaEeHist              ->Fill(ph_pt->at(iPh));
+          if (std::abs(ph_eta->at(iPh)) < 1.4442) {
+            if (std::abs(matchedGenPho.Eta())<1.4442){
+              noCutEbHist            ->Fill(ph_pt->at(iPh));
+              if( diphotonIDdecisions["allCuts"]                           ) diphotonCutsEbHist   ->  Fill(ph_pt->at(iPh));
+              if( ph_passLooseId->at(iPh) && ph_passEleVeto->at(iPh) == 1  ) cutbasedLooseEbHist  ->  Fill(ph_pt->at(iPh));
+              if( ph_passMediumId->at(iPh)&& ph_passEleVeto->at(iPh) == 1  ) cutbasedMediumEbHist ->  Fill(ph_pt->at(iPh));
+              if( ph_passTightId->at(iPh) && ph_passEleVeto->at(iPh) == 1  ) cutbasedTightEbHist  ->  Fill(ph_pt->at(iPh));
+              if( ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=0.374   && ph_passEleVeto->at(iPh) == 1    ) mvaEbHist            ->  Fill(ph_pt->at(iPh));
+            }
           }
         }
       }
-      
+      // if (Cut(ientry) < 0) continue;
    }
-
    TFile* outFile = new TFile("outfile.root","RECREATE");
 
    noCutEbHist           -> Write();
@@ -123,7 +99,6 @@ void photonID::Loop()
    cutbasedMediumEeHist  -> Write();
    cutbasedTightEeHist   -> Write();
    mvaEeHist             -> Write();
-
 }
 
 map<string, bool> photonID::diphotonIDmap(float eta, float phi, float sigmaIetaIeta, float hOverE, float isoGamma, float isoCh, float rho, float pT, bool eleVeto) {
