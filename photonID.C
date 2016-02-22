@@ -49,42 +49,57 @@ void photonID::Loop()
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
+      float bestPt = -1.;
+      float bestDeltaR = 999;
+      int bestIph = -1;
       TVector3 matchedGenPho = TVector3(0,0,0);
       TVector3 recoPho = TVector3(0,0,0);
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       for (int iGen=0; iGen<genParticle_pdgId->size(); ++iGen) {
-        if (genParticle_pdgId->at(iGen) == 22 && (genParticle_mother->at(iGen)[0] ==35 || genParticle_mother->at(iGen)[0] ==36) ) { 
+        if (genParticle_pdgId->at(iGen) == 22 && (genParticle_mother->at(iGen)[0] == 25) ) { 
+          //cout << "genparticle mother has pdgid = " << genParticle_mother->at(iGen)[0] <<cout;
           matchedGenPho.SetXYZ(genParticle_px->at(iGen),  genParticle_py->at(iGen),  genParticle_pz->at(iGen));  
         }
       }
       for (int iPh=0; iPh<(int)ph_pt->size(); ++iPh) {
         recoPho.SetPtEtaPhi(ph_pt->at(iPh), ph_eta->at(iPh), ph_phi->at(iPh));
         if (recoPho.DeltaR(matchedGenPho)<0.3) {
-          map<string, bool> diphotonIDdecisions = diphotonIDmap( ph_superCluster_eta ->at(iPh) ,
-                                                                 ph_superCluster_phi ->at(iPh) ,
-                                                                 ph_sigmaIetaIeta    ->at(iPh) ,
-                                                                 ph_hOverE           ->at(iPh) ,
-                                                                 ph_isoGamma         ->at(iPh) ,
-                                                                 ph_isoCh            ->at(iPh) ,
-                                                                 ph_rho              ->at(iPh) ,
-                                                                 ph_pt               ->at(iPh) ,
-                                                                 ph_passEleVeto      ->at(iPh)   );
           if (std::abs(ph_eta->at(iPh)) < 1.4442) {
             if (std::abs(matchedGenPho.Eta())<1.4442){
-              noCutEbHist            ->Fill(ph_pt->at(iPh));
-              if( diphotonIDdecisions["allCuts"]                           ) diphotonCutsEbHist   ->  Fill(ph_pt->at(iPh));
-              if( ph_passLooseId->at(iPh) && ph_passEleVeto->at(iPh) == 1  ) cutbasedLooseEbHist  ->  Fill(ph_pt->at(iPh));
-              if( ph_passMediumId->at(iPh)&& ph_passEleVeto->at(iPh) == 1  ) cutbasedMediumEbHist ->  Fill(ph_pt->at(iPh));
-              if( ph_passTightId->at(iPh) && ph_passEleVeto->at(iPh) == 1  ) cutbasedTightEbHist  ->  Fill(ph_pt->at(iPh));
-              if( ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=0.374   && ph_passEleVeto->at(iPh) == 1    ) mvaEbHist            ->  Fill(ph_pt->at(iPh));
+              if (recoPho.DeltaR(matchedGenPho)<bestDeltaR) { 
+                bestDeltaR = recoPho.DeltaR(matchedGenPho);
+                bestPt = ph_pt->at(iPh);
+                bestIph = iPh;
+              }
             }
           }
         }
       }
-      // if (Cut(ientry) < 0) continue;
+      if (std::abs(recoPho.Eta()) < 1.4442) {
+        if (std::abs(matchedGenPho.Eta())<1.4442){
+          noCutEbHist            ->Fill(bestPt);
+          if (bestIph>-1) {
+              map<string, bool> diphotonIDdecisions = diphotonIDmap( ph_superCluster_eta ->at(bestIph) ,
+                                                                     ph_superCluster_phi ->at(bestIph) ,
+                                                                     ph_sigmaIetaIeta    ->at(bestIph) ,
+                                                                     ph_hOverE           ->at(bestIph) ,
+                                                                     ph_isoGamma         ->at(bestIph) ,
+                                                                     ph_isoCh            ->at(bestIph) ,
+                                                                     ph_rho              ->at(bestIph) ,
+                                                                     ph_pt               ->at(bestIph) ,
+                                                                     ph_passEleVeto      ->at(bestIph)   );
+            if( diphotonIDdecisions["allCuts"]                           ) diphotonCutsEbHist   ->  Fill(bestPt);
+            if( ph_passLooseId->at(bestIph) && ph_passEleVeto->at(bestIph) == 1  ) cutbasedLooseEbHist  ->  Fill(bestPt);
+            if( ph_passMediumId->at(bestIph)&& ph_passEleVeto->at(bestIph) == 1  ) cutbasedMediumEbHist ->  Fill(bestPt);
+            if( ph_passTightId->at(bestIph) && ph_passEleVeto->at(bestIph) == 1  ) cutbasedTightEbHist  ->  Fill(bestPt);
+            if( ph_mvaCat->at(bestIph)==0 && ph_mvaVal->at(bestIph)>=0.374   && ph_passEleVeto->at(bestIph) == 1    ) mvaEbHist            ->  Fill(bestPt);
+          }
+        }
+      }
    }
+      // if (Cut(ientry) < 0) continue;
    TFile* outFile = new TFile("outfile.root","RECREATE");
 
    noCutEbHist           -> Write();
