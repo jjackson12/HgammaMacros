@@ -286,7 +286,7 @@ void treeChecker::Loop(string outputFileName)
             cout << "    pruned matched AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
           }
           matchedJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          if (matchedJet_pruned.DeltaR(leadingPhoton) < 1.1) {
+          if (matchedJet_pruned.DeltaR(leadingPhoton) < 0.8) {
             matchedJet_pruned.SetPtEtaPhiE(0,0,0,0);
             eventHasMatchedPrunedJet = false;
           }
@@ -308,7 +308,7 @@ void treeChecker::Loop(string outputFileName)
             cout << "    pruned higgs AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
           }
           higgsJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          if (higgsJet_pruned.DeltaR(leadingPhoton) < 1.1) {
+          if (higgsJet_pruned.DeltaR(leadingPhoton) < 0.8) {
             higgsJet_pruned.SetPtEtaPhiE(0,0,0,0);
             eventHasHiggsPrunedJet = false;
           }
@@ -325,7 +325,7 @@ void treeChecker::Loop(string outputFileName)
           if (jetAK8_pruned_massCorr->at(iJet) >sidebandThreeCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandThreeCutHigh && !eventHasSideLowThreePrunedJet) {
             eventHasSideLowThreePrunedJet = true;
             sideLowThreeJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-            if (sideLowThreeJet_pruned.DeltaR(leadingPhoton) < 1.1) {
+            if (sideLowThreeJet_pruned.DeltaR(leadingPhoton) < 0.8) {
               sideLowThreeJet_pruned.SetPtEtaPhiE(0,0,0,0);
               eventHasSideLowThreePrunedJet = false;
             }
@@ -346,7 +346,7 @@ void treeChecker::Loop(string outputFileName)
             cout << "    pruned sideLow AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
           }
           sideLowJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          if (sideLowJet_pruned.DeltaR(leadingPhoton) < 1.1) {
+          if (sideLowJet_pruned.DeltaR(leadingPhoton) < 0.8) {
             sideLowJet_pruned.SetPtEtaPhiE(0,0,0,0);
             eventHasSideLowPrunedJet = false;
           }
@@ -367,7 +367,7 @@ void treeChecker::Loop(string outputFileName)
             cout << "    pruned sideHi AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
           }
           sideHiJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          if (sideHiJet_pruned.DeltaR(leadingPhoton) < 1.1) {
+          if (sideHiJet_pruned.DeltaR(leadingPhoton) < 0.8) {
             sideHiJet_pruned.SetPtEtaPhiE(0,0,0,0);
             eventHasSideHiPrunedJet = false;
           }
@@ -380,7 +380,7 @@ void treeChecker::Loop(string outputFileName)
           if (jetAK8_pruned_massCorr->at(iJet) >sidebandFourCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandFourCutHigh && !eventHasSideLowFourPrunedJet) {
             eventHasSideLowFourPrunedJet = true;
             sideLowFourJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-            if (sideLowFourJet_pruned.DeltaR(leadingPhoton) < 1.1) {
+            if (sideLowFourJet_pruned.DeltaR(leadingPhoton) < 0.8) {
               sideLowFourJet_pruned.SetPtEtaPhiE(0,0,0,0);
               eventHasSideLowFourPrunedJet = false;
             }
@@ -418,8 +418,8 @@ void treeChecker::Loop(string outputFileName)
     }
 
     // Fill histograms with events that have a photon passing ID and a loose jet
-    if (eventHasTightPho  && leadingPhoton.Pt()>180 && abs(leadingPhoton.Eta()) < 1.4442) {
-      if(eventHasSideLowPrunedJet && sideLowJet_pruned.Pt() > 100 && abs(sideLowJet_pruned.Eta()) < 2.0 ) {
+    if (eventHasTightPho  && leadingPhoton.Pt()>180 && abs(leadingPhoton.Eta()) < 2.6) {
+      if(eventHasSideLowPrunedJet && sideLowJet_pruned.Pt() > 100 && abs(sideLowJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + sideLowJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -438,7 +438,7 @@ void treeChecker::Loop(string outputFileName)
           sumVector = leadingPhoton + sideLowJet_pruned;
           if (triggerFired)phCorrJetInvMassHist_pruned_sideLow->Fill(sumVector.M());
       }
-      if(eventHasSideHiPrunedJet && sideHiJet_pruned.Pt() > 200 && abs(sideHiJet_pruned.Eta()) < 2.0 ) {
+      if(eventHasSideHiPrunedJet && sideHiJet_pruned.Pt() > 200 && abs(sideHiJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + sideHiJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -457,7 +457,7 @@ void treeChecker::Loop(string outputFileName)
           sumVector = leadingPhoton + sideHiJet_pruned;
           if (triggerFired)phCorrJetInvMassHist_pruned_sideHi->Fill(sumVector.M());
       }
-      if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 200 && abs(matchedJet_pruned.Eta()) < 2.0 ) {
+      if(eventHasMatchedPrunedJet && matchedJet_pruned.Pt() > 200 && abs(matchedJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + matchedJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -478,7 +478,7 @@ void treeChecker::Loop(string outputFileName)
           leadingPhAbsEta = std::abs(leadingPhEta);
           phJetInvMass_pruned_sig=sumVector.M();
           phJetDeltaR_sig=leadingPhoton.DeltaR(matchedJet_pruned);
-          if ( phJetDeltaR_sig>1.1) {
+          if ( phJetDeltaR_sig>0.8) {
             phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(matchedJet_pruned));
             phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - matchedJet_pruned.Eta() ));
             phJetDeltaR_pruned->Fill(leadingPhoton.DeltaR(matchedJet_pruned));
@@ -500,7 +500,7 @@ void treeChecker::Loop(string outputFileName)
           sumVector = leadingPhoton + matchedJet_pruned;
           if (triggerFired)phCorrJetInvMassHist_pruned_sig->Fill(sumVector.M());
       }
-      if(eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 200 && abs(higgsJet_pruned.Eta()) < 2.0 ) {
+      if(eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 200 && abs(higgsJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + higgsJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -521,7 +521,7 @@ void treeChecker::Loop(string outputFileName)
           leadingPhAbsEta = std::abs(leadingPhEta);
           phJetInvMass_pruned_higgs=sumVector.M();
           phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_pruned);
-          if ( phJetDeltaR_higgs>1.1) {
+          if ( phJetDeltaR_higgs>0.8) {
             phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(higgsJet_pruned));
             phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - higgsJet_pruned.Eta() ));
             phJetDeltaR_pruned->Fill(leadingPhoton.DeltaR(higgsJet_pruned));
@@ -542,7 +542,7 @@ void treeChecker::Loop(string outputFileName)
           sumVector = leadingPhoton + higgsJet_pruned;
           if (triggerFired)phCorrJetInvMassHist_pruned_higgs->Fill(sumVector.M());
       }
-      if(eventHasSideLowThreePrunedJet && sideLowThreeJet_pruned.Pt() > 200 && abs(sideLowThreeJet_pruned.Eta()) < 2.0 ) {
+      if(eventHasSideLowThreePrunedJet && sideLowThreeJet_pruned.Pt() > 200 && abs(sideLowThreeJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + sideLowThreeJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -567,7 +567,7 @@ void treeChecker::Loop(string outputFileName)
           sideLowThreeJet_pruned.SetT(90);
           sumVector = leadingPhoton + sideLowThreeJet_pruned;
       }
-      if(eventHasSideLowFourPrunedJet && sideLowFourJet_pruned.Pt() > 200 && abs(sideLowFourJet_pruned.Eta()) < 2.0 ) {
+      if(eventHasSideLowFourPrunedJet && sideLowFourJet_pruned.Pt() > 200 && abs(sideLowFourJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + sideLowFourJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -592,23 +592,23 @@ void treeChecker::Loop(string outputFileName)
           sideLowFourJet_pruned.SetT(90);
           sumVector = leadingPhoton + sideLowFourJet_pruned;
       }
-      if(eventHasSideHiPrunedJet && sideHiJet_pruned.Pt() > 200 && abs(sideHiJet_pruned.Eta()) < 2.0 ) {
+      if(eventHasSideHiPrunedJet && sideHiJet_pruned.Pt() > 200 && abs(sideHiJet_pruned.Eta()) < 2.6 ) {
         if (triggerFired ) {
-          if ( leadingPhoton.DeltaR(sideHiJet_pruned)>1.1) {
+          if ( leadingPhoton.DeltaR(sideHiJet_pruned)>0.8) {
             sideHiJetPrunedMassHist ->Fill(sideHiPrunedJetCorrMass);
             bigWindowJetPrunedMassHist->Fill(sideHiPrunedJetCorrMass);
           }
         }
       }
-      if(eventHasSideLowPrunedJet && sideLowJet_pruned.Pt() > 200 && abs(sideLowJet_pruned.Eta()) < 2.0 ) {
+      if(eventHasSideLowPrunedJet && sideLowJet_pruned.Pt() > 200 && abs(sideLowJet_pruned.Eta()) < 2.6 ) {
         if (triggerFired ) {
-          if ( leadingPhoton.DeltaR(sideLowJet_pruned)>1.1) {
+          if ( leadingPhoton.DeltaR(sideLowJet_pruned)>0.8) {
             sideLowJetPrunedMassHist ->Fill(sideLowPrunedJetCorrMass);
             bigWindowJetPrunedMassHist->Fill(sideLowPrunedJetCorrMass);
           }
         }
       }
-      if(eventHasMatchedSoftdropJet && matchedJet_softdrop.Pt() > 200 && abs(matchedJet_softdrop.Eta()) < 2.0 ) {
+      if(eventHasMatchedSoftdropJet && matchedJet_softdrop.Pt() > 200 && abs(matchedJet_softdrop.Eta()) < 2.6 ) {
         matchedJetSoftdropMassHist ->Fill(matchedSoftdropJetCorrMass);
         sumVector = leadingPhoton + matchedJet_softdrop;
         if (debugFlag && dumpEventInfo)  {
