@@ -49,36 +49,41 @@ def makeDDhiggs(argv1, argv2, argv3, argv4, argv5):
     massWindowLo = int(argv[4])
     massWindowHi = int(argv[5])
 
+    dataCutsArray     = []
+    sidebandCutsArray = []
     phoEtaCut           = TCut("leadingPhAbsEta<%s"               % str(phoEtaMax  ) )
-    cosThetaCut         = TCut("cosThetaStar<%s"                  % str(cosThetaMax) )
     deltaRdataCut       = TCut("phJetDeltaR_higgs>%s"             % str(deltaRmin  ) )
-    deltaRsidebandCut   = TCut("phJetDeltaR_sideLow%s>%s"         % (sidebandIndex, str(deltaRmin)) )
+    deltaRsidebandCut   = TCut("phJetDeltaR_sideLow%s>%s"         % ( sidebandIndex, str(deltaRmin)) )
     jetEtaDataCut       = TCut("higgsJet_pruned_abseta<%s"        % str(jetEtaMax  ) )
-    jetEtaSidebandCut   = TCut("sideLow%sJet_pruned_abseta<%s"  % (sidebandIndex, str(jetEtaMax)) )
+    jetEtaSidebandCut   = TCut("sideLow%sJet_pruned_abseta<%s"% (sidebandIndex, str(jetEtaMax)) )
     cosThetadataCut     = TCut("cosThetaStar<0.6+0.1*(phJetInvMass_pruned_higgs-750)/250"                                          )
     cosThetasidebandCut = TCut("cosThetaStar<0.6+0.1*(phJetInvMass_pruned_sideLow%s-750)/250"  % sidebandIndex                   )
-    cosThetadataOldCut     = TCut("cosThetaStar<0.6"                                          )
-    cosThetasidebandOldCut = TCut("cosThetaStar<0.6"                   )
 
     dataMassCuts         = TCut("(phJetInvMass_pruned_higgs>%s)&&(phJetInvMass_pruned_higgs<%s)"               % ( str(massWindowLo), str(massWindowHi) )    )
-    sidebandMassCuts     = TCut("(phJetInvMass_pruned_sideLow%s>%s)&&(phJetInvMass_pruned_sideLow%s<%s)" % (sidebandIndex, str(massWindowLo), sidebandIndex, str(massWindowHi) )    )
+    sidebandMassCuts     = TCut("(phJetInvMass_pruned_sideLow%s>%s)&&(phJetInvMass_pruned_sideLow%s<%s)" % ( sidebandIndex, str(massWindowLo), sidebandIndex, str(massWindowHi) )    )
 
-    dataCuts     = TCut()
+    dataCutsArray.append(      phoEtaCut   )
+    sidebandCuts.append(  phoEtaCut   )
+
+    dataCutsArray.append(      deltaRdataCut   )
+    sidebandCutsArray.append(  deltaRsidebandCut   )
+
+    dataCutsArray.append(      jetEtaDataCut   )
+    sidebandCuts.Arrayappend(  jetEtaSidebandCut   )
+
+    dataCutsArray.append(      cosThetadataCut   )
+    sidebandCutsArray.append(  cosThetasidebandCut   )
+
+    dataCutsArray.append(      dataMassCuts   )
+    sidebandCutsArray.append(  sidebandMassCuts   )
+    dataCuts = TCut()
     sidebandCuts = TCut()
-    dataOldCuts     = TCut()
-    sidebandOldCuts = TCut()
 
-    if cosThetaCut:
-        dataCuts     += phoEtaCut + cosThetadataCut + deltaRdataCut     + jetEtaDataCut     + dataMassCuts
-        sidebandCuts += phoEtaCut + cosThetasidebandCut + deltaRsidebandCut + jetEtaSidebandCut + sidebandMassCuts
-        dataOldCuts     += phoEtaCut + cosThetadataOldCut + deltaRdataCut     + jetEtaDataCut     + dataMassCuts
-        # These can be swapped to compare old cosTheta cut vs. no cosTheta cut
-        #sidebandOldCuts += phoEtaCut + cosThetasidebandOldCut + deltaRsidebandCut + jetEtaSidebandCut + sidebandMassCuts
-        sidebandOldCuts += phoEtaCut + deltaRsidebandCut + jetEtaSidebandCut + sidebandMassCuts
-    else:
-        dataCuts     += phoEtaCut + deltaRdataCut     + jetEtaDataCut     + dataMassCuts
-        sidebandCuts += phoEtaCut + deltaRsidebandCut + jetEtaSidebandCut + sidebandMassCuts
-
+    for cut in sidebandCutsArray:
+        sidebandCuts += cut
+    #masscutSideband += sidebandMassCuts + deltaRsidebandCut + phoEtaCut + cosThetasidebandCut
+    for cut in dataCutsArray:
+        dataCuts += cut
 
     print "the cut string for the signal region is %s" % dataCuts
     print "the cut string for the sideband region is %s" % sidebandCuts
