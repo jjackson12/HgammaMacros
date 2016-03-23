@@ -49,8 +49,8 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
     deltaRsidebandCut   = TCut("phJetDeltaR_sideLow%s>%s"         % ( sidebandIndex, str(deltaRmin)) )
     jetEtaDataCut       = TCut("higgsJet_pruned_abseta<%s"        % str(jetEtaMax  ) )
     jetEtaSidebandCut   = TCut("sideLow%sJet_pruned_abseta<%s"% (sidebandIndex, str(jetEtaMax)) )
-    cosThetadataCut     = TCut("cosThetaStar<0.6+0.1*(phJetInvMass_pruned_higgs-750)/250"                                          )
-    cosThetasidebandCut = TCut("cosThetaStar<0.6+0.1*(phJetInvMass_pruned_sideLow%s-750)/250"  % sidebandIndex                   )
+    cosThetadataCut     = TCut("cosThetaStar<0.5+0.25*(phJetInvMass_pruned_higgs-750)/250"                                          )
+    cosThetasidebandCut = TCut("cosThetaStar<0.5+0.25*(phJetInvMass_pruned_sideLow%s-750)/250"  % sidebandIndex                   )
 
     dataMassCuts         = TCut("(phJetInvMass_pruned_higgs>%s)&&(phJetInvMass_pruned_higgs<%s)"               % ( str(massWindowLo), str(massWindowHi) )    )
     sidebandMassCuts     = TCut("(phJetInvMass_pruned_sideLow%s>%s)&&(phJetInvMass_pruned_sideLow%s<%s)" % ( sidebandIndex, str(massWindowLo), sidebandIndex, str(massWindowHi) )    )
