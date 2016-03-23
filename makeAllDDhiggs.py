@@ -6,6 +6,7 @@ import makeDDhiggs as dd
 canvases1=[]
 canvases2=[]
 sidebands = ["50to70","100to110"]
+category = argv[5]
 for sideband in sidebands:
     print sideband
     argsList =  [
@@ -30,13 +31,13 @@ for sideband in sidebands:
 
     for args in argsList:
         if sideband=="50to70":
-            canvases1.append(dd.makeDDhiggs(args[0], args[1], sideband, argv[1], argv[2], argv[3], argv[4]))
+            canvases1.append(dd.makeDDhiggs(args[0], args[1], sideband, argv[1], argv[2], argv[3], argv[4], category))
 
         if sideband=="100to110":
             print "dd.makeDDhiggs(" + args[0] + ", " + args[1] + ", " + sideband + ", " + argv[1] + ", " + argv[2] + ")"
-            canvases2.append(dd.makeDDhiggs(args[0], args[1], sideband, argv[1], argv[2], argv[3], argv[4]))
+            canvases2.append(dd.makeDDhiggs(args[0], args[1], sideband, argv[1], argv[2], argv[3], argv[4], category))
 
-outputDir = "validationPlots_%s_%s"%(argv[1], argv[2])
+outputDir = "validationPlots_%s_%s_%s"%(category, argv[1], argv[2])
 if not path.exists(outputDir):
    makedirs(outputDir)
 
@@ -111,5 +112,3 @@ for i in range (0,2):
     realCanvases2[-1].DrawClonePad()
     page4.cd()
 page4.Print("%s/page4_MassWindow%s_%s.pdf"%(outputDir, argv[1], argv[2]))
-page5 = TCanvas("page5", "page5",  3508*4, 2480*4)
-page5.Draw()

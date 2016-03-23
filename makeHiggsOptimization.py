@@ -4,7 +4,7 @@ from sys import argv
 
 # John Hakala, March 10 2016
 
-def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename):
+def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename, category):
     dataFile = TFile("../HgammaSamples/ddTrees/ddNew_silver.root")
     sigFile = TFile("../HgammaSamples/ddTrees/ddNew_Hgamma_m%s.root"%sigMass)
     print "Signal mass is %s" % sigMass
@@ -38,13 +38,18 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
     else:
         exit("pick the signal mass")
 
-    phoEtaMax   = 1.4442
-    jetEtaMax   = 2.0
+    phoEtaMaxEB   = 1.4442
+    phoEtaMaxEE   = 2.5
+    phoEtaMinEE   = 1.566
+    jetEtaMax   = 2.2
     deltaRmin   = 1.1
 
     dataCuts     = []
     sidebandCuts = []
-    phoEtaCut           = TCut("leadingPhAbsEta<%s"               % str(phoEtaMax  ) )
+    if category=="EB":
+        phoEtaCut       = TCut("leadingPhAbsEta<%s"               % str(phoEtaMaxEB  ) )
+    if category=="EE":
+        phoEtaCut       = TCut("%s<leadingPhAbsEta&&leadingPhAbsEta<%s"               % ( str(phoEtaMinEE),str(phoEtaMaxEE) ) )
     deltaRdataCut       = TCut("phJetDeltaR_higgs>%s"             % str(deltaRmin  ) )
     deltaRsidebandCut   = TCut("phJetDeltaR_sideLow%s>%s"         % ( sidebandIndex, str(deltaRmin)) )
     jetEtaDataCut       = TCut("higgsJet_pruned_abseta<%s"        % str(jetEtaMax  ) )
@@ -99,8 +104,8 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
         #print "the cut value on %s is %f" % (whichCut, cutValue)
         masscutSideband+=thisSidebandCut
         masscutData+=thisSigRegionCut
-        print "the cut string for the signal region is %s" % thisSigRegionCut
-        print "the cut string for the sideband region is %s" % thisSidebandCut
+        #print "the cut string for the signal region is %s" % thisSigRegionCut
+        #print "the cut string for the sideband region is %s" % thisSidebandCut
         c = TCanvas()
         t = TGraph()
         data.Draw("higgsJet_pruned_abseta", masscutData)

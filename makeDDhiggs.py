@@ -4,8 +4,8 @@ from math import sqrt
 from ROOT import *
 from tcanvasTDR import TDRify
 
-def makeDDhiggs(argv1, argv2, argv3, argv4, argv5, argv6, argv7):
-    argv=[ "leethax", argv1, argv2, argv3, argv4, argv5, argv6, argv7]
+def makeDDhiggs(argv1, argv2, argv3, argv4, argv5, argv6, argv7, argv8):
+    argv=[ "leethax", argv1, argv2, argv3, argv4, argv5, argv6, argv7, argv8]
     print argv
 
     cosThetaCut   = True;
@@ -43,17 +43,22 @@ def makeDDhiggs(argv1, argv2, argv3, argv4, argv5, argv6, argv7):
         exit("please pick the sideband range: either 100to110 or 50to70.")
     sideLow = dataFile.Get(sidebandName)
 
-    phoEtaMax   = 1.4442
-    jetEtaMax   = 2.0
+    phoEtaMaxEB   = 1.4442
+    phoEtaMaxEE   = 2.5
+    phoEtaMinEE   = 1.566
+    jetEtaMax   = 2.2
     deltaRmin   = 1.1
-    cosThetaMax = 0.6
+    #cosThetaMax = 0.6
 
     massWindowLo = int(argv[4])
     massWindowHi = int(argv[5])
 
     dataCutsArray     = []
     sidebandCutsArray = []
-    phoEtaCut           = TCut("leadingPhAbsEta<%s"               % str(phoEtaMax  ) )
+    if argv[8]=="EB":
+        phoEtaCut           = TCut("leadingPhAbsEta<%s"               % str(phoEtaMaxEB  ) )
+    if argv[8]=="EE":
+        phoEtaCut           = TCut("%s<leadingPhAbsEta&&leadingPhAbsEta<%s"               % ( str(phoEtaMinEE),str(phoEtaMaxEE) ) )
     deltaRdataCut       = TCut("phJetDeltaR_higgs>%s"             % str(deltaRmin  ) )
     deltaRsidebandCut   = TCut("phJetDeltaR_sideLow%s>%s"         % ( sidebandIndex, str(deltaRmin)) )
     jetEtaDataCut       = TCut("higgsJet_pruned_abseta<%s"        % str(jetEtaMax  ) )
@@ -290,6 +295,6 @@ def makeDDhiggs(argv1, argv2, argv3, argv4, argv5, argv6, argv7):
     c2.Update()
     c2.Draw()
 
-    print "about to do c2 = TDRify(" + "'c2', " + "'%s_%s_M%s-%s"%(argv[1], argv[3], argv[4], argv[5]) + "', '" + outputDirName +"')"
-    outputFilename = TDRify(c2, "%s_%s_M%s-%s"%(argv[1], argv[3], argv[4], argv[5]), outputDirName)
+    print "about to do c2 = TDRify(" + "'c2', " + "'%s_%s_%s_M%s-%s"%(argv[1], argv[3], argv[8], argv[4], argv[5]) + "', '" + outputDirName +"')"
+    outputFilename = TDRify(c2, "%s_%s_%s_M%s-%s"%(argv[1], argv[3], argv[8], argv[4], argv[5]), outputDirName)
     return outputFilename
