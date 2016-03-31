@@ -59,6 +59,8 @@ def makeDDhiggs(argv1, argv2, argv3, argv4, argv5, argv6, argv7, argv8):
         phoEtaCut           = TCut("leadingPhAbsEta<%s"               % str(phoEtaMaxEB  ) )
     if argv[8]=="EE":
         phoEtaCut           = TCut("%s<leadingPhAbsEta&&leadingPhAbsEta<%s"               % ( str(phoEtaMinEE),str(phoEtaMaxEE) ) )
+    if argv[8]=="EBEE":
+        phoEtaCut           = TCut("leadingPhAbsEta<%s"               %  str(phoEtaMaxEE)  )
     deltaRdataCut       = TCut("phJetDeltaR_higgs>%s"             % str(deltaRmin  ) )
     deltaRsidebandCut   = TCut("phJetDeltaR_sideLow%s>%s"         % ( sidebandIndex, str(deltaRmin)) )
     jetEtaDataCut       = TCut("higgsJet_pruned_abseta<%s"        % str(jetEtaMax  ) )
