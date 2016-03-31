@@ -29,17 +29,21 @@ for sideband in sidebands:
         else:
             if category == "EB":
                 cosThetaMin = 55
+            elif category == "EBEE":
+                cosThetaMin = 55
             elif category == "EE":
                 if mass == "2000":
                     cosThetaMin = 70
                 elif mass == "3000":
                     cosThetaMin=95
             else:
-                exit("Forgot to pick EE or EB category")
+                exit("You Forgot to pick EE or EB category")
         if mass == "750" or mass == "1000":
             jetEtaMin = 100
         elif mass == "2000":
             if category == "EB":
+                jetEtaMin = 100
+            elif category == "EBEE":
                 jetEtaMin = 100
             elif category == "EE":
                 jetEtaMin = 125

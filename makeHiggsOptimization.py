@@ -50,6 +50,8 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
         phoEtaCut       = TCut("leadingPhAbsEta<%s"               % str(phoEtaMaxEB  ) )
     if category=="EE":
         phoEtaCut       = TCut("%s<leadingPhAbsEta&&leadingPhAbsEta<%s"               % ( str(phoEtaMinEE),str(phoEtaMaxEE) ) )
+    if category=="EBEE":
+        phoEtaCut       = TCut("leadingPhAbsEta<%s"               %  str(phoEtaMaxEE) )
     deltaRdataCut       = TCut("phJetDeltaR_higgs>%s"             % str(deltaRmin  ) )
     deltaRsidebandCut   = TCut("phJetDeltaR_sideLow%s>%s"         % ( sidebandIndex, str(deltaRmin)) )
     jetEtaDataCut       = TCut("higgsJet_pruned_abseta<%s"        % str(jetEtaMax  ) )
