@@ -4,7 +4,7 @@ from sys import argv
 from os import path, makedirs
 
 dataFile = TFile("../HgammaSamples/ddTrees/ddNew_silver.root")
-sigFile = TFile("../HgammaSamples/ddTrees/ddNew_Hgamma_m%s.root"%argv[1])
+sigFile = TFile("/home/hakala/WZgammaMacros/newSigs/signal-W_0-p-014-%s.root"%argv[1])
 
 sideband = argv[2]
 if sideband == "side5070":

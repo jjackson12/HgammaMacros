@@ -175,7 +175,7 @@ void treeChecker::Loop(string outputFileName)
     softdrop_matchedJetTau2    = -999. ;
     softdrop_matchedJetTau3    = -999. ;
     HT                         = 0.    ;
-//    HT_ak4                     = 0.    ;
+    //HT_ak4                     = 0.    ;
     phoIsTight                 = false ;
     phoEtaPassesCut            = false ;
     phoPtPassesCut             = false ;
@@ -647,7 +647,7 @@ void treeChecker::Loop(string outputFileName)
   outputFile ->       mkdir("Jet_kinematics") ;
   outputFile ->          cd("Jet_kinematics") ;
   HThist                           -> Write() ;
-//  HT_ak4hist                       -> Write() ;
+  //HT_ak4hist                       -> Write() ;
 
   outputFile ->     mkdir("Jet_substructure") ;
   outputFile ->        cd("Jet_substructure") ;
