@@ -18,7 +18,7 @@ elif not (argv[3]=="load" or argv[3]=="compile"):
    print "for the third argument, please pick 'load' or 'compile'."
 else:
    print "\nInput file is %s\n" % argv[1]
-   print "\nAttempting to %s treeChecker.\n" % argv[3]
+   print "\nAttempting to %s subjet_csv.\n" % argv[3]
    pastTense = "loaded" if argv[3]=="load" else "compiled"
 
 def deleteLibs(macroName):
@@ -31,7 +31,7 @@ def deleteLibs(macroName):
       os.remove(macroName+"_C.so")
         # compile the macro using g++
 
-# call the compiling function to compile the treeChecker, then run its Loop() method
+# call the compiling function to compile the subjet_csv, then run its Loop() method
 if argv[3]=="compile":
    deleteLibs("subjet_csv")
    exitCode = gSystem.CompileMacro("subjet_csv.C", "vgOck")
@@ -51,5 +51,5 @@ else:
    
    # get the ntuplizer/tree tree from the file specified by argument 1
    tree = file.Get("ntuplizer/tree")
-   checker = treeChecker(tree)
+   checker = subjet_csv(tree)
    checker.Loop(argv[2])
