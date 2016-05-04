@@ -23,6 +23,14 @@ public :
      float leading;
      float subleading;
    };
+   struct passSubjetCuts { 
+     bool loose_loose;
+     bool medium_loose;
+     bool medium_medium;
+     bool tight_loose;
+     bool tight_medium;
+     bool tight_tight;
+   };
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
    const Int_t kMaxpassFilter_HBHE = 1;
@@ -452,6 +460,7 @@ public :
    virtual void     Show(Long64_t entry = -1);
 
    leadingSubjets getLeadingSubjets(vector<float> prunedJet);
+   passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);
 };
 
 #endif
