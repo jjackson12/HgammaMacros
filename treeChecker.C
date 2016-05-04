@@ -60,7 +60,9 @@ void treeChecker::Loop(string outputFileName)
   outputTreeSig->Branch("matchedJet_pruned_abseta", &matchedJet_pruned_abseta);
   outputTreeSig->Branch("matchedPrunedJetCorrMass", &matchedPrunedJetCorrMass);
   outputTreeSig->Branch("matchedJett2t1", &matchedJett2t1);
+  outputTreeSig->Branch("matchedJet_HbbTag", &matchedJet_HbbTag);
   outputTreeHiggs->Branch("higgsJett2t1", &higgsJett2t1);
+  outputTreeHiggs->Branch("higgsJet_HbbTag", &higgsJet_HbbTag);
   outputTreeHiggs->Branch("cosThetaStar", &cosThetaStar);
   outputTreeHiggs->Branch("phPtOverMgammaj", &phPtOverMgammaj);
   outputTreeHiggs->Branch("leadingPhEta", &leadingPhEta);

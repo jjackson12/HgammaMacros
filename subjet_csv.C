@@ -26,6 +26,7 @@ void subjet_csv::Loop(string outputFileName)
 //       To read only selected branches, Insert statements like:
     fChain->SetBranchStatus("*",0);  // disable all branches
     fChain->SetBranchStatus("subjetAK8_pruned_csv",1);  // activate branchname
+    fChain->SetBranchStatus("subjetAK8_pruned_N",1);  // activate branchname
 // METHOD2: replace line
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
@@ -44,12 +45,14 @@ void subjet_csv::Loop(string outputFileName)
       if (debugFlag) {
         printThisGuy = false;
         for (uint iJet=0; iJet<subjetAK8_pruned_csv->size(); ++iJet) {  
-          printThisGuy |= ( subjetAK8_pruned_csv->at(iJet).size() > 2 ) ;
+          printThisGuy |= ( subjetAK8_pruned_csv->at(iJet).size() > 1 ) ;
         }
       }
 
       if (printThisGuy) cout << "Event "<< jentry << ":" << endl;
       for (uint iJet=0; iJet<subjetAK8_pruned_csv->size(); ++iJet) {
+        
+        cout << "   jet " << iJet << " has number of subjets: " << subjetAK8_pruned_N->at(iJet) << endl;
         if (printThisGuy) cout << "   jet " << iJet << endl;
         for (uint iSubjet=0; iSubjet<subjetAK8_pruned_csv->at(iJet).size(); ++iSubjet) {
           if (printThisGuy) cout << "      subjet " << iSubjet << " has csv value: " << subjetAK8_pruned_csv->at(iJet).at(iSubjet) << endl;

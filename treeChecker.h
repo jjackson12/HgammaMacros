@@ -110,6 +110,8 @@ public :
   float leadingPhCat                =    0. ;
   float matchedJett2t1              = -999  ;
   float higgsJett2t1              = -999  ;
+  float higgsJet_HbbTag              = -999  ;
+  float matchedJet_HbbTag              = -999  ;
   float matchedJet_pruned_abseta    = -999  ;
   float higgsJet_pruned_abseta    = -999  ;
   float leadingPhAbsEta             = -999  ;

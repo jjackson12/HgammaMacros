@@ -34,7 +34,7 @@ def deleteLibs(macroName):
 # call the compiling function to compile the subjet_csv, then run its Loop() method
 if argv[3]=="compile":
    deleteLibs("subjet_csv")
-   exitCode = gSystem.CompileMacro("subjet_csv.C", "vgOck")
+   exitCode = gSystem.CompileMacro("subjet_csv.C", "gOck")
    success=(exitCode==1)
 elif argv[3]=="load":
    exitCode = gSystem.Load('subjet_csv_C')
