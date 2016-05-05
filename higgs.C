@@ -1,21 +1,12 @@
 #define higgs_cxx
-#include "higgs.h"
-#include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
 #include <iostream>
+#include "TMath.h"
+#include "higgs.h"
 
-int higgs::Loop()
+int higgs::Loop(float cutValue, float lowerMassBound, float upperMassBound)
 {
-//    fChain->SetBranchStatus("*",0);  // disable all branches
-//    fChain->SetBranchStatus("branchname",1);  // activate branchname
-// METHOD2: replace line
-//    fChain->GetEntry(jentry);       //read all branches
-//by  b_branchname->GetEntry(ientry); //read only this branch
-   if (fChain == 0) return;
-
+   if (fChain == 0) return -1;
    Long64_t nentries = fChain->GetEntriesFast();
-
    Long64_t nbytes = 0, nb = 0;
 
    uint nHiggsJets = 0;
@@ -23,9 +14,20 @@ int higgs::Loop()
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
-      // if (Cut(ientry) < 0) continue;
-      //cout << "higgsJetPrunedJetCorrMass: " << higgsPrunedJetCorrMass << endl;
+      if (  Cut(ientry) < 0 
+         || higgsJet_HbbTag <= cutValue 
+         || phJetInvMass_pruned_higgs < lowerMassBound 
+         || phJetInvMass_pruned_higgs > upperMassBound ) continue;
       ++nHiggsJets;
    }
    return nHiggsJets;
+}
+
+Int_t higgs::Cut(Long64_t entry) {
+  if (   cosThetaStar<-0.627*TMath::ATan((-0.005938*phJetInvMass_pruned_higgs)+3.427)
+     &&  leadingPhAbsEta          < 1.4442
+     &&  higgsJet_pruned_abseta   < 2.2
+     &&  phJetDeltaR_higgs        > 1.1 ) return 1;
+
+  else return -1;
 }
