@@ -63,6 +63,10 @@ void treeChecker::Loop(string outputFileName)
   outputTreeSig->Branch("matchedJet_HbbTag", &matchedJet_HbbTag);
   outputTreeHiggs->Branch("higgsJett2t1", &higgsJett2t1);
   outputTreeHiggs->Branch("higgsJet_HbbTag", &higgsJet_HbbTag);
+  outputTreeHiggs->Branch("test_looseloose", &test_looseloose);
+  outputTreeHiggs->Branch("higgs_csvValues", &higgs_csvValues);
+  outputTreeHiggs->Branch("higgs_subjetCutDecisions", &higgs_subjetCutDecisions);
+  outputTreeHiggs->Branch("higgs_looseloose", &higgs_looseloose, "higgs_looseloose/O", 100);
   outputTreeHiggs->Branch("cosThetaStar", &cosThetaStar);
   outputTreeHiggs->Branch("phPtOverMgammaj", &phPtOverMgammaj);
   outputTreeHiggs->Branch("leadingPhEta", &leadingPhEta);
@@ -97,6 +101,8 @@ void treeChecker::Loop(string outputFileName)
   outputTree100110->Branch("sideLowFourJet_pruned_abseta", &sideLowFourJet_pruned_abseta);
   outputTree100110->Branch("sideLowFourPrunedJetCorrMass", &sideLowFourPrunedJetCorrMass);
   outputTree100110->Branch("sideLowFourJet_HbbTag", &sideLowFourJet_HbbTag);
+  outputTree100110->Branch("sideLowFour_csvValues", &sideLowFour_csvValues);
+  outputTree100110->Branch("sideLowFour_subjetCutDecisions", &sideLowFour_subjetCutDecisions);
   // Create TProfiles
   char *profTitle = new char[15];
   for (uint iProf=0; iProf<sizeof(phMVAvsEProf)/sizeof(phMVAvsEProf[0]); ++iProf) { 
@@ -129,6 +135,7 @@ void treeChecker::Loop(string outputFileName)
   fChain->SetBranchStatus( "jetAK8_IDTight"           ,  1 );  
   fChain->SetBranchStatus( "jetAK8_IDTightLepVeto"           ,  1 );  
   fChain->SetBranchStatus( "jetAK8_Hbbtag"           ,  1 );  
+  fChain->SetBranchStatus("subjetAK8_pruned_csv",1);
 
   if (fChain == 0) return;
 
@@ -157,6 +164,8 @@ void treeChecker::Loop(string outputFileName)
     matchedPrunedJetCorrMass   = -999. ;
     higgsPrunedJetCorrMass   = -999. ;
     matchedJet_HbbTag          = -999. ;
+    higgs_looseloose = false;
+    test_looseloose          = -1. ;
     higgsJet_HbbTag          = -999. ;
     sideLowPrunedJetCorrMass   = -999. ;
     sideHiPrunedJetCorrMass    = -999. ;
@@ -212,9 +221,18 @@ void treeChecker::Loop(string outputFileName)
     sumVector           .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     boostedJet           .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     boostedPho           .SetPtEtaPhiE( 0., 0., 0., 0.) ;
+
+    higgs_csvValues.leading=-10.;
+    higgs_csvValues.subleading=-10.;
+    leadingSubjets sideLowFour_csvValues;
+    sideLowFour_csvValues.leading=-10.;
+    sideLowFour_csvValues.subleading=-10.;
+
+
     // Print out trigger information
     if (jentry%reportEvery==0) {
-      cout << fixed << setw(4) << setprecision(2) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << endl;
+      cout.flush();
+      cout << fixed << setw(4) << setprecision(2) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << '\r';
     }
     if (debugFlag) cout << "\nIn event number " << jentry << ":" << endl;
     if (checkTrigger && debugFlag) cout << "     Trigger info is: " << endl;
@@ -320,6 +338,17 @@ void treeChecker::Loop(string outputFileName)
             pruned_higgsJetTau1 = jetAK8_tau1 ->  at(iJet) ;
             pruned_higgsJetTau2 = jetAK8_tau2 ->  at(iJet) ;
             pruned_higgsJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+            higgs_csvValues = getLeadingSubjets(subjetAK8_pruned_csv->at(iJet));
+            //cout << "    for higgs jet, get csv values " << higgs_csvValues.leading << ", " << higgs_csvValues.subleading << endl;
+            higgs_subjetCutDecisions = getSubjetCutDecisions(higgs_csvValues);
+            higgs_looseloose = higgs_subjetCutDecisions.loose_loose;
+            if (higgs_looseloose){
+            test_looseloose = 1.;
+            } else {
+            test_looseloose = 0.;
+            }
+            //cout << "    looseloose is: " << higgs_looseloose << endl;
+            //cout << "    for higgs jet, get loose_loose = " << higgs_subjetCutDecisions.loose_loose << endl;
           }
         }
         if (jetAK8_pruned_massCorr->at(iJet) > bigWindowLowCutLow  && jetAK8_pruned_massCorr->at(iJet) < bigWindowLowCutHigh && !eventHasSideLowPrunedJet) {
@@ -392,6 +421,10 @@ void treeChecker::Loop(string outputFileName)
               pruned_sideLowFourJetTau1 = jetAK8_tau1 ->  at(iJet) ;
               pruned_sideLowFourJetTau2 = jetAK8_tau2 ->  at(iJet) ;
               pruned_sideLowFourJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+              sideLowFour_csvValues = getLeadingSubjets(subjetAK8_pruned_csv->at(iJet));
+              //cout << "    for sideband jet, get csv values " << sideLowFour_csvValues.leading << ", " << sideLowFour_csvValues.subleading << endl;
+              sideLowFour_subjetCutDecisions = getSubjetCutDecisions(sideLowFour_csvValues);
+              //cout << "    for sideband jet, get loose_loose = " << sideLowFour_subjetCutDecisions.loose_loose << endl;
             }
           }
         }
@@ -695,8 +728,50 @@ void treeChecker::Loop(string outputFileName)
 
   outputFile->Close();
 
+  cout.flush();
   cout << "100% done: Scanned " << nentries << " events." << endl;
   cout << "The trigger fired " << eventsPassingTrigger << " times" << endl;
   cout << "The trigger efficiency was " << (float) eventsPassingTrigger/ (float)nentries << endl;
   cout << "\nCompleted output file is " << outputFileName.c_str() <<".\n" << endl;
+}
+
+treeChecker::leadingSubjets treeChecker::getLeadingSubjets(vector<float> prunedJet) {
+  // Note: in miniaod, there are only two subjets stored since the declustering is done recursively and miniaod's declustering stops after splitting into two subjets
+  leadingSubjets topCSVs;
+  topCSVs.leading = -10.;
+  topCSVs.subleading = -10.;
+  for (uint iSubjet=0; iSubjet<prunedJet.size(); ++iSubjet) {
+    if (prunedJet.at(iSubjet)>topCSVs.leading) {
+      topCSVs.subleading = topCSVs.leading;
+      topCSVs.leading = prunedJet.at(iSubjet);
+    }
+    else if (topCSVs.leading > prunedJet.at(iSubjet) && topCSVs.subleading < prunedJet.at(iSubjet)) {
+      topCSVs.subleading = prunedJet.at(iSubjet);
+    }
+  }
+  return topCSVs;
+}
+
+treeChecker::passSubjetCuts treeChecker::getSubjetCutDecisions(leadingSubjets subjets) {
+  float looseWP  = 0.605;
+  float mediumWP = 0.89;
+  float tightWP  = 0.97;
+
+  bool leadingIsLoose     = (subjets.leading    > looseWP);
+  bool leadingIsMedium    = (subjets.leading    > mediumWP);
+  bool leadingIsTight     = (subjets.leading    > tightWP);
+  bool subleadingIsLoose  = (subjets.subleading > looseWP);
+  bool subleadingIsMedium = (subjets.subleading > mediumWP);
+  bool subleadingIsTight  = (subjets.subleading > tightWP);
+
+  passSubjetCuts decisions;
+
+  decisions.loose_loose    = leadingIsLoose   &&  subleadingIsLoose;
+  decisions.medium_loose   = leadingIsMedium  &&  subleadingIsLoose;
+  decisions.tight_loose    = leadingIsTight   &&  subleadingIsLoose;
+  decisions.medium_medium  = leadingIsMedium  &&  subleadingIsMedium;
+  decisions.tight_medium   = leadingIsTight   &&  subleadingIsMedium;
+  decisions.tight_tight    = leadingIsTight   &&  subleadingIsTight;
+
+  return decisions;
 }

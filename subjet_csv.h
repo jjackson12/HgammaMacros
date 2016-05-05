@@ -471,9 +471,9 @@ subjet_csv::subjet_csv(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("flatTuple_Hgamma_m750.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("../HgammaTuples/flatTuple_Hgamma_m750.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("flatTuple_Hgamma_m750.root");
+         f = new TFile("../HgammaTuples/flatTuple_Hgamma_m750.root");
       }
       TDirectory * dir = (TDirectory*)f->Get("flatTuple_Hgamma_m750.root:/ntuplizer");
       dir->GetObject("tree",tree);

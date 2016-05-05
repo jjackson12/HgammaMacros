@@ -66,6 +66,8 @@ public :
   float matchedJet_HbbTag    = -999. ;
   float higgsPrunedJetCorrMass    = -999. ;
   float higgsJet_HbbTag    = -999. ;
+  float test_looseloose    = -1. ;
+  bool higgs_looseloose   = false;
   float sideLowPrunedJetCorrMass    = -999. ;
   float sideLowThreePrunedJetCorrMass    = -999. ;
   float sideLowFourPrunedJetCorrMass    = -999. ;
@@ -110,8 +112,6 @@ public :
   float leadingPhCat                =    0. ;
   float matchedJett2t1              = -999  ;
   float higgsJett2t1              = -999  ;
-  float higgsJet_HbbTag              = -999  ;
-  float matchedJet_HbbTag              = -999  ;
   float matchedJet_pruned_abseta    = -999  ;
   float higgsJet_pruned_abseta    = -999  ;
   float leadingPhAbsEta             = -999  ;
@@ -143,6 +143,25 @@ public :
   TLorentzVector boostedJet                 ;
   TLorentzVector boostedPho                 ;
   
+  //structs for b-tagging
+   struct leadingSubjets {
+     float leading;
+     float subleading;
+   };
+   struct passSubjetCuts {
+     bool loose_loose;
+     bool medium_loose;
+     bool medium_medium;
+     bool tight_loose;
+     bool tight_medium;
+     bool tight_tight;
+   }; 
+   leadingSubjets higgs_csvValues;
+   leadingSubjets sideLowFour_csvValues;
+   passSubjetCuts higgs_subjetCutDecisions;
+   passSubjetCuts sideLowFour_subjetCutDecisions;
+
+
   // Output histograms
   TH1F*  leadingPhPtHist                   = new TH1F( "leadingPhPtHist"                  , "Leading photon pT"                    ,  700 ,      0 ,  7000 );
   TH1F*  leadingPhEtaHist                  = new TH1F( "leadingPhEtaHist"                 , "Leading photon #eta"                  ,  200 ,    -6. ,    6. );
@@ -628,6 +647,9 @@ public :
    virtual void     Loop(string outputFileName);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+
+   leadingSubjets getLeadingSubjets(vector<float> prunedJet);
+   passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);
 };
 
 #endif
