@@ -22,8 +22,8 @@ def instance(macroName, args):
      print "for the third argument, please pick 'load' or 'compile'."
   else:
      print "\nInput file is %s\n" % args[0]
-     print "\nAttempting to %s treeChecker.\n" % args[0]
-     pastTense = "loaded" if args[0]=="load" else "compiled"
+     print "\nAttempting to %s treeChecker.\n" % macroName
+     pastTense = "loaded" if args[2]=="load" else "compiled"
   if args[2]=="compile":
      deleteLibs("%s"%macroName)
      exitCode = gSystem.CompileMacro("%s.C"%macroName, "gOck")
@@ -36,9 +36,6 @@ def instance(macroName, args):
      print "Make sure you're using an up-to-date version of ROOT by running cmsenv in a 7_4_X>=16 CMSSW area."
      exit(1)
   else:
-     print "\nmacroName %s successfully."%(macroName, pastTense)
+     print "\n%s %s successfully."%(macroName, pastTense)
      if args[2]=="compile":
         gSystem.Load('%s_C'%macroName)
-
-instance("higgs", ["../physics/may5_btagging/small3_SilverJson_may5.root", "test.root", "compile"])
-

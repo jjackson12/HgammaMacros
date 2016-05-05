@@ -5,7 +5,7 @@
 #include <TCanvas.h>
 #include <iostream>
 
-void higgs::Loop()
+int higgs::Loop()
 {
 //    fChain->SetBranchStatus("*",0);  // disable all branches
 //    fChain->SetBranchStatus("branchname",1);  // activate branchname
@@ -24,8 +24,8 @@ void higgs::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
-      cout << "higgsJetPrunedJetCorrMass: " << higgsPrunedJetCorrMass << endl;
+      //cout << "higgsJetPrunedJetCorrMass: " << higgsPrunedJetCorrMass << endl;
       ++nHiggsJets;
    }
-   cout << "Total number of higgs jets: " << nHiggsJets << endl;
+   return nHiggsJets;
 }

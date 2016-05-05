@@ -224,7 +224,6 @@ void treeChecker::Loop(string outputFileName)
 
     higgs_csvValues.leading=-10.;
     higgs_csvValues.subleading=-10.;
-    leadingSubjets sideLowFour_csvValues;
     sideLowFour_csvValues.leading=-10.;
     sideLowFour_csvValues.subleading=-10.;
 
