@@ -5,6 +5,8 @@ from sys import argv
 # John Hakala, March 10 2016
 
 def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename, category):
+    compareCosAndPtOverM = True
+
     dataFile = TFile("../HgammaSamples/ddTrees/ddNew_silver.root")
     sigFile = TFile("../HgammaSamples/ddTrees/ddNew_Hgamma_m%s.root"%sigMass)
     print "Signal mass is %s" % sigMass
@@ -18,6 +20,8 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
         sideLow   = dataFile.Get("side5070")
         sidebandIndex = "Three"
     g = TGraph()
+    if compareCosAndPtOverM and whichCut == "cos theta":
+        comparison = TGraph()
 
     if sigMass=="750":
         massWindowLo = 700
@@ -85,13 +89,24 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
 
     for i in range(int(lowerLimit),int(upperLimit)):
         cutValue = float(i)/float(100)
+        if compareCosAndPtOverM and whichCut == "cos theta":
+            print "the cut value for cosThetaStar is %f" % cutValue
+            comparisonCutValue = float(i)/float(180)
+            print "the cut value for pT/Mgj is %f" % comparisonCutValue
         masscutSideband = TCut()
         masscutData = TCut()
+        if compareCosAndPtOverM and whichCut == "cos theta":
+            comparisoncutSideband = TCut()
+            comparisoncutData = TCut()
         for cut in sidebandCuts:
             masscutSideband += cut
+            if compareCosAndPtOverM and whichCut == "cos theta":
+                comparisoncutSideband += cut
         #masscutSideband += sidebandMassCuts + deltaRsidebandCut + phoEtaCut + cosThetasidebandCut
         for cut in dataCuts:
             masscutData += cut
+            if compareCosAndPtOverM and whichCut == "cos theta":
+                comparisoncutData += cut
         #masscutData += dataMassCuts + deltaRdataCut + phoEtaCut + cosThetadataCut
         if whichCut == "jet eta":
             thisSidebandCut = TCut("sideLow%sJet_pruned_abseta<%s"%(sidebandIndex, str(cutValue)))
@@ -105,36 +120,74 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
         if whichCut == "cos theta":
             thisSidebandCut    = TCut("cosThetaStar<%s" % str(cutValue) )
             thisSigRegionCut   = TCut("cosThetaStar<%s"             % str(cutValue  ) )
-        #print "the cut value on %s is %f" % (whichCut, cutValue)
+            if compareCosAndPtOverM and whichCut == "cos theta":
+                comparisonSidebandCut    = TCut("phPtOverMgammaj>%s" % str(comparisonCutValue) )
+                comparisonSigRegionCut   = TCut("phPtOverMgammaj>%s"             % str(comparisonCutValue  ) )
         masscutSideband+=thisSidebandCut
         masscutData+=thisSigRegionCut
+        if compareCosAndPtOverM and whichCut == "cos theta":
+            comparisoncutSideband+=comparisonSidebandCut
+            comparisoncutData+=comparisonSigRegionCut
+            #print "the comparison cuts are:"
+            #comparisoncutSideband.Print()
+            #comparisoncutData.Print()
         #print "the cut string for the signal region is %s" % thisSigRegionCut
         #print "the cut string for the sideband region is %s" % thisSidebandCut
         c = TCanvas()
-        t = TGraph()
+        #t = TGraph()
         data.Draw("higgsJet_pruned_abseta", masscutData)
         for primitive in c.GetListOfPrimitives():
             primitive.SetName("data")
             primitive.SetLineColor(kBlack)
-        dataEntries = c.GetPrimitive("data").GetEntries()
+        if compareCosAndPtOverM and whichCut == "cos theta" and cutValue>0.2:
+            dataEntries = c.GetPrimitive("data").GetEntries()
         #print "data has %i entries" % dataEntries
         sideLow.Draw("sideLow%sJet_pruned_abseta"%sidebandIndex, masscutSideband, "SAME")
         for primitive in c.GetListOfPrimitives():
             if not primitive.GetName()=="data":
                 primitive.SetName("sideband")
-        sidebandEntries = c.GetPrimitive("sideband").GetEntries()
-        #print "sideband has %i entries" % sidebandEntries
-        sidebandNormalization = dataEntries/sidebandEntries
-        #print "sideband normalization factor is %f" % sidebandNormalization
-        for sidebandBin in range (0, c.GetPrimitive("sideband").GetNbinsX()):
-            c.GetPrimitive("sideband").SetBinContent(sidebandBin, c.GetPrimitive("sideband").GetBinContent(sidebandBin)*sidebandNormalization)
-        c.GetPrimitive("sideband").SetLineColor(kGreen)
-        c.Update()
-        c.Draw()
+        if compareCosAndPtOverM and whichCut == "cos theta" and cutValue>0.2:
+            sidebandEntries = c.GetPrimitive("sideband").GetEntries()
+            #print "sideband has %i entries" % sidebandEntries
+            sidebandNormalization = dataEntries/sidebandEntries
+            #print "sideband normalization factor is %f" % sidebandNormalization
+            for sidebandBin in range (0, c.GetPrimitive("sideband").GetNbinsX()):
+                c.GetPrimitive("sideband").SetBinContent(sidebandBin, c.GetPrimitive("sideband").GetBinContent(sidebandBin)*sidebandNormalization)
+            c.GetPrimitive("sideband").SetLineColor(kGreen)
+            c.Update()
+            c.Draw()
         primitives = []
         for primitive in c.GetListOfPrimitives():
             #print "adding primitive with name %s" % primitive.GetName()
             primitives.append(primitive.GetName())
+
+
+        if compareCosAndPtOverM and whichCut == "cos theta" and comparisonCutValue<0.6:
+            data.Draw("higgsJet_pruned_abseta", comparisoncutData, "SAME")
+            #print "comparisoncutSideband is ",
+            #print comparisoncutSideband
+            for primitive in c.GetListOfPrimitives():
+                if not primitive.GetName() in primitives:
+                    primitive.SetName("data2")
+            data2Entries = c.GetPrimitive("data2").GetEntries()
+            #print "data2Entries is %i " % data2Entries
+            sideLow.Draw("sideLow%sJet_pruned_abseta"%sidebandIndex, comparisoncutSideband, "SAME")
+            for primitive in c.GetListOfPrimitives():
+                if not primitive.GetName() in primitives :
+                    primitive.SetName("sideband2")
+            sideband2Entries = c.GetPrimitive("sideband2").GetEntries()
+            #print "sideband2Entries is %i" % sideband2Entries
+            #print "sideband has %i entries" % sidebandEntries
+            sidebandNormalization2 = data2Entries/sideband2Entries
+            #print "sideband normalization factor is %f" % sidebandNormalization
+            for sidebandBin in range (0, c.GetPrimitive("sideband2").GetNbinsX()):
+                c.GetPrimitive("sideband2").SetBinContent(sidebandBin, c.GetPrimitive("sideband2").GetBinContent(sidebandBin)*sidebandNormalization2)
+            c.GetPrimitive("sideband2").SetLineColor(kRed)
+            c.Update()
+            c.Draw()
+            for primitive in c.GetListOfPrimitives():
+                #print "adding primitive with name %s" % primitive.GetName()
+                primitives.append(primitive.GetName())
         #print primitives
         sig.Draw("higgsJet_pruned_abseta", masscutData, "SAME")
         for primitive in c.GetListOfPrimitives():
@@ -143,14 +196,51 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
                 #print "found new primitive with name %s" % primitive.GetName()
                 primitive.SetName("signal")
                 #print "found updated primitive with name %s" % primitive.GetName()
+        for primitive in c.GetListOfPrimitives():
+            #print "adding primitive with name %s" % primitive.GetName()
+            primitives.append(primitive.GetName())
 
-        ss = c.GetPrimitive("signal").GetEntries()
-        #print "number of signal events is %i" % ss
-        bb = c.GetPrimitive("sideband").GetEntries()
+        if compareCosAndPtOverM and whichCut == "cos theta" and comparisonCutValue<0.9:
+            sig.Draw("higgsJet_pruned_abseta", comparisoncutData, "SAME")
+            for primitive in c.GetListOfPrimitives():
+                #print primitive
+                if not primitive.GetName() in primitives:
+                    #print "found new primitive with name %s" % primitive.GetName()
+                    primitive.SetName("signal2")
+                    #print "found updated primitive with name %s" % primitive.GetName()
+            for primitive in c.GetListOfPrimitives():
+                #print "adding primitive with name %s" % primitive.GetName()
+                primitives.append(primitive.GetName())
+            #print "signal2 has number of entries %i" % c.GetPrimitive("signal2").GetEntries()
+
+        if compareCosAndPtOverM and whichCut == "cos theta" and cutValue>0.1:
+            ss = c.GetPrimitive("signal").GetEntries()
+            #print "number of signal events is %i" % ss
+            bb = c.GetPrimitive("sideband").GetEntries()
+        if compareCosAndPtOverM and whichCut == "cos theta" and comparisonCutValue<0.9:
+            ss2 = c.GetPrimitive("signal2").GetEntries()
+            bb2 = c.GetPrimitive("sideband2").GetEntries()
+        elif not whichCut == "cos theta":
+            ss = c.GetPrimitive("signal").GetEntries()
+            #print "number of signal events is %i" % ss
+            bb = c.GetPrimitive("sideband").GetEntries()
         #print "number of background events is %i" % bb
-        sOverRootB=ss/sqrt(bb)
+        if compareCosAndPtOverM and whichCut == "cos theta" and cutValue>0.1:
+            sOverRootB=ss/sqrt(bb)
+        if compareCosAndPtOverM and whichCut == "cos theta" and comparisonCutValue<0.9:
+            sOverRootB2=ss2/sqrt(bb2)
+            #print "for comparisonCutValue %f, s is %f, b is %f, and s/root(b) is %f" % (comparisonCutValue, ss2, bb2, sOverRootB2)
+        elif not whichCut == "cos theta":
+            sOverRootB=ss/sqrt(bb)
         #print "s over root b is %f" % sOverRootB
-        g.SetPoint(g.GetN(), cutValue, sOverRootB)
+        if compareCosAndPtOverM and whichCut == "cos theta" and cutValue>0.1:
+            g.SetPoint(g.GetN(), cutValue, sOverRootB)
+            g.GetXaxis().SetRangeUser(0,1.2)
+        if compareCosAndPtOverM and whichCut == "cos theta" and comparisonCutValue<0.9:
+            comparison.SetPoint(comparison.GetN(), comparisonCutValue, sOverRootB2)
+            #print "Set a point comparisonCutValue, sqrt(b) for the comparison plot: %f, %f" % (comparisonCutValue, sOverRootB2)
+        elif not whichCut == "cos theta":
+            g.SetPoint(g.GetN(), cutValue, sOverRootB)
         c.Clear()
     c2 = TCanvas()
     c2.cd()
@@ -164,10 +254,22 @@ def optimize(sigMass, sideband, whichCut, lowerLimit, upperLimit, outputFilename
         g.SetTitle("S/#sqrt{B} for #DeltaR(j, #gamma) cuts")
         g.GetXaxis().SetTitle("min #DeltaR")
     if whichCut == "cos theta":
-        g.SetTitle("S/#sqrt{B} for #||{cos(#theta*)} cuts")
-        g.GetXaxis().SetTitle("max #||{cos(#theta*)}")
+        if compareCosAndPtOverM and whichCut == "cos theta":
+            g.SetTitle("S/#sqrt{B} for #||{cos(#theta*)} and p_{T}/M_{#gammaj} cuts")
+            g.GetXaxis().SetTitle("cut value")
+        else:
+            g.SetTitle("S/#sqrt{B} for #||{cos(#theta*)} cuts")
+            g.GetXaxis().SetTitle("max #||{cos(#theta*)}")
     g.GetYaxis().SetTitle("S/#sqrt{B} (a.u.)")
     g.Draw()
+    if whichCut == "cos theta":
+        g.GetXaxis().SetRangeUser(0, 1.1)
+    c2.Update()
+
+    if compareCosAndPtOverM and whichCut == "cos theta":
+        comparison.SetLineColor(kRed)
+        comparison.Draw("SAME")
+        c2.Update()
 
     outfile = TFile("%s.root"%outputFilename, "RECREATE")
     outfile.cd()

@@ -5,12 +5,14 @@ from sys import argv
 dataFile = TFile("ddTreeHiggs_silver_Feb26.root")
 sigFile = TFile("ddTreeHiggs_%s_Feb26.root"%argv[1])
 
-sig          = sigFile.Get("sig"     )
-sig2          = sigFile.Get("sig"     )
-data          = dataFile.Get("sig"     )
+sideband = "side5070"
+
+sig            = sigFile.Get( "sig"     )
+sig2           = sigFile.Get( "sig"     )
+data           = dataFile.Get("sig"     )
 data2          = dataFile.Get("sig"     )
-sideLowThree = dataFile.Get("side5070")
-sideLowThree2 = dataFile.Get("side5070")
+sideLowThree   = dataFile.Get(sideband)
+sideLowThree2  = dataFile.Get(sideband)
 print sideLowThree
 for branch in sideLowThree.GetListOfBranches():
     print branch
@@ -26,19 +28,20 @@ if argv[1]=="750":
     massWindowHi = 800
 
 elif argv[1]=="1000":
-    massWindowLo = 900
-    massWindowHi = 1100
+    massWindowLo = 950
+    massWindowHi = 1050
 
 elif argv[1]=="2000":
-    massWindowLo = 1800
-    massWindowHi = 2200
+    massWindowLo = 1900
+    massWindowHi = 2100
 
 elif argv[1]=="3000":
     massWindowLo = 2200
-    massWindowHi = 4000
+    massWindowHi = 3800
 
 else:
     exit("pick the signal mass")
+
 
 phoEtaCut           = TCut("leadingPhAbsEta<%s"               % str(phoEtaMax  ) )
 deltaRdataCut       = TCut("phJetDeltaR_sig>%s"             % str(deltaRmin  ) )

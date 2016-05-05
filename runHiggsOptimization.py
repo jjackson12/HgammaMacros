@@ -28,14 +28,14 @@ for sideband in sidebands:
             cosThetaMin = 30
         else:
             if category == "EB":
-                cosThetaMin = 55
+                cosThetaMin = 0
             elif category == "EBEE":
-                cosThetaMin = 55
+                cosThetaMin = 160
             elif category == "EE":
                 if mass == "2000":
-                    cosThetaMin = 70
+                   cosThetaMin = 80
                 elif mass == "3000":
-                    cosThetaMin=95
+                    cosThetaMin=99
             else:
                 exit("You Forgot to pick EE or EB category")
         if mass == "750" or mass == "1000":
