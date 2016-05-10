@@ -1,6 +1,6 @@
 from ROOT import *
 
-def getWeightsDict():
+def getWeightsDict(small3Dir):
   sampleXsects = {}
 
 
@@ -22,7 +22,10 @@ def getWeightsDict():
 
   sampleEvents = {}
   for key in sampleXsects:
-    mcBGfile = TFile("inputs/small3_%s"%key)
+    mcBGfileName = "%s/small3_%s" % (small3Dir, key)
+    #print "the small3 input filename is: %s" % mcBGfileName
+    mcBGfile = TFile( "%s/small3_%s" % (small3Dir, key) )
+    #print mcBGfile
     hCounter = mcBGfile.Get("ntuplizer/hCounter")
     nEvents = hCounter.GetEntries()
     sampleEvents[key]=nEvents;
@@ -36,3 +39,24 @@ def getWeightsDict():
     sampleWeights[key] = weight
 
   return sampleWeights
+
+
+def getSmall3ddTreeDict(ddDir):
+  s3dd = {}
+  
+  s3dd["GJets_HT-100To200.root"    ] = "%s/small3_GJets_HT-100To200_may5.root"%ddDir
+  s3dd["GJets_HT-200To400.root"    ] = "%s/small3_GJets_HT-200To400_may5.root"%ddDir
+  s3dd["GJets_HT-400To600.root"    ] = "%s/small3_GJets_HT-400To600_may5.root"%ddDir
+  s3dd["GJets_HT-600ToInf.root"    ] = "%s/small3_GJets_HT-600ToInf_may5.root"%ddDir
+  s3dd["QCD_HT100to200.root"       ] = "%s/small3_QCD_HT100to200_may5.root"%ddDir
+  s3dd["QCD_HT200to300.root"       ] = "%s/small3_QCD_HT200to300_may5.root"%ddDir
+  s3dd["QCD_HT300to500.root"       ] = "%s/small3_QCD_HT300to500_may5.root"%ddDir
+  s3dd["QCD_HT500to700.root"       ] = "%s/small3_QCD_HT500to700_may5.root"%ddDir
+  s3dd["QCD_HT700to1000.root"      ] = "%s/small3_QCD_HT700to1000_may5.root"%ddDir
+  s3dd["QCD_HT1000to1500.root"     ] = "%s/small3_QCD_HT1000to1500_may5.root"%ddDir
+  s3dd["QCD_HT1500to2000.root"     ] = "%s/small3_QCD_HT1500to2000_may5.root"%ddDir
+  s3dd["QCD_HT2000toInf.root"      ] = "%s/small3_QCD_HT2000toInf_may5.root"%ddDir
+  s3dd["DYJetsToQQ_HT180.root"     ] = "%s/small3_DYJetsToQQ_HT180_may5.root"%ddDir
+  s3dd["WJetsToQQ_HT-600ToInf.root"] = "%s/small3_WJetsToQQ_HT-600ToInf_may5.root"%ddDir
+
+  return s3dd
