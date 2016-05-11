@@ -3,6 +3,11 @@
 
 using namespace std;
 
+// Class for analyzing the flatTuples from the EXOVVNtuplizer
+// The output gives a few trees -- all of which are focused on a V/H(fatjet)gamma resonance
+// The trees differ in the AK8 jet mass cuts -- different windows are used for different bosons 
+// John Hakala -- May 11, 2016
+
 void treeChecker::Loop(string outputFileName)
 {
   // Flags for running this macro

@@ -4,6 +4,9 @@
 #include "higgs.h"
 #include "treeChecker.h"
 
+// Class for doing quick counting experiments on the "ddTrees" from the treeChecker macro.
+// John Hakala, 5/11/2016
+
 int higgs::Loop(float cutValue, float lowerMassBound, float upperMassBound)
 {
    if (fChain == 0) return -1;

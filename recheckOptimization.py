@@ -3,6 +3,9 @@ from ROOT import *
 from pyrootTools import instance
 from getMCbgWeights import getWeightsDict, getSmall3ddTreeDict
 
+# Methods for finding optimal cuts - here focusing on the Hbb tagger - using the treeChecker trees.
+# John Hakala, 5/11/2016
+
 dataOrMCbg = "MC"
 small3sDir = "~/physics/small3s"
 ddDir = "~/physics/may5_btagging"

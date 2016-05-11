@@ -1,5 +1,8 @@
 from ROOT import *
 
+# janky methods for mapping the samples cross sections, the sample's small3 tree, and the sample's treeChecker tree
+# John Hakala 5/11/2016
+
 def getWeightsDict(small3Dir):
   sampleXsects = {}
 

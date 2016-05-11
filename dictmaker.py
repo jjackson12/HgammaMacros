@@ -1,4 +1,8 @@
 from os import path
+
+# Methods to make dictionries to sort out stackplots, canvases, and inputs
+# John Hakala, 5/11/2016
+
 def makeInputsDict(inputsListFile):
 	inputsList = open(inputsListFile)
 	inputsDict = dict()

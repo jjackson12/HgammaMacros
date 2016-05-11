@@ -4,6 +4,9 @@
 #include "higgs_csv.h"
 #include "treeChecker.h"
 
+// Class for doing quick counting experiments on the treeChecker trees. This one checks a csv cut
+// John Hakala, 5/11/2016
+
 int higgs_csv::Loop(string workingpoint, float lowerMassBound, float upperMassBound)
 {
    if (fChain == 0) return -1;

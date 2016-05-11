@@ -1,6 +1,7 @@
 import os
 from ROOT import *
 # function to compile a C/C++ macro for loading into a pyroot session
+# John Hakala - May 11, 2016
 
 debugFlag = False
 
