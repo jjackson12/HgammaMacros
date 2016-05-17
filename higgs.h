@@ -73,7 +73,7 @@ public :
 
    higgs(TTree *tree=0);
    virtual ~higgs();
-   virtual Int_t    Cut(Long64_t entry);
+   virtual Int_t    Cut(Long64_t entry, float HbbCutValue);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);

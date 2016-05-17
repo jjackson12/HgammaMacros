@@ -3,10 +3,8 @@ from ROOT import *
 # janky methods for mapping the samples cross sections, the sample's small3 tree, and the sample's treeChecker tree
 # John Hakala 5/11/2016
 
-def getWeightsDict(small3Dir):
+def getMCbgSampleXsects():
   sampleXsects = {}
-
-
   sampleXsects["GJets_HT-100To200.root"    ] = 9238*1.8
   sampleXsects["GJets_HT-200To400.root"    ] = 2305*1.8
   sampleXsects["GJets_HT-400To600.root"    ] = 274.4*1.4
@@ -21,8 +19,10 @@ def getWeightsDict(small3Dir):
   sampleXsects["QCD_HT2000toInf.root"      ] = 25.24
   sampleXsects["DYJetsToQQ_HT180.root"     ] = 1187*1.23
   sampleXsects["WJetsToQQ_HT-600ToInf.root"] = 95.14*1.21
+  return sampleXsects
 
-
+def getMCbgSampleEvents(small3Dir):
+  sampleXsects=getMCbgSampleXsects()
   sampleEvents = {}
   for key in sampleXsects:
     mcBGfileName = "%s/small3_%s" % (small3Dir, key)
@@ -32,6 +32,12 @@ def getWeightsDict(small3Dir):
     hCounter = mcBGfile.Get("ntuplizer/hCounter")
     nEvents = hCounter.GetEntries()
     sampleEvents[key]=nEvents;
+  return sampleEvents
+
+
+def getWeightsDict(small3Dir):
+  sampleXsects = getMCbgSampleXsects() 
+  sampleEvents = getMCbgSampleEvents(small3Dir)
 
   lumi = 2700
 

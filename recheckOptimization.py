@@ -2,14 +2,18 @@ from math import sqrt
 from ROOT import *
 from pyrootTools import instance
 from getMCbgWeights import getWeightsDict, getSmall3ddTreeDict
+from HgParameters import getNormalizations, getMassWindows, getSamplesDirs
 
 # Methods for finding optimal cuts - here focusing on the Hbb tagger - using the treeChecker trees.
+# The bottom methods focus on S/root(B) as the figure of merit.
+# There are other scripts that use some of the top methods here but focus on an expected CL95 limit as the figure of merit.
 # John Hakala, 5/11/2016
 
 dataOrMCbg = "MC"
-small3sDir = "~/physics/small3s"
-ddDir = "~/physics/may5_btagging"
-inSampleFile = "~/physics/may5_btagging/small3_SilverJson_may5.root"
+samplesDirs = getSamplesDirs()
+small3sDir = samplesDirs["small3sDir"]
+ddDir = samplesDirs["ddDir"]
+inSampleFile = samplesDirs["dataDir"]
 
 def calcSoverRootB(sampleFile, mass, masswindow, cutValue, compileOrLoad):
 
@@ -48,16 +52,35 @@ def calcSoverRootB(sampleFile, mass, masswindow, cutValue, compileOrLoad):
   response["SoverRootB"] = sOverRootB
   return response
 
+def MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, cutValue, compileOrLoad):
+  weightsDict = getWeightsDict(small3sDir)
+  #print "the weights dictionary is:"
+  #print weightsDict
+  small3ddDict = getSmall3ddTreeDict(ddDir)
+  sTotal = 0
+  bTotal = 0
+  for mcBgFile in weightsDict.keys():
+    unweightedSoverRootBinfo = calcSoverRootB(small3ddDict[mcBgFile], mass, masswindow, cutValue, compileOrLoad)
+    #print "S for %s is: %s" % (mcBgFile, str(unweightedSoverRootBinfo["S"]))
+    sTotal = unweightedSoverRootBinfo["S"]
+    #print "unweighted B for %s is: %s" % (mcBgFile, str(unweightedSoverRootBinfo["B"]))
+    #print "weight is %s" % str(weightsDict[mcBgFile])
+    bTotal += float(unweightedSoverRootBinfo["B"]) * weightsDict[mcBgFile]
+    compileOrLoad = "load"
+  response = {}
+  response["S"]=sTotal
+  response["B"]=bTotal
+  response["compileOrLoad"] = "load"
+  return response
+
 def fillGraph(graph, dataOrMCbg, mass, masswindow, compileOrLoad):
-  normalizations = {}
-  normalizations["750"] = 1
-  normalizations["1000"] = .8
-  normalizations["2000"] = .1
-  normalizations["3000"] = .1
+  normalizations = getNormalizations()
   if not (dataOrMCbg == "data" or dataOrMCbg == "MC"):
     exit("Please pick either 'data' or 'MC' for the background")
-  for i in range(-10, 110):
-    cutValue = i/float(100)
+  #for i in range(-10, 110):
+  #  cutValue = i/float(100)
+  for i in range(-1, 11):
+    cutValue = i/float(10)
     if dataOrMCbg == "data":
       sOverRootB = calcSoverRootB(inSampleFile, mass, masswindow, cutValue, compileOrLoad)["SoverRootB"]
       #print "      S/sqrt(B) is %s" % str(sOverRootB)
@@ -65,52 +88,37 @@ def fillGraph(graph, dataOrMCbg, mass, masswindow, compileOrLoad):
         graph.SetPoint(graph.GetN(), cutValue, sOverRootB)
       compileOrLoad = "load"
     elif dataOrMCbg == "MC":
-      weightsDict = getWeightsDict(small3sDir)
-      #print "the weights dictionary is:"
-      #print weightsDict
-      small3ddDict = getSmall3ddTreeDict(ddDir)
-      sTotal = 0
-      bTotal = 0
-      for mcBgFile in weightsDict.keys():
-        unweightedSoverRootBinfo = calcSoverRootB(small3ddDict[mcBgFile], mass, masswindow, cutValue, compileOrLoad)
-        #print "S for %s is: %s" % (mcBgFile, str(unweightedSoverRootBinfo["S"]))
-        sTotal = unweightedSoverRootBinfo["S"]
-        #print "unweighted B for %s is: %s" % (mcBgFile, str(unweightedSoverRootBinfo["B"]))
-        #print "weight is %s" % str(weightsDict[mcBgFile])
-        bTotal += float(unweightedSoverRootBinfo["B"]) * weightsDict[mcBgFile]
-        compileOrLoad="load"
+      bgMCsOverRootBinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, cutValue, compileOrLoad)
+      compileOrLoad=bgMCsOverRootBinfo["compileOrLoad"]
+      sTotal = bgMCsOverRootBinfo["S"]
+      bTotal = bgMCsOverRootBinfo["B"]
       #print "total B is: %f" % bTotal
       if not bTotal == 0:
         sOverRootB = sTotal / sqrt(bTotal)
         graph.SetPoint(graph.GetN(), cutValue, normalizations[mass]*sOverRootB)
-      
 
-
-
-graphs = []
-compileOrLoad = "compile" # just compile the first time
-for mass in [750, 1000, 2000, 3000]:
-  if mass == 750:
-    masswindow = [700, 800]
-  elif mass == 1000:
-    masswindow = [900, 1100]
-  elif mass == 2000:
-    masswindow = [1850, 2150]
-  elif mass == 3000:
-    masswindow = [2200, 4000]
-  graphs.append(TGraph())
-  #print "Signal mass %f" % mass
-  fillGraph(graphs[-1], dataOrMCbg, str(mass), masswindow, compileOrLoad)
-  compileOrLoad = "load"
-
-canvas = TCanvas()
-canvas.cd()
-option = ""
-x=0
-for graph in graphs:
-  graph.Draw(option)
-  graph.SetLineColor(kRed+x)
-  x += 1
-  option = "SAME"
-
+def makeOptGraphs():
+  graphs = []
+  compileOrLoad = "compile" # just compile the first time
+  massWindows = getMassWindows()
+  for mass in massWindows.keys():
+    masswindow = massWindows[mass]
+    graphs.append(TGraph())
+    #print "Signal mass %f" % mass
+    fillGraph(graphs[-1], dataOrMCbg, str(mass), masswindow, compileOrLoad)
+    compileOrLoad = "load"
+  
+  canvas = TCanvas()
+  canvas.cd()
+  option = ""
+  x=0
+  for graph in graphs:
+    graph.Draw(option)
+    graph.SetLineColor(kRed+x)
+    x += 1
+    option = "SAME"
+  outfile = TFile("HbbOpt_SoverRootB.root", "RECREATE")
+  outfile.cd()
+  canvas.Write()
+  outfile.Close()
 
