@@ -27,8 +27,9 @@ from checkCSVoptimization import fillHist_csv, getBinMap
 # #			nuisanceModel - distribution function used in integration over nuisance parameters: 
 # #					   0 - Gaussian, 1 - lognormal, 2 - gamma; (automatically 0 when gauss == true)
 
-doWhich = "CSV"
-testTwoMasses = True
+doWhich = "HbbTag"
+makePlots = False
+testTwoMasses = False
 
 ilum = 2700         # pb-1
 slum = ilum * .027  # 2.7 percent lumi uncertainty
@@ -52,9 +53,9 @@ print "overall uncertainty is: %f" % quadratureUncertainties
 
 
 
-def getExpectedLimit(small3sDir, ddDir, mass, masswindow, HbbCutValue, compileOrLoad):
+def getExpectedLimit(small3sDir, ddDir, mass, masswindow, HbbCutValue, cosThetaCutValue, compileOrLoad):
   instance("CL95cms", compileOrLoad)
-  sigAndBGinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, massWindows[mass], HbbCutValue, compileOrLoad)
+  sigAndBGinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, massWindows[mass], HbbCutValue, cosThetaCutValue, compileOrLoad)
   print "for mass %i, mass window %i - %i, cut value %f, S is %s and B is %s" % (mass, massWindows[mass][0], massWindows[mass][1], HbbCutValue, sigAndBGinfo["S"], sigAndBGinfo["B"])
   nGenEvents = getSigNevents()[str(mass)] 
   print "Number of events for signal with mass %i is %i" % (mass, nGenEvents)
@@ -77,7 +78,7 @@ small3sDir = samplesDirs["small3sDir"]
 ddDir = samplesDirs["ddDir"]
 massWindows = getMassWindows()
 
-def useHbbTag():
+def useHbbTag(cosThetaCutValue):
   if testTwoMasses:
     del massWindows[1000]
     del massWindows[2000]
@@ -90,7 +91,7 @@ def useHbbTag():
     #  HbbCutValue = i/float(20)
     for i in range(0, 4):
       HbbCutValue = (i/float(3))-0.1
-      expectedLimitInfo = getExpectedLimit(small3sDir, ddDir, mass, massWindows[mass], HbbCutValue, compileOrLoad)
+      expectedLimitInfo = getExpectedLimit(small3sDir, ddDir, mass, massWindows[mass], HbbCutValue, cosThetaCutValue, compileOrLoad)
       compileOrLoad = expectedLimitInfo["compileOrLoad"]
       expectedLimit = expectedLimitInfo["expectedLimit"]
       graphs[-1].SetPoint(graphs[-1].GetN(), HbbCutValue, expectedLimit)
@@ -169,9 +170,9 @@ def makeCSVplot(mass, hist, compileOrLoad):
   
 
 
-if doWhich == "HbbTag":
-  useHbbTag()
-if doWhich == "CSV":
+if doWhich == "HbbTag" and makePlots:
+  useHbbTag(cosThetaCutValue)
+if doWhich == "CSV" and makePlots:
   compileOrLoad = "compile"
   massWindows = getMassWindows()
   for mass in massWindows.keys():
