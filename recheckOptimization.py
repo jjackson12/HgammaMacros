@@ -15,7 +15,7 @@ small3sDir = samplesDirs["small3sDir"]
 ddDir = samplesDirs["ddDir"]
 inSampleFile = samplesDirs["dataDir"]
 
-def calcSoverRootB(sampleFile, mass, masswindow, cutValue, compileOrLoad):
+def calcSoverRootB(sampleFile, mass, masswindow, HbbCutValue, cosThetaCutValue, compileOrLoad):
 
   sigWindowTreeName = "higgs"  # just keep the name from TTree::MakeClass(), don't give it a special name
   instance(sigWindowTreeName, compileOrLoad)
@@ -28,15 +28,15 @@ def calcSoverRootB(sampleFile, mass, masswindow, cutValue, compileOrLoad):
   
   lowerMassBound = masswindow[0]
   upperMassBound = masswindow[1]
-  #print "    For Hbb working point %f:" % cutValue
-  nSignalWindowEventsInBkg = sigWindowBg.Loop(cutValue, lowerMassBound, upperMassBound)
+  #print "    For Hbb working point %f:" % HbbCutValue
+  nSignalWindowEventsInBkg = sigWindowBg.Loop(HbbCutValue, cosThetaCutValue, lowerMassBound, upperMassBound)
   #print "      Number of signal window events in background is: %i" % nSignalWindowEventsInBkg
   
   mcSigFileName = "~/physics/may5_Hgamma_btagging/Hgamma_m%s_may5.root"%mass
   mcSigFile = TFile(mcSigFileName)
   sigWindowMCsigTree = mcSigFile.Get(sigWindowTreeName)
   sigWindowMCsig = higgs(sigWindowMCsigTree)
-  nSignalWindowEventsInMCsig = sigWindowMCsig.Loop(cutValue, lowerMassBound, upperMassBound)
+  nSignalWindowEventsInMCsig = sigWindowMCsig.Loop(HbbCutValue, cosThetaCutValue, lowerMassBound, upperMassBound)
   #print "      Number of signal window events in signal MC is: %i" % nSignalWindowEventsInMCsig
 
   if not nSignalWindowEventsInBkg==0:
@@ -52,7 +52,7 @@ def calcSoverRootB(sampleFile, mass, masswindow, cutValue, compileOrLoad):
   response["SoverRootB"] = sOverRootB
   return response
 
-def MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, cutValue, compileOrLoad):
+def MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, HbbCutValue, cosThetaCutValue, compileOrLoad):
   weightsDict = getWeightsDict(small3sDir)
   #print "the weights dictionary is:"
   #print weightsDict
@@ -60,7 +60,7 @@ def MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, cutValue, compileOrLo
   sTotal = 0
   bTotal = 0
   for mcBgFile in weightsDict.keys():
-    unweightedSoverRootBinfo = calcSoverRootB(small3ddDict[mcBgFile], mass, masswindow, cutValue, compileOrLoad)
+    unweightedSoverRootBinfo = calcSoverRootB(small3ddDict[mcBgFile], mass, masswindow, HbbCutValue, cosThetaCutValue, compileOrLoad)
     #print "S for %s is: %s" % (mcBgFile, str(unweightedSoverRootBinfo["S"]))
     sTotal = unweightedSoverRootBinfo["S"]
     #print "unweighted B for %s is: %s" % (mcBgFile, str(unweightedSoverRootBinfo["B"]))
@@ -73,31 +73,32 @@ def MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, cutValue, compileOrLo
   response["compileOrLoad"] = "load"
   return response
 
-def fillGraph(graph, dataOrMCbg, mass, masswindow, compileOrLoad):
+def fillGraph(graph, dataOrMCbg, mass, masswindow, cosThetaCutValue, compileOrLoad):
   normalizations = getNormalizations()
   if not (dataOrMCbg == "data" or dataOrMCbg == "MC"):
     exit("Please pick either 'data' or 'MC' for the background")
-  #for i in range(-10, 110):
-  #  cutValue = i/float(100)
-  for i in range(-1, 11):
-    cutValue = i/float(10)
+  for i in range(-10, 110):
+    HbbCutValue = i/float(100)
+  #for i in range(-1, 11):
+  #  HbbCutValue = i/float(10)
     if dataOrMCbg == "data":
-      sOverRootB = calcSoverRootB(inSampleFile, mass, masswindow, cutValue, compileOrLoad)["SoverRootB"]
+      sOverRootB = calcSoverRootB(inSampleFile, mass, masswindow, HbbCutValue, cosThetaCutValue, compileOrLoad)["SoverRootB"]
       #print "      S/sqrt(B) is %s" % str(sOverRootB)
       if (isinstance(sOverRootB, float)):
-        graph.SetPoint(graph.GetN(), cutValue, sOverRootB)
+        graph.SetPoint(graph.GetN(), HbbCutValue, sOverRootB)
       compileOrLoad = "load"
     elif dataOrMCbg == "MC":
-      bgMCsOverRootBinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, cutValue, compileOrLoad)
+      bgMCsOverRootBinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, HbbCutValue, cosThetaCutValue, compileOrLoad)
       compileOrLoad=bgMCsOverRootBinfo["compileOrLoad"]
       sTotal = bgMCsOverRootBinfo["S"]
       bTotal = bgMCsOverRootBinfo["B"]
       #print "total B is: %f" % bTotal
       if not bTotal == 0:
         sOverRootB = sTotal / sqrt(bTotal)
-        graph.SetPoint(graph.GetN(), cutValue, normalizations[mass]*sOverRootB)
+        graph.SetPoint(graph.GetN(), HbbCutValue, normalizations[mass]*sOverRootB)
 
 def makeOptGraphs():
+  cosThetaCutValue = 0.7
   graphs = []
   compileOrLoad = "compile" # just compile the first time
   massWindows = getMassWindows()
@@ -105,7 +106,7 @@ def makeOptGraphs():
     masswindow = massWindows[mass]
     graphs.append(TGraph())
     #print "Signal mass %f" % mass
-    fillGraph(graphs[-1], dataOrMCbg, str(mass), masswindow, compileOrLoad)
+    fillGraph(graphs[-1], dataOrMCbg, str(mass), masswindow, cosThetaCutValue, compileOrLoad)
     compileOrLoad = "load"
   
   canvas = TCanvas()
@@ -121,4 +122,3 @@ def makeOptGraphs():
   outfile.cd()
   canvas.Write()
   outfile.Close()
-

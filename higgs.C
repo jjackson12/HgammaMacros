@@ -7,7 +7,7 @@
 // Class for doing quick counting experiments on the "ddTrees" from the treeChecker macro.
 // John Hakala, 5/11/2016
 
-int higgs::Loop(float HbbCutValue, float lowerMassBound, float upperMassBound)
+int higgs::Loop(float HbbCutValue, float cosThetaCutValue, float lowerMassBound, float upperMassBound)
 {
    if (fChain == 0) return -1;
    Long64_t nentries = fChain->GetEntriesFast();
@@ -20,7 +20,8 @@ int higgs::Loop(float HbbCutValue, float lowerMassBound, float upperMassBound)
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       if (  Cut(ientry, HbbCutValue) < 0 
          || phJetInvMass_pruned_higgs < lowerMassBound 
-         || phJetInvMass_pruned_higgs > upperMassBound ) continue;
+         || phJetInvMass_pruned_higgs > upperMassBound 
+         || cosThetaStar>cosThetaCutValue) continue;
       ++nHiggsJets;
    }
    return nHiggsJets;
@@ -28,8 +29,8 @@ int higgs::Loop(float HbbCutValue, float lowerMassBound, float upperMassBound)
 
 Int_t higgs::Cut(Long64_t entry, float HbbCutValue) {
   //LoadTree(entry);
-  if (   cosThetaStar<-0.627*TMath::ATan((-0.005938*phJetInvMass_pruned_higgs)+3.427)
-     &&  leadingPhAbsEta          < 1.4442
+  if (    // cosThetaStar<-0.627*TMath::ATan((-0.005938*phJetInvMass_pruned_higgs)+3.427) &&
+         leadingPhAbsEta          < 1.4442
      &&  higgsJet_pruned_abseta   < 2.2
      &&  phJetDeltaR_higgs        > 1.1
      &&  higgsJet_HbbTag >= HbbCutValue ) return 1;

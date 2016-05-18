@@ -3,6 +3,7 @@ from ROOT import *
 from pyrootTools import instance
 from HgParameters import getSamplesDirs, getNormalizations, getMassWindows, getSigNevents
 from recheckOptimization import MCbgGetSoverRootB
+from checkCSVoptimization import fillHist_csv, getBinMap
 
 
 # Script for checking Hgamma expected limits
@@ -26,7 +27,8 @@ from recheckOptimization import MCbgGetSoverRootB
 # #			nuisanceModel - distribution function used in integration over nuisance parameters: 
 # #					   0 - Gaussian, 1 - lognormal, 2 - gamma; (automatically 0 when gauss == true)
 
-testTwoMasses = False
+doWhich = "CSV"
+testTwoMasses = True
 
 ilum = 2700         # pb-1
 slum = ilum * .027  # 2.7 percent lumi uncertainty
@@ -74,40 +76,114 @@ samplesDirs = getSamplesDirs()
 small3sDir = samplesDirs["small3sDir"]
 ddDir = samplesDirs["ddDir"]
 massWindows = getMassWindows()
-if testTwoMasses:
-  del massWindows[1000]
-  del massWindows[2000]
-graphs = []
-compileOrLoad = "compile"
-for mass in massWindows.keys():
-  graphs.append(TGraph())
-  graphs[-1].SetNameTitle(str(mass), str(mass))
-  for i in range(-10, 20):        # TODO make some reasonable way of chosing the step size and bounds for the optimization scan
-    HbbCutValue = i/float(20)
-  #for i in range(0, 4):
-  #  HbbCutValue = (i/float(3))-0.1
-    expectedLimitInfo = getExpectedLimit(small3sDir, ddDir, mass, massWindows[mass], HbbCutValue, compileOrLoad)
-    compileOrLoad = expectedLimitInfo["compileOrLoad"]
-    expectedLimit = expectedLimitInfo["expectedLimit"]
-    graphs[-1].SetPoint(graphs[-1].GetN(), HbbCutValue, expectedLimit)
 
-iColor = 0
-canvas = TCanvas()
-canvas.cd()
-for graph in graphs:
-  graph.SetLineColor(kRed + 2*iColor)
-  if iColor == 0:
-    graph.Draw()
-  else:
-    graph.Draw("SAME")
-  print "Just drew graph with title %s and name %s" % (graph.GetTitle(), graph.GetName())
-  print graph
-  iColor+=1
+def useHbbTag():
+  if testTwoMasses:
+    del massWindows[1000]
+    del massWindows[2000]
+  graphs = []
+  compileOrLoad = "compile"
+  for mass in massWindows.keys():
+    graphs.append(TGraph())
+    graphs[-1].SetNameTitle(str(mass), str(mass))
+    #for i in range(-10, 20):        # TODO make some reasonable way of chosing the step size and bounds for the optimization scan
+    #  HbbCutValue = i/float(20)
+    for i in range(0, 4):
+      HbbCutValue = (i/float(3))-0.1
+      expectedLimitInfo = getExpectedLimit(small3sDir, ddDir, mass, massWindows[mass], HbbCutValue, compileOrLoad)
+      compileOrLoad = expectedLimitInfo["compileOrLoad"]
+      expectedLimit = expectedLimitInfo["expectedLimit"]
+      graphs[-1].SetPoint(graphs[-1].GetN(), HbbCutValue, expectedLimit)
+  
+  iColor = 0
+  canvas = TCanvas()
+  canvas.cd()
+  for graph in graphs:
+    graph.SetLineColor(kRed + 2*iColor)
+    if iColor == 0:
+      graph.Draw()
+    else:
+      graph.Draw("SAME")
+    print "Just drew graph with title %s and name %s" % (graph.GetTitle(), graph.GetName())
+    print graph
+    iColor+=1
+  
+  canvas.Update()
+  outfile = TFile("HbbOpt_cl95.root", "RECREATE")
+  canvas.Write()
+  outfile.Close()
 
-canvas.Update()
-outfile = TFile("HbbOpt_cl95.root", "RECREATE")
-canvas.Write()
-outfile.Close()
+
+def getExpectedLimit_csv(ss, bb, mass):
+  nGenEvents = getSigNevents()[str(mass)] 
+  print "Number of events for signal with mass %i is %i" % (mass, nGenEvents)
+  eff = ss/nGenEvents
+  seff = eff*quadratureUncertainties
+  bck = bb
+  sbck = bck*quadratureUncertainties
+  expectedLimit = CLA(ilum, slum, eff, seff, bck, sbck)
+  #print "expected limit is: %f" % expectedLimit
+  compileOrLoad = "load"
+  response = {}
+  response["compileOrLoad"]="load"
+  response["expectedLimit"]=expectedLimit
+  return response
+  
+def useCSV(mass, compileOrLoad):
+  dummyHist = TH1F()
+  binMap = getBinMap()
+  instance("CL95cms", compileOrLoad)
+  compileOrLoad = "load"
+  massWindows = getMassWindows()
+  #print "massWindows dict is:"
+  #print massWindows
+  #print "massWindows[750] is: ",
+  #print massWindows[750]
+  #print "binMap dict is:"
+  #print binMap
+  response = {}
+  for workingPoint in binMap.keys():
+    #print "massWindows[mass] = massWindows[%i] is: " % mass
+    #print massWindows[mass]
+    csvInfo = fillHist_csv(dummyHist, "MC", mass, massWindows[mass], compileOrLoad)
+    compileOrLoad = "load"
+    print "for mass %i, working point %s" % (mass, workingPoint)
+    print csvInfo  
+    sAndBinfo = csvInfo[workingPoint]
+    expectedLimitInfo = getExpectedLimit_csv(sAndBinfo["S"], sAndBinfo["B"], mass)
+    #print "expected limit is %f" % expectedLimitInfo["expectedLimit"]
+    response[workingPoint]=expectedLimitInfo["expectedLimit"]
+    response[compileOrLoad]=expectedLimitInfo["compileOrLoad"]
+  return response
+
+def makeCSVplot(mass, hist, compileOrLoad):
+  expectedLimits = useCSV(mass, compileOrLoad)
+  binMap = getBinMap()
+  print "binMap has keys:"
+  print binMap.keys()
+  for workingPoint in binMap.keys():
+    print "Test loop: %s" % workingPoint
+    print "for mass %i, working point %s (bin %i, %i), expected limit is %f" % (mass, workingPoint, binMap[workingPoint][0], binMap[workingPoint][1], expectedLimits[workingPoint])
+    hist.SetBinContent(binMap[workingPoint][0], binMap[workingPoint][1], expectedLimits[workingPoint])
+  return "load"
+  
 
 
-
+if doWhich == "HbbTag":
+  useHbbTag()
+if doWhich == "CSV":
+  compileOrLoad = "compile"
+  massWindows = getMassWindows()
+  for mass in massWindows.keys():
+    hist = TH2F("M=%i GeV"%mass, "M=%i GeV"%mass, 3, 0, 3, 3, 0, 3)
+    compileOrLoad = makeCSVplot(mass, hist, compileOrLoad)
+    gStyle.SetPalette(kRainBow)
+    canvas = TCanvas()
+    canvas.cd()
+    hist.SetContour(1000)
+    hist.Draw("COLZ")
+    gStyle.SetPalette(kRainBow)
+    canvas.Update()
+    outfile = TFile("HgCsvOpt_M%i.root"%mass, "RECREATE")
+    canvas.Write()
+    outfile.Close()
