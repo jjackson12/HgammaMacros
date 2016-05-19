@@ -27,8 +27,8 @@ from checkCSVoptimization import fillHist_csv, getBinMap
 # #			nuisanceModel - distribution function used in integration over nuisance parameters: 
 # #					   0 - Gaussian, 1 - lognormal, 2 - gamma; (automatically 0 when gauss == true)
 
-doWhich = "HbbTag"
-makePlots = False
+doWhich = "CSV"
+makePlots = True
 testTwoMasses = False
 
 ilum = 2700         # pb-1
@@ -176,7 +176,7 @@ if doWhich == "CSV" and makePlots:
   compileOrLoad = "compile"
   massWindows = getMassWindows()
   for mass in massWindows.keys():
-    hist = TH2F("M=%i GeV"%mass, "M=%i GeV"%mass, 3, 0, 3, 3, 0, 3)
+    hist = TH2F("M=%i GeV"%mass, "M=%i GeV"%mass, 4, 0, 4, 4, 0, 4)
     compileOrLoad = makeCSVplot(mass, hist, compileOrLoad)
     gStyle.SetPalette(kRainBow)
     canvas = TCanvas()

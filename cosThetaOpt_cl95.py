@@ -15,6 +15,10 @@ def scanCuts(mass, graph, compileOrLoad):
     expectedLimitInfo = getExpectedLimit(samplesDirs["small3sDir"], samplesDirs["ddDir"], mass, massWindows[mass], 0.9, cutValue, compileOrLoad)
     graph.SetPoint(graph.GetN(), cutValue, expectedLimitInfo["expectedLimit"])
     compileOrLoad = "load"
+    outfile = TFile("graph_m%i.root"%mass, "RECREATE")
+    outfile.cd()
+    graph.Write()
+    outfile.Close()
   return compileOrLoad
 
     
@@ -24,7 +28,7 @@ compileOrLoad = "compile"
 first = True
 gStyle.SetPalette(kRainBow)
 canvas = TCanvas()
-outfile=TFile("cl95_cosThetaOpt.root", "RECREATE")
+canvas.cd()
 iColor = 0
 for mass in massWindows.keys():
   graphs.append(TGraph())
@@ -37,6 +41,6 @@ for mass in massWindows.keys():
     first = False
   else:
     graphs[-1].Draw("SAME")
-  graphs[-1].Write()
-canvas.Write()
-outfile.Close()
+  
+canvas.Draw()
+canvas.SaveAs("testcanvas.pdf")

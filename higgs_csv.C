@@ -21,6 +21,22 @@ int higgs_csv::Loop(string workingpoint, float lowerMassBound, float upperMassBo
       if (  Cut(ientry) < 0 
          || phJetInvMass_pruned_higgs < lowerMassBound 
          || phJetInvMass_pruned_higgs > upperMassBound ) continue;
+      if (workingpoint == "nonenone" && leading < -999) { 
+          cout << "The subjets csv values are: " << leading << ", " << subleading << endl;
+          continue;
+      }
+      if (workingpoint == "loosenone" && leading < 0.605) {
+         //cout << "The subjets csv values are: " << leading << ", " << subleading << endl;
+         continue;
+      }
+      if (workingpoint == "mediumnone" && leading < 0.89) {
+         //cout << "The subjets csv values are: " << leading << ", " << subleading << endl;
+         continue;
+      }
+      if (workingpoint == "tightnone" && leading < 0.97) {
+         //cout << "The subjets csv values are: " << leading << ", " << subleading << endl;
+         continue;
+      }
       if (workingpoint == "looseloose"
           && !loose_loose) continue;
       if (workingpoint == "mediumloose"
@@ -33,6 +49,21 @@ int higgs_csv::Loop(string workingpoint, float lowerMassBound, float upperMassBo
           && !tight_medium) continue;
       if (workingpoint == "tighttight"
           && !tight_tight) continue;
+      else if (   workingpoint != "nonenone"
+               && workingpoint != "loosenone"
+               && workingpoint != "mediumnone"
+               && workingpoint != "tightnone"
+               && workingpoint != "looseloose"
+               && workingpoint != "mediumloose"
+               && workingpoint != "tightloose"
+               && workingpoint != "mediummedium"
+               && workingpoint != "tightmedium"
+               && workingpoint != "tighttight" 
+              ) {
+                  cout << "forgot to pick a valid csv working point!" << endl;
+                  return 0;
+                }
+          
       ++nHiggsJets;
    }
    return nHiggsJets;

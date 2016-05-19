@@ -51,12 +51,16 @@ def calcSoverRootB_csv(sampleFile, mass, masswindow, workingPoint, compileOrLoad
 
 def getBinMap():
   binMap = {}
-  binMap["looseloose"]=[1,1]
-  binMap["mediumloose"]=[2,1]
-  binMap["tightloose"]=[3,1]
-  binMap["mediummedium"]=[2,2]
-  binMap["tightmedium"]=[3,2]
-  binMap["tighttight"]=[3,3]
+  binMap["nonenone"]=[1,1]
+  binMap["loosenone"]=[2,1]
+  binMap["mediumnone"]=[3,1]
+  binMap["tightnone"]=[4,1]
+  binMap["looseloose"]=[2,2]
+  binMap["mediumloose"]=[3,2]
+  binMap["tightloose"]=[4,2]
+  binMap["mediummedium"]=[3,3]
+  binMap["tightmedium"]=[4,3]
+  binMap["tighttight"]=[4,4]
   return binMap
 
 def fillHist_csv(hist, dataOrMCbg, mass, masswindow, compileOrLoad):
@@ -124,7 +128,7 @@ def makePlot():
       masswindow = [1850, 2150]
     elif mass == 3000:
       masswindow = [2200, 4000]
-    hists.append(TH2I("M=%i"%mass, "M=%i"%mass, 3, 0, 3, 3, 0, 3))
+    hists.append(TH2I("M=%i"%mass, "M=%i"%mass, 4, 0, 4, 4, 0, 4))
   
     #print "Signal mass %f" % mass
     print "For mass %i:" % mass
