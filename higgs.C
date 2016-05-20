@@ -7,7 +7,7 @@
 // Class for doing quick counting experiments on the "ddTrees" from the treeChecker macro.
 // John Hakala, 5/11/2016
 
-int higgs::Loop(float HbbCutValue, float cosThetaCutValue, float lowerMassBound, float upperMassBound)
+int higgs::Loop(float HbbCutValue, float cosThetaCutValue,  float pToverMcutValue, float lowerMassBound, float upperMassBound)
 {
    if (fChain == 0) return -1;
    Long64_t nentries = fChain->GetEntriesFast();
@@ -21,7 +21,8 @@ int higgs::Loop(float HbbCutValue, float cosThetaCutValue, float lowerMassBound,
       if (  Cut(ientry, HbbCutValue) < 0 
          || phJetInvMass_pruned_higgs < lowerMassBound 
          || phJetInvMass_pruned_higgs > upperMassBound 
-         || cosThetaStar>cosThetaCutValue) continue;
+         || cosThetaStar>cosThetaCutValue 
+         || phPtOverMgammaj<pToverMcutValue) continue;
       ++nHiggsJets;
    }
    return nHiggsJets;

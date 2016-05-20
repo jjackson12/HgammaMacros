@@ -27,9 +27,9 @@ from checkCSVoptimization import fillHist_csv, getBinMap
 # #			nuisanceModel - distribution function used in integration over nuisance parameters: 
 # #					   0 - Gaussian, 1 - lognormal, 2 - gamma; (automatically 0 when gauss == true)
 
-doWhich = "CSV"
-makePlots = True
-testTwoMasses = False
+doWhich = "HbbTag"
+makePlots = False
+testTwoMasses = True
 
 ilum = 2700         # pb-1
 slum = ilum * .027  # 2.7 percent lumi uncertainty
@@ -53,10 +53,10 @@ print "overall uncertainty is: %f" % quadratureUncertainties
 
 
 
-def getExpectedLimit(small3sDir, ddDir, mass, masswindow, HbbCutValue, cosThetaCutValue, compileOrLoad):
+def getExpectedLimit(small3sDir, ddDir, mass, masswindow, HbbCutValue, cosThetaCutValue, pToverMcutValue, compileOrLoad):
   instance("CL95cms", compileOrLoad)
-  sigAndBGinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, massWindows[mass], HbbCutValue, cosThetaCutValue, compileOrLoad)
-  print "for mass %i, mass window %i - %i, cut value %f, S is %s and B is %s" % (mass, massWindows[mass][0], massWindows[mass][1], HbbCutValue, sigAndBGinfo["S"], sigAndBGinfo["B"])
+  sigAndBGinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, massWindows[mass], HbbCutValue, cosThetaCutValue, pToverMcutValue, compileOrLoad)
+  print "for mass %i, mass window %i - %i, Hbb cut value %f, cosTheta cut value %f, pT/M cut value %f: S is %s and B is %s" % (mass, massWindows[mass][0], massWindows[mass][1], HbbCutValue, cosThetaCutValue, pToverMcutValue, sigAndBGinfo["S"], sigAndBGinfo["B"])
   nGenEvents = getSigNevents()[str(mass)] 
   print "Number of events for signal with mass %i is %i" % (mass, nGenEvents)
   eff = sigAndBGinfo["S"]/nGenEvents
