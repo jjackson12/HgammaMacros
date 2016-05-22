@@ -14,6 +14,8 @@ samplesDirs = getSamplesDirs()
 small3sDir = samplesDirs["small3sDir"]
 ddDir = samplesDirs["ddDir"]
 inSampleFile = samplesDirs["dataDir"]
+doOptGraphs = False
+doComparisonGraphs = True
 
 def calcSoverRootB(sampleFile, mass, masswindow, HbbCutValue, cosThetaCutValue, pToverMcutValue, compileOrLoad):
 
@@ -97,6 +99,54 @@ def fillGraph(graph, dataOrMCbg, mass, masswindow, cosThetaCutValue, pToverMcutV
         sOverRootB = sTotal / sqrt(bTotal)
         graph.SetPoint(graph.GetN(), HbbCutValue, normalizations[mass]*sOverRootB)
 
+def fillGraph_pToverM(graph, dataOrMCbg, mass, masswindow, HbbCutValue, compileOrLoad):
+  cosThetaCutValue = 2
+  normalizations = getNormalizations()
+  if not (dataOrMCbg == "data" or dataOrMCbg == "MC"):
+    exit("Please pick either 'data' or 'MC' for the background")
+  for i in range(0, 100):
+    pToverMcutValue=i/float(100)
+    if dataOrMCbg == "data":
+      sOverRootB = calcSoverRootB(inSampleFile, mass, masswindow, HbbCutValue, cosThetaCutValue, pToverMcutValue, compileOrLoad)["SoverRootB"]
+      #print "      S/sqrt(B) is %s" % str(sOverRootB)
+      if (isinstance(sOverRootB, float)):
+        graph.SetPoint(graph.GetN(), HbbCutValue, sOverRootB)
+      compileOrLoad = "load"
+    elif dataOrMCbg == "MC":
+      bgMCsOverRootBinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, HbbCutValue, cosThetaCutValue, pToverMcutValue, compileOrLoad)
+      compileOrLoad=bgMCsOverRootBinfo["compileOrLoad"]
+      sTotal = bgMCsOverRootBinfo["S"]
+      bTotal = bgMCsOverRootBinfo["B"]
+      #print "total B is: %f" % bTotal
+      if not bTotal == 0:
+        sOverRootB = sTotal / sqrt(bTotal)
+        graph.SetPoint(graph.GetN(), pToverMcutValue, normalizations[mass]*sOverRootB)
+        print "filling pToverM graph with point (%f, %f)" % (pToverMcutValue, normalizations[mass]*sOverRootB)
+
+def fillGraph_cosTheta(graph, dataOrMCbg, mass, masswindow, HbbCutValue, compileOrLoad):
+  pToverMcutValue = 0
+  normalizations = getNormalizations()
+  if not (dataOrMCbg == "data" or dataOrMCbg == "MC"):
+    exit("Please pick either 'data' or 'MC' for the background")
+  for i in range(0, 100):
+    cosThetaCutValue=i/float(100)
+    if dataOrMCbg == "data":
+      sOverRootB = calcSoverRootB(inSampleFile, mass, masswindow, HbbCutValue, cosThetaCutValue, pToverMcutValue, compileOrLoad)["SoverRootB"]
+      #print "      S/sqrt(B) is %s" % str(sOverRootB)
+      if (isinstance(sOverRootB, float)):
+        graph.SetPoint(graph.GetN(), HbbCutValue, sOverRootB)
+      compileOrLoad = "load"
+    elif dataOrMCbg == "MC":
+      bgMCsOverRootBinfo = MCbgGetSoverRootB(small3sDir, ddDir, mass, masswindow, HbbCutValue, cosThetaCutValue, pToverMcutValue, compileOrLoad)
+      compileOrLoad=bgMCsOverRootBinfo["compileOrLoad"]
+      sTotal = bgMCsOverRootBinfo["S"]
+      bTotal = bgMCsOverRootBinfo["B"]
+      #print "total B is: %f" % bTotal
+      if not bTotal == 0:
+        sOverRootB = sTotal / sqrt(bTotal)
+        graph.SetPoint(graph.GetN(), cosThetaCutValue, normalizations[mass]*sOverRootB)
+        print "filling cosTheta graph with point (%f, %f)" % (cosThetaCutValue, normalizations[mass]*sOverRootB)
+
 def makeOptGraphs():
   cosThetaCutValue = 0.7
   graphs = []
@@ -122,3 +172,34 @@ def makeOptGraphs():
   outfile.cd()
   canvas.Write()
   outfile.Close()
+
+def makeCosThetaPtOverMcomparisonGraphs():
+  HbbCutValue = 0.9
+  pToverMgraphs = []
+  cosThetagraphs = []
+  compileOrLoad = "compile"
+  massWindows = getMassWindows()
+  massWindows.pop(2000)
+  massWindows.pop(3000)
+  for mass in massWindows.keys():
+    pToverMgraphs.append(TGraph())
+    pToverMgraphs[-1].SetNameTitle("M=%i_pToverM"%mass, "M=%i GeV, p_{T}/M_{j#gamma} cuts"%mass)
+    fillGraph_pToverM(pToverMgraphs[-1], dataOrMCbg, str(mass), massWindows[mass], 0.9, compileOrLoad)
+    compileOrLoad = "load"
+    cosThetagraphs.append(TGraph())
+    cosThetagraphs[-1].SetNameTitle("M=%i_cosTheta"%mass, "M=%i GeV, cos(#theta*) cuts"%mass)
+    fillGraph_cosTheta(cosThetagraphs[-1], dataOrMCbg, str(mass), massWindows[mass], 0.9, compileOrLoad)
+    compileOrLoad = "load"
+  outfile = TFile("cosTheta_pToverM_lowMasses_HbbCut0.9.root", "RECREATE")
+  outfile.cd()
+  for graph in pToverMgraphs:
+    graph.Write()
+  for graph in cosThetagraphs:
+    graph.Write()
+  outfile.Close()
+
+
+if doOptGraphs:
+  makeOptGraphs()
+if doComparisonGraphs:
+  makeCosThetaPtOverMcomparisonGraphs()
