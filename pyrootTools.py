@@ -42,3 +42,11 @@ def instance(macroName, opt):
      if(debugFlag): print "\n%s %s successfully."%(macroName, pastTense)
      if opt=="compile":
         gSystem.Load('%s_C'%macroName)
+
+
+def drawInNewCanvas(tree, var, comboCut, label):
+  newCan = TCanvas()
+  newCan.cd()
+  tree.Draw(var, comboCut)
+  newCan.Print("%s_%s.pdf"%(var, label))
+

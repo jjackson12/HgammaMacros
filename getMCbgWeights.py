@@ -3,6 +3,9 @@ from ROOT import *
 # janky methods for mapping the samples cross sections, the sample's small3 tree, and the sample's treeChecker tree
 # John Hakala 5/11/2016
 
+def getFilePrefix():
+  return "/ddTree_june29_small3_"
+
 def getMCbgSampleXsects():
   sampleXsects = {}
   sampleXsects["GJets_HT-100To200.root"    ] = 9238*1.8
@@ -46,6 +49,12 @@ def getWeightsDict(small3Dir):
     expectedEvents = lumi*sampleXsects[key]
     weight = expectedEvents/sampleEvents[key]
     sampleWeights[key] = weight
+  signalWeight = .5
+  sampleWeights["signal-750.root"] = signalWeight
+  sampleWeights["signal-1.root"]   = signalWeight
+  sampleWeights["signal-2.root"]   = signalWeight
+  sampleWeights["signal-3.root"]   = signalWeight
+  sampleWeights["SilverJson.root"] = 1
 
   return sampleWeights
 
