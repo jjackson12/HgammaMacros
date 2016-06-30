@@ -30,7 +30,7 @@ print dataFile
 higgsTree = dataFile.Get("higgs")
 print "higgsTree: ",
 print higgsTree
-drawInNewCanvas(higgsTree, "phJetInvMass_pruned_higgs", notagComboCut,    "notag")
-drawInNewCanvas(higgsTree, "phJetInvMass_pruned_higgs", antibtagComboCut, "antibtag")
-drawInNewCanvas(higgsTree, "phJetInvMass_pruned_higgs", btagComboCut,     "btag")
+drawWithCutInNewCanvas(higgsTree, "phJetInvMass_pruned_higgs", notagComboCut,    "notag")
+drawWithCutInNewCanvas(higgsTree, "phJetInvMass_pruned_higgs", antibtagComboCut, "antibtag")
+drawWithCutInNewCanvas(higgsTree, "phJetInvMass_pruned_higgs", btagComboCut,     "btag")
 
