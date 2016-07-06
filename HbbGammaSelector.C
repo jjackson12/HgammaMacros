@@ -193,6 +193,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
       }
       // Check if this event has a photon passing ID requirements
       phoIsTight = (ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=barrel_phoMVAcut && ph_passEleVeto->at(iPh)==1) || (ph_mvaCat->at(iPh)==1 && ph_mvaVal->at(iPh)>=endcap_phoMVAcut && ph_passEleVeto->at(iPh)==1);
+      //phoEtaPassesCut = ( abs(ph_eta->at(iPh))<phoEtaMax ) && ((abs(ph_eta->at(iPh)) < 1.4442) || abs(ph_eta->at(iPh))>1.566 );
       phoEtaPassesCut = ( abs(ph_eta->at(iPh))<phoEtaMax ) && ((abs(ph_eta->at(iPh)) < 1.4442) || abs(ph_eta->at(iPh))>1.566 );
       phoPtPassesCut = ( ph_pt->at(iPh)>100 );
       eventHasTightPho |= (phoIsTight && phoEtaPassesCut && phoPtPassesCut) ;      
@@ -335,6 +336,8 @@ void HbbGammaSelector::Loop(string outputFileName) {
             higgsJetPhiHist->Fill(higgsJet_pruned.Phi());
             phPtOverMgammajHist->Fill(phPtOverMgammaj);
             cosThetaStarHist->Fill(cosThetaStar);
+            std::cout << EVENT_run  << " : "  << EVENT_lumiBlock << " : "  << EVENT_event << std::endl;
+
           }
           outputTreeHiggs->Fill();
         }
