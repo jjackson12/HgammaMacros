@@ -23,6 +23,7 @@ int higgs::Loop(float HbbCutValue, float cosThetaCutValue,  float pToverMcutValu
          || phJetInvMass_pruned_higgs > upperMassBound 
          || cosThetaStar>cosThetaCutValue 
          || phPtOverMgammaj<pToverMcutValue) continue;
+      cout << runNo << " : " << lumiNo  << " : " << eventNo << endl;
       ++nHiggsJets;
    }
    return nHiggsJets;
@@ -34,7 +35,7 @@ Int_t higgs::Cut(Long64_t entry, float HbbCutValue) {
          leadingPhAbsEta          < 1.4442
      &&  higgsJet_pruned_abseta   < 2.2
      &&  phJetDeltaR_higgs        > 1.1
-     &&  higgsJet_HbbTag >= HbbCutValue ) return 1;
+     &&  higgsJet_HbbTag <= HbbCutValue ) return 1;
 
   else return -1;
 }

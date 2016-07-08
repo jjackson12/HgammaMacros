@@ -46,6 +46,9 @@ public :
    Float_t         phJetDeltaR_higgs;
    Float_t         higgsJet_pruned_abseta;
    Float_t         higgsPrunedJetCorrMass;
+   Int_t         eventNo;
+   Int_t         lumiNo;
+   Int_t         runNo;
 
    // List of branches
    TBranch        *b_higgsJett2t1;   //!
@@ -70,6 +73,9 @@ public :
    TBranch        *b_phJetDeltaR_higgs;   //!
    TBranch        *b_higgsJet_pruned_abseta;   //!
    TBranch        *b_higgsPrunedJetCorrMass;   //!
+   TBranch        *b_eventNo;   //!
+   TBranch        *b_lumiNo;   //!
+   TBranch        *b_runNo;   //!
 
    higgs(TTree *tree=0);
    virtual ~higgs();
@@ -163,6 +169,9 @@ void higgs::Init(TTree *tree)
    fChain->SetBranchAddress("phJetDeltaR_higgs", &phJetDeltaR_higgs, &b_phJetDeltaR_higgs);
    fChain->SetBranchAddress("higgsJet_pruned_abseta", &higgsJet_pruned_abseta, &b_higgsJet_pruned_abseta);
    fChain->SetBranchAddress("higgsPrunedJetCorrMass", &higgsPrunedJetCorrMass, &b_higgsPrunedJetCorrMass);
+   fChain->SetBranchAddress("eventNo", &eventNo, &b_eventNo);
+   fChain->SetBranchAddress("lumiNo", &lumiNo, &b_lumiNo);
+   fChain->SetBranchAddress("runNo", &runNo, &b_runNo);
    Notify();
 }
 

@@ -322,6 +322,23 @@ void HbbGammaSelector::Loop(string outputFileName) {
           leadingPhAbsEta = std::abs(leadingPhEta);
           phJetInvMass_pruned_higgs=sumVector.M();
           phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_pruned);
+          if (
+            (EVENT_run == 259862  && EVENT_lumiBlock == 401   && EVENT_event == 696959109   ) ||
+            (EVENT_run == 260431  && EVENT_lumiBlock == 336   && EVENT_event == 568597926   ) ||
+            (EVENT_run == 260627  && EVENT_lumiBlock ==1056   && EVENT_event == 1953180760  )
+          ){
+          std::cout << EVENT_run  << " : "  << EVENT_lumiBlock << " : "  << EVENT_event << std::endl;
+
+            cout << "   higgsJett2t1              : " <<  higgsJett2t1 << endl;
+            cout << "   boostedPho                : " <<  boostedPho << endl;
+            cout << "   boostedJet                : " <<  boostedJet << endl;
+            cout << "   cosThetaStar              : " <<  cosThetaStar << endl;
+            cout << "   phPtOverMgammaj           : " <<  phPtOverMgammaj << endl;
+            cout << "   higgsJet_pruned_abseta    : " <<  higgsJet_pruned_abseta<< endl;
+            cout << "   leadingPhAbsEta           : " <<  leadingPhAbsEta << endl;
+            cout << "   phJetInvMass_pruned_higgs : " <<  phJetInvMass_pruned_higgs<< endl;
+            cout << "   phJetDeltaR_higgs         : " <<  phJetDeltaR_higgs<< endl;
+          }
           if ( phJetDeltaR_higgs>0.8) {
             phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(higgsJet_pruned));
             phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - higgsJet_pruned.Eta() ));
@@ -336,7 +353,6 @@ void HbbGammaSelector::Loop(string outputFileName) {
             higgsJetPhiHist->Fill(higgsJet_pruned.Phi());
             phPtOverMgammajHist->Fill(phPtOverMgammaj);
             cosThetaStarHist->Fill(cosThetaStar);
-            std::cout << EVENT_run  << " : "  << EVENT_lumiBlock << " : "  << EVENT_event << std::endl;
 
           }
           outputTreeHiggs->Fill();
