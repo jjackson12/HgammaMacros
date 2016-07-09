@@ -16,6 +16,7 @@ def makeHist(tree, hist, var, key, region):
     outFile.cd()
     for histBin in range (0,hist.GetXaxis().GetNbins()):
       hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
+    hist.Draw()
     hist.Write()
     outFile.Close()
     return True
