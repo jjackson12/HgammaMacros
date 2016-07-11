@@ -224,7 +224,8 @@ void HbbGammaSelector::Loop(string outputFileName) {
       // Get leading jet variables, requiring tight jet ID
         tmpLeadingJet.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
 
-        if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) {
+        //if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) {
+        if (true) {
           eventHasHiggsPrunedJet = true;
           if(debugFlag && dumpEventInfo) {
             cout << "    pruned higgs AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
@@ -239,14 +240,16 @@ void HbbGammaSelector::Loop(string outputFileName) {
             eventHasHiggsPrunedJet = false;
           }
           else {
-            higgsPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
-            higgsJet_HbbTag = jetAK8_Hbbtag->at(iJet);
-            pruned_higgsJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-            pruned_higgsJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-            pruned_higgsJetTau3 = jetAK8_tau3 ->  at(iJet) ;
-            higgs_csvValues = getLeadingSubjets(subjetAK8_pruned_csv->at(iJet));
-            //cout << "    for higgs jet, get csv values " << higgs_csvValues.leading << ", " << higgs_csvValues.subleading << endl;
-            higgs_subjetCutDecisions = getSubjetCutDecisions(higgs_csvValues);
+            if  ( abs(jetAK8_pruned_massCorr->at(iJet) - 125) <  abs(higgsPrunedJetCorrMass -  125 )) {
+              higgsPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+              higgsJet_HbbTag = jetAK8_Hbbtag->at(iJet);
+              pruned_higgsJetTau1 = jetAK8_tau1 ->  at(iJet) ;
+              pruned_higgsJetTau2 = jetAK8_tau2 ->  at(iJet) ;
+              pruned_higgsJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+              higgs_csvValues = getLeadingSubjets(subjetAK8_pruned_csv->at(iJet));
+              //cout << "    for higgs jet, get csv values " << higgs_csvValues.leading << ", " << higgs_csvValues.subleading << endl;
+              higgs_subjetCutDecisions = getSubjetCutDecisions(higgs_csvValues);
+            }
           }
         }
           if (jetAK8_pruned_massCorr->at(iJet) >sidebandThreeCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandThreeCutHigh && !eventHasSideLowThreePrunedJet) {
@@ -322,23 +325,23 @@ void HbbGammaSelector::Loop(string outputFileName) {
           leadingPhAbsEta = std::abs(leadingPhEta);
           phJetInvMass_pruned_higgs=sumVector.M();
           phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_pruned);
-          if (
-            (EVENT_run == 259862  && EVENT_lumiBlock == 401   && EVENT_event == 696959109   ) ||
-            (EVENT_run == 260431  && EVENT_lumiBlock == 336   && EVENT_event == 568597926   ) ||
-            (EVENT_run == 260627  && EVENT_lumiBlock ==1056   && EVENT_event == 1953180760  )
-          ){
-          std::cout << EVENT_run  << " : "  << EVENT_lumiBlock << " : "  << EVENT_event << std::endl;
+          //if (
+          //  (EVENT_run == 259862  && EVENT_lumiBlock == 401   && EVENT_event == 696959109   ) ||
+          //  (EVENT_run == 260431  && EVENT_lumiBlock == 336   && EVENT_event == 568597926   ) ||
+          //  (EVENT_run == 260627  && EVENT_lumiBlock ==1056   && EVENT_event == 1953180760  )
+          //){
+          //std::cout << EVENT_run  << " : "  << EVENT_lumiBlock << " : "  << EVENT_event << std::endl;
 
-            cout << "   higgsJett2t1              : " <<  higgsJett2t1 << endl;
-            cout << "   boostedPho                : " <<  boostedPho << endl;
-            cout << "   boostedJet                : " <<  boostedJet << endl;
-            cout << "   cosThetaStar              : " <<  cosThetaStar << endl;
-            cout << "   phPtOverMgammaj           : " <<  phPtOverMgammaj << endl;
-            cout << "   higgsJet_pruned_abseta    : " <<  higgsJet_pruned_abseta<< endl;
-            cout << "   leadingPhAbsEta           : " <<  leadingPhAbsEta << endl;
-            cout << "   phJetInvMass_pruned_higgs : " <<  phJetInvMass_pruned_higgs<< endl;
-            cout << "   phJetDeltaR_higgs         : " <<  phJetDeltaR_higgs<< endl;
-          }
+          //  cout << "   higgsJett2t1              : " <<  higgsJett2t1 << endl;
+          //  cout << "   boostedPho                : " <<  boostedPho << endl;
+          //  cout << "   boostedJet                : " <<  boostedJet << endl;
+          //  cout << "   cosThetaStar              : " <<  cosThetaStar << endl;
+          //  cout << "   phPtOverMgammaj           : " <<  phPtOverMgammaj << endl;
+          //  cout << "   higgsJet_pruned_abseta    : " <<  higgsJet_pruned_abseta<< endl;
+          //  cout << "   leadingPhAbsEta           : " <<  leadingPhAbsEta << endl;
+          //  cout << "   phJetInvMass_pruned_higgs : " <<  phJetInvMass_pruned_higgs<< endl;
+          //  cout << "   phJetDeltaR_higgs         : " <<  phJetDeltaR_higgs<< endl;
+          //}
           if ( phJetDeltaR_higgs>0.8) {
             phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(higgsJet_pruned));
             phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - higgsJet_pruned.Eta() ));

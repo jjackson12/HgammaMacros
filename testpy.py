@@ -6,8 +6,7 @@ from HgCuts import *
 
 makeHists = False
 
-
-def getRangesDict():
+def getHiggsRangesDict():
   rangesDict = {}
   rangesDict["cosThetaStar"] = [0., 1.]
   rangesDict["phPtOverMgammaj"]=[0., 2.]
@@ -15,13 +14,50 @@ def getRangesDict():
   rangesDict["leadingPhPt"]=[0., 4000.]
   rangesDict["leadingPhAbsEta"]=[0.,4.]
   rangesDict["leadingPhEta"]=[-4.,4.]
-  for label in ["higgs", "sideLowThree", "sideLowFour"]:
-    rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-    rangesDict["%sJet_pruned_abseta"%label]=[0., 4.]
-    rangesDict["%sJett2t1"%label]=[-1, 1]
-    rangesDict["%sPrunedJetCorrMass"%label]=[0,4000]
-    rangesDict["phJetDeltaR_%s"%label]=[0,15]
-    rangesDict["phJetInvMass_pruned_%s"%label]=[0,8000]
+  label = "higgs"
+  rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
+  rangesDict["%sJet_pruned_abseta"%label]=[0., 4.]
+  rangesDict["%sJett2t1"%label]=[-1, 1]
+  rangesDict["%sPrunedJetCorrMass"%label]=[0,4000]
+  rangesDict["phJetDeltaR_%s"%label]=[0,15]
+  rangesDict["phJetInvMass_pruned_%s"%label]=[0,8000]
+  return rangesDict
+
+def getSidebandRangesDict(sideband):
+  rangesDict = {}
+  if sideband == "100110":
+    index="Four"
+  elif sideband == "5070":
+    index="Three"
+  else:
+    print "Invalid sideband! Either 100110 or 5070."
+    quit()
+  label="sideLow%s"%index
+  rangesDict["cosThetaStar"] = [0., 1.]
+  rangesDict["phPtOverMgammaj"]=[0., 2.]
+  rangesDict["leadingPhPhi"]=[-3.5, 3.5]
+  rangesDict["leadingPhPt"]=[0., 4000.]
+  rangesDict["leadingPhAbsEta"]=[0.,4.]
+  rangesDict["leadingPhEta"]=[-4.,4.]
+  rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
+  rangesDict["%sJet_pruned_abseta"%label]=[0., 4.]
+  rangesDict["%sJett2t1"%label]=[-1, 1]
+  rangesDict["%sPrunedJetCorrMass"%label]=[0,4000]
+  rangesDict["phJetDeltaR_%s"%label]=[0,15]
+  rangesDict["phJetInvMass_pruned_%s"%label]=[0,8000]
+  return rangesDict
+
+def getRangesDict():
+  rangesDict = {}
+  higgsRangesDict = getHiggsRangesDict()
+  for key in higgsRangesDict.keys():
+    rangesDict[key]=higgsRangesDict[key]
+  lowFourRangesDict = getSidebandRangesDict("100110")
+  for key in lowFourRangesDict.keys():
+    rangesDict[key]=lowFourRangesDict[key]
+  lowThreeRangesDict = getSidebandRangesDict("5070")
+  for ranges in lowThreeRangesDict.keys():
+    rangesDict[key]=lowThreeRangesDict[key]
   return rangesDict
 
   
