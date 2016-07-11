@@ -224,7 +224,8 @@ void HbbGammaSelector::Loop(string outputFileName) {
       // Get leading jet variables, requiring tight jet ID
         tmpLeadingJet.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
 
-        if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) {
+        //if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) {
+        if (!eventHasHiggsPrunedJet) {
           eventHasHiggsPrunedJet = true;
           if(debugFlag && dumpEventInfo) {
             cout << "    pruned higgs AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
@@ -330,8 +331,6 @@ void HbbGammaSelector::Loop(string outputFileName) {
           std::cout << EVENT_run  << " : "  << EVENT_lumiBlock << " : "  << EVENT_event << std::endl;
 
             cout << "   higgsJett2t1              : " <<  higgsJett2t1 << endl;
-            cout << "   boostedPho                : " <<  boostedPho << endl;
-            cout << "   boostedJet                : " <<  boostedJet << endl;
             cout << "   cosThetaStar              : " <<  cosThetaStar << endl;
             cout << "   phPtOverMgammaj           : " <<  phPtOverMgammaj << endl;
             cout << "   higgsJet_pruned_abseta    : " <<  higgsJet_pruned_abseta<< endl;
