@@ -60,6 +60,19 @@ def getRangesDict():
     rangesDict[key]=lowThreeRangesDict[key]
   return rangesDict
 
+def makeHist(tree, hist, var, key, region):
+  nEntries = tree.Draw("%s>> hist"%var, getAntiBtagComboCut(region))
+  if nEntries == 0:
+    return False
+  else:
+    outFile = TFile("weightedMCbgHists/%s_%s_%s"%(key, region, var), "RECREATE")
+    outFile.cd()
+    for histBin in range (0,hist.GetXaxis().GetNbins()):
+      hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
+    hist.Draw()
+    hist.Write()
+    outFile.Close()
+    return True
   
 def makeAllHists():
   sampleDirs = getSamplesDirs()

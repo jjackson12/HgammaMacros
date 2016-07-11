@@ -4,7 +4,7 @@ from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["HgammaFlatTuples"] = "~/physics/nTuplizerStep/Hgamma_flatTuples"
+  response["HgammaFlatTuples"] = "~/WZgammaMacros/HgSig_flatTuples/"
   response["small3sDir"]       = "~/physics/nTuplizerStep/small3s"
   response["ddDir"]            = "~/physics/treeCheckerStep/newDDs_Sig_July5"
   response["dataDir"]          = "~/physics/treeCheckerStep/newDDs_Sig_July5/ddTree_june29_small3_SilverJson.root"
