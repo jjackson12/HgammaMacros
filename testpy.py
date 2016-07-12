@@ -4,7 +4,6 @@ from getMCbgWeights import *
 from HgParameters import *
 from HgCuts import *
 
-makeHists = False
 
 def getHiggsRangesDict():
   rangesDict = {}
@@ -56,8 +55,10 @@ def getRangesDict():
   for key in lowFourRangesDict.keys():
     rangesDict[key]=lowFourRangesDict[key]
   lowThreeRangesDict = getSidebandRangesDict("5070")
-  for ranges in lowThreeRangesDict.keys():
+  print lowThreeRangesDict
+  for key in lowThreeRangesDict.keys():
     rangesDict[key]=lowThreeRangesDict[key]
+  print rangesDict
   return rangesDict
 
 def makeHist(tree, hist, var, key, region):
@@ -68,18 +69,20 @@ def makeHist(tree, hist, var, key, region):
     outFile = TFile("weightedMCbgHists/%s_%s_%s"%(key, region, var), "RECREATE")
     outFile.cd()
     for histBin in range (0,hist.GetXaxis().GetNbins()):
-      hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
+      hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])
     hist.Draw()
     hist.Write()
     outFile.Close()
     return True
-  
+
 def makeAllHists():
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["small3sDir"])
   regions = ["higgs", "side100110", "side5070"]
   rangesDict = getRangesDict()
+  nonEmptyFilesDict={}
   for key in getWeightsDict(getSamplesDirs()["small3sDir"]).keys():
+    print "making all histograms for: %s" % key
     for region in regions:
       pre = getFilePrefix()
       tfile = TFile(sampleDirs["ddDir"]+pre+key)
@@ -91,14 +94,15 @@ def makeAllHists():
       for var in varNames:
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
         nEntries = tree.Draw("%s>> hist_%s_%s_%s"%(var, var, region, key), getAntiBtagComboCut(region))
+        filename = "weightedMCbgHists/%s_%s_%s"%(var, region, key)
         if not nEntries == 0:
-            outFile = TFile("weightedMCbgHists/%s_%s_%s"%(var, region, key), "RECREATE")
-            outFile.cd()
-            for histBin in range (0,hist.GetXaxis().GetNbins()):
-              hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
-            hist.Write()
-            outFile.Close()
-
-if makeHists:
-  print "making all histograms!"
-  makeAllHists()
+          outFile = TFile(filename, "RECREATE")
+          outFile.cd()
+          for histBin in range(0,hist.GetXaxis().GetNbins()):
+            hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
+          hist.Write()
+          outFile.Close()
+          nonEmptyFilesDict[filename]="nonempty"
+        else:
+          nonEmptyFilesDict[filename]="empty"
+  return nonEmptyFilesDict
