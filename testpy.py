@@ -15,8 +15,8 @@ def getHiggsRangesDict():
   rangesDict["leadingPhEta"]=[-4.,4.]
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-  rangesDict["%sJet_pruned_abseta"%label]=[0., 4.]
-  rangesDict["%sJett2t1"%label]=[-1, 1]
+  rangesDict["%sJet_pruned_abseta"%label]=[0., 2.5]
+  rangesDict["%sJett2t1"%label]=[0, 1]
   rangesDict["%sPrunedJetCorrMass"%label]=[0,4000]
   rangesDict["phJetDeltaR_%s"%label]=[0,15]
   rangesDict["phJetInvMass_pruned_%s"%label]=[0,8000]
@@ -75,7 +75,7 @@ def makeHist(tree, hist, var, key, region):
     outFile.Close()
     return True
 
-def makeAllHists():
+def makeAllHists(cutName):
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["small3sDir"])
   regions = ["higgs", "side100110", "side5070"]
@@ -93,8 +93,16 @@ def makeAllHists():
           varNames.append(branch.GetName())
       for var in varNames:
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
-        nEntries = tree.Draw("%s>> hist_%s_%s_%s"%(var, var, region, key), getAntiBtagComboCut(region))
-        filename = "weightedMCbgHists/%s_%s_%s"%(var, region, key)
+        if   cutName=="btag":
+          cut = getBtagComboCut(region)
+        elif cutName=="antibtag":
+          cut = getAntiBtagComboCut(region)
+        elif cutName == "nobtag":
+          cut = getNoBtagComboCut(region)
+        else:
+          print "Invalid category! Must be btag, antibtag, or nobtag."
+        nEntries = tree.Draw("%s>> hist_%s_%s_%s"%(var, var, region, key), cut)
+        filename = "weightedMCbgHists_%s/%s_%s_%s"%(cutName, var, region, key)
         if not nEntries == 0:
           outFile = TFile(filename, "RECREATE")
           outFile.cd()
