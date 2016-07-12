@@ -31,17 +31,23 @@ print mcBgWeights
 treekey="higgs"
 nonEmptyFilesDict = makeAllHists()
 print nonEmptyFilesDict
+thstacks=[]
+cans=[]
 for varkey in higgsRangesDict.keys():
-  thisStack = THStack()
+#for varkey in [higgsRangesDict.keys()[0]]:
+  cans.append(TCanvas())
+  thstacks.append(THStack())
   for filekey in mcBgWeights.keys():
     filename = varkey+"_"+treekey+"_"+filekey
     if nonEmptyFilesDict["weightedMCbgHists/" + filename]=="nonempty":
       tfile = TFile(histsDir + filename)
       hist = tfile.Get("hist_%s" % filename)
-      thisStack.Add(hist)
-  outfileName = "stack_%s.root"%varkey
-  outfile=TFile("outfileName", "RECREATE")
-  outfile.cd()
-  thisStack.Write()
-  outfile.Close()
+      thstacks[-1].Add(hist)
+  #outfileName = "stack_%s.root"%varkey
+  #outfile=TFile("outfileName", "RECREATE")
+  #outfile.cd()
+  #thisStack.Write()
+  #outfile.Close()
+  cans[-1].cd()
+  thstacks[-1].Draw()
 
