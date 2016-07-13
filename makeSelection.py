@@ -7,7 +7,7 @@ from HgCuts import getDefaultCuts, combineCuts
 samplesDirs = getSamplesDirs()
 dataFileName = samplesDirs["dataDir"]
 
-cuts = getDefaultCuts()
+cuts = getDefaultCuts("higgs")
 
 btagCuts = copy.deepcopy(cuts)
 btagCuts.pop("antibtag")

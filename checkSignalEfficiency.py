@@ -4,6 +4,7 @@ from HgCuts import *
 from pyrootTools import *
 
 samplesDirs = getSamplesDirs()
+cutValues = getCutValues()
 cutsDict = getDefaultCuts("higgs")
 for cut in cutsDict.keys():
   print "cut: ", 
@@ -24,7 +25,7 @@ for mass in getNormalizations().keys():
 for key in higgsTrees.keys():
   higgsCounter = higgs(higgsTrees[key])
   print "No higgs mass window cut:"
-  nEntriesWithBtag = higgsCounter.Loop("btag", 0.9, 0.35, 1.1, 2.4, 1.4442)
+  nEntriesWithBtag = higgsCounter.Loop("btag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetEta"], cutValues["phEta"])
   print "   sample mass %s has number of entries with btagging %i" % (key, nEntriesWithBtag)
   nEntriesNoBtag = higgsCounter.Loop("nobtag", 0.9, 0.35, 1.1, 2.4, 1.4442)
   print "   sample mass %s has number of events with no btagging: %i" % (key, nEntriesNoBtag)
@@ -35,9 +36,9 @@ for key in higgsTrees.keys():
   for masswindow in [[110, 140], [90, 150], [95,145], [100,140]]:
     # higgsCounter: higgs::Loop(float HbbCutValue, float pToverMcutValue, float deltaRcutValue, float jetEtaCutValue, float phoEtaCutValue, float lowerMassBound, float upperMassBound)
     print "With higgs mass window cut [%f, %f]:"%(masswindow[0], masswindow[1])
-    nEntriesWithBtag = higgsCounter.Loop("btag", 0.9, 0.35, 1.1, 2.4, 1.4442, masswindow[0], masswindow[1])
+    nEntriesWithBtag = higgsCounter.Loop("btag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetEta"], cutValues["phEta"], masswindow[0], masswindow[1])
     print "   sample mass %s has number of entries with btagging %i" % (key, nEntriesWithBtag)
-    nEntriesNoBtag = higgsCounter.Loop("nobtag", 0.9, 0.35, 1.1, 2.4, 1.4442, masswindow[0], masswindow[1])
+    nEntriesNoBtag = higgsCounter.Loop("nobtag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetEta"], cutValues["phEta"], masswindow[0], masswindow[1])
     print "   sample mass %s has number of events with no btagging: %i" % (key, nEntriesNoBtag)
     btagEfficiency = nEntriesWithBtag/float(nEntriesNoBtag)
     print "   N-1 btagging efficiency is: %f" % btagEfficiency

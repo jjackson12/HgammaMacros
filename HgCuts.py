@@ -5,7 +5,7 @@ from ROOT import TCut
 def getCutValues():
   cutValues = {}
   cutValues["minInvMass"] = 600
-  cutValues["photonEta"]  = 1.4442
+  cutValues["phEta"]  = 1.4442
   cutValues["jetEta"]     = 2.2
   cutValues["deltaR"]     = 1.1
   cutValues["ptOverM"]    = 0.35
@@ -23,7 +23,7 @@ def getDefaultCuts(region):
     cutValues = getCutValues()
 
     cuts = {} 
-    cuts["phEta"]    = TCut( "leadingPhAbsEta<%f"           % cutValues["photonEta"]  )
+    cuts["phEta"]    = TCut( "leadingPhAbsEta<%f"           % cutValues["phEta"]  )
     cuts["ptOverM"]  = TCut( "phPtOverMgammaj>%f"           % cutValues["ptOverM"]    )
     if region is "higgs":
       cuts["turnon"]   = TCut( "phJetInvMass_pruned_higgs>%f" % cutValues["minInvMass"] )
