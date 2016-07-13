@@ -4,12 +4,13 @@ from ROOT import TCut
 
 def getCutValues():
   cutValues = {}
-  cutValues["minInvMass"] = 600
-  cutValues["phEta"]  = 1.4442
-  cutValues["jetEta"]     = 2.2
-  cutValues["deltaR"]     = 1.1
-  cutValues["ptOverM"]    = 0.35
-  cutValues["Hbb"]        = 0.9
+  cutValues["minInvMass"]  = 600.0
+  cutValues["phEta"]       = 1.4442
+  cutValues["jetEta"]      = 2.2
+  cutValues["deltaR"]      = 1.1
+  cutValues["ptOverM"]     = 0.35
+  cutValues["Hbb"]         = 0.9
+  cutValues["higgsWindow"] = [110.0, 140.0]
   return cutValues
 
 
@@ -26,11 +27,13 @@ def getDefaultCuts(region):
     cuts["phEta"]    = TCut( "leadingPhAbsEta<%f"           % cutValues["phEta"]  )
     cuts["ptOverM"]  = TCut( "phPtOverMgammaj>%f"           % cutValues["ptOverM"]    )
     if region is "higgs":
-      cuts["turnon"]   = TCut( "phJetInvMass_pruned_higgs>%f" % cutValues["minInvMass"] )
-      cuts["deltaR"]   = TCut( "phJetDeltaR_higgs>%f"         % cutValues["deltaR"]     )
-      cuts["jetEta"]   = TCut( "higgsJet_pruned_abseta<%f"    % cutValues["jetEta"]     )
-      cuts["btag"]     = TCut( "higgsJet_HbbTag>%f"           % cutValues["Hbb"]        )
-      cuts["antibtag"] = TCut( "higgsJet_HbbTag<%f"           % cutValues["Hbb"]        )
+      cuts["turnon"]   = TCut( "phJetInvMass_pruned_higgs>%f"      % cutValues["minInvMass"]     )
+      cuts["deltaR"]   = TCut( "phJetDeltaR_higgs>%f"              % cutValues["deltaR"]         )
+      cuts["jetEta"]   = TCut( "higgsJet_pruned_abseta<%f"         % cutValues["jetEta"]         )
+      cuts["btag"]     = TCut( "higgsJet_HbbTag>%f"                % cutValues["Hbb"]            )
+      cuts["antibtag"] = TCut( "higgsJet_HbbTag<%f"                % cutValues["Hbb"]            )
+      cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
+      cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
     elif region is "side5070" or "side100110":
       if region is "side5070":
         index = "Three"

@@ -84,7 +84,7 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual int     Loop(std::string category, float HbbCutValue,  float pToverMcutValue, float deltaRcutValue, float jetEtaCutValue, float phoEtaCutValue, float jetMassLowerBound=0, float jetMassUpperBound=std::numeric_limits<float>::infinity(), float lowerMassBound=0, float upperMassBound=std::numeric_limits<float>::infinity());
+   virtual int     Loop(std::string category, float HbbCutValue,  float pToverMcutValue, float deltaRcutValue, float jetEtaCutValue, float phoEtaCutValue, float jetMassLowerBound=0, float jetMassUpperBound=std::numeric_limits<float>::infinity(), float lowerMassBound=600, float upperMassBound=std::numeric_limits<float>::infinity());
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };

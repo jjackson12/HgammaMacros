@@ -5,7 +5,9 @@ from HgParameters import *
 from HgCuts import getDefaultCuts, combineCuts
 
 samplesDirs = getSamplesDirs()
-dataFileName = samplesDirs["dataDir"]
+#dataFileName = samplesDirs["dataDir"]
+mass = "1000"
+sampleFileName="%s/newerDD_Hgamma_m%s.root" % (samplesDirs["ddDir"], mass)
 
 cuts = getDefaultCuts("higgs")
 
@@ -24,10 +26,10 @@ notagCuts.pop("btag")
 notagComboCut = combineCuts(notagCuts)
 print notagComboCut
 
-dataFile = TFile(dataFileName)
-print "datafile %s:" % dataFileName,
-print dataFile
-higgsTree = dataFile.Get("higgs")
+sampleFile = TFile(sampleFileName)
+print "sampleFileName %s:" % sampleFileName,
+print sampleFile
+higgsTree = sampleFile.Get("higgs")
 print "higgsTree: ",
 print higgsTree
 drawWithCutInNewCanvas(higgsTree, "phJetInvMass_pruned_higgs", notagComboCut,    "notag")
