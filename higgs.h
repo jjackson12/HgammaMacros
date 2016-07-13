@@ -11,6 +11,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <limits>
 
 // Header file for the classes stored in the TTree if any.
 
@@ -24,7 +25,7 @@ public :
    // Declaration of leaf types
    Float_t         higgsJett2t1;
    Float_t         higgsJet_HbbTag;
-   Float_t         test_looseloose;
+   //Float_t         test_looseloose;
  //treeChecker::leadingSubjets *higgs_csvValues;
    Float_t         leading;
    Float_t         subleading;
@@ -35,7 +36,7 @@ public :
    Bool_t          tight_loose;
    Bool_t          tight_medium;
    Bool_t          tight_tight;
-   Bool_t          higgs_looseloose;
+   //Bool_t          higgs_looseloose;
    Float_t         cosThetaStar;
    Float_t         phPtOverMgammaj;
    Float_t         leadingPhEta;
@@ -46,14 +47,14 @@ public :
    Float_t         phJetDeltaR_higgs;
    Float_t         higgsJet_pruned_abseta;
    Float_t         higgsPrunedJetCorrMass;
-   Int_t         eventNo;
-   Int_t         lumiNo;
-   Int_t         runNo;
+   //Int_t         eventNo;
+   //Int_t         lumiNo;
+   //Int_t         runNo;
 
    // List of branches
    TBranch        *b_higgsJett2t1;   //!
    TBranch        *b_higgsJet_HbbTag;   //!
-   TBranch        *b_test_looseloose;   //!
+   //TBranch        *b_test_looseloose;   //!
    TBranch        *b_higgs_csvValues_leading;   //!
    TBranch        *b_higgs_csvValues_subleading;   //!
    TBranch        *b_higgs_subjetCutDecisions_loose_loose;   //!
@@ -62,7 +63,7 @@ public :
    TBranch        *b_higgs_subjetCutDecisions_tight_loose;   //!
    TBranch        *b_higgs_subjetCutDecisions_tight_medium;   //!
    TBranch        *b_higgs_subjetCutDecisions_tight_tight;   //!
-   TBranch        *b_higgs_looseloose;   //!
+   //TBranch        *b_higgs_looseloose;   //!
    TBranch        *b_cosThetaStar;   //!
    TBranch        *b_phPtOverMgammaj;   //!
    TBranch        *b_leadingPhEta;   //!
@@ -73,17 +74,17 @@ public :
    TBranch        *b_phJetDeltaR_higgs;   //!
    TBranch        *b_higgsJet_pruned_abseta;   //!
    TBranch        *b_higgsPrunedJetCorrMass;   //!
-   TBranch        *b_eventNo;   //!
-   TBranch        *b_lumiNo;   //!
-   TBranch        *b_runNo;   //!
+   //TBranch        *b_eventNo;   //!
+   //TBranch        *b_lumiNo;   //!
+   //TBranch        *b_runNo;   //!
 
    higgs(TTree *tree=0);
    virtual ~higgs();
-   virtual Int_t    Cut(Long64_t entry, float HbbCutValue);
+   virtual Int_t    Cut(Long64_t entry, std::string category, float HbbCutValue, float pToverMcutValue, float deltaRcutValue, float jetEtaCutValue, float phoEtaCutValue);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual int     Loop(float HbbCutValue, float cosThetaCutValue, float pToverMcutValue, float lowerMassBound, float upperMassBound);
+   virtual int     Loop(std::string category, float HbbCutValue,  float pToverMcutValue, float deltaRcutValue, float jetEtaCutValue, float phoEtaCutValue, float jetMassLowerBound=0, float jetMassUpperBound=std::numeric_limits<float>::infinity(), float lowerMassBound=0, float upperMassBound=std::numeric_limits<float>::infinity());
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
@@ -149,7 +150,7 @@ void higgs::Init(TTree *tree)
 
    fChain->SetBranchAddress("higgsJett2t1", &higgsJett2t1, &b_higgsJett2t1);
    fChain->SetBranchAddress("higgsJet_HbbTag", &higgsJet_HbbTag, &b_higgsJet_HbbTag);
-   fChain->SetBranchAddress("test_looseloose", &test_looseloose, &b_test_looseloose);
+   //fChain->SetBranchAddress("test_looseloose", &test_looseloose, &b_test_looseloose);
    fChain->SetBranchAddress("leading", &leading, &b_higgs_csvValues_leading);
    fChain->SetBranchAddress("subleading", &subleading, &b_higgs_csvValues_subleading);
    fChain->SetBranchAddress("loose_loose", &loose_loose, &b_higgs_subjetCutDecisions_loose_loose);
@@ -158,7 +159,7 @@ void higgs::Init(TTree *tree)
    fChain->SetBranchAddress("tight_loose", &tight_loose, &b_higgs_subjetCutDecisions_tight_loose);
    fChain->SetBranchAddress("tight_medium", &tight_medium, &b_higgs_subjetCutDecisions_tight_medium);
    fChain->SetBranchAddress("tight_tight", &tight_tight, &b_higgs_subjetCutDecisions_tight_tight);
-   fChain->SetBranchAddress("higgs_looseloose", &higgs_looseloose, &b_higgs_looseloose);
+   //fChain->SetBranchAddress("higgs_looseloose", &higgs_looseloose, &b_higgs_looseloose);
    fChain->SetBranchAddress("cosThetaStar", &cosThetaStar, &b_cosThetaStar);
    fChain->SetBranchAddress("phPtOverMgammaj", &phPtOverMgammaj, &b_phPtOverMgammaj);
    fChain->SetBranchAddress("leadingPhEta", &leadingPhEta, &b_leadingPhEta);
@@ -169,9 +170,9 @@ void higgs::Init(TTree *tree)
    fChain->SetBranchAddress("phJetDeltaR_higgs", &phJetDeltaR_higgs, &b_phJetDeltaR_higgs);
    fChain->SetBranchAddress("higgsJet_pruned_abseta", &higgsJet_pruned_abseta, &b_higgsJet_pruned_abseta);
    fChain->SetBranchAddress("higgsPrunedJetCorrMass", &higgsPrunedJetCorrMass, &b_higgsPrunedJetCorrMass);
-   fChain->SetBranchAddress("eventNo", &eventNo, &b_eventNo);
-   fChain->SetBranchAddress("lumiNo", &lumiNo, &b_lumiNo);
-   fChain->SetBranchAddress("runNo", &runNo, &b_runNo);
+   //fChain->SetBranchAddress("eventNo", &eventNo, &b_eventNo);
+   //fChain->SetBranchAddress("lumiNo", &lumiNo, &b_lumiNo);
+   //fChain->SetBranchAddress("runNo", &runNo, &b_runNo);
    Notify();
 }
 
