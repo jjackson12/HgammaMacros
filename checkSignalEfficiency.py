@@ -2,6 +2,7 @@ from ROOT import *
 from HgParameters import *
 from HgCuts import *
 from pyrootTools import *
+import copy
 # macro for rechecking signal efficiencies for H(bb)gamma
 # John Hakala, 7/13/16
 
@@ -59,7 +60,8 @@ def getSignalEfficiencies(massWindowToCheck):
       thisMassEff["antibtag"] = totalAntiBtagEfficiency
       
       if masswindow[0]==massWindowToCheck[0] and masswindow[1]==massWindowToCheck[1]:
-        efficiencies[key]=thisMassEff
+        print "writing efficiencies for massWindowToCheck = (%f, %f)" % ( massWindowToCheck[0], massWindowToCheck[1])
+        efficiencies[key]=copy.deepcopy(thisMassEff)
       
       if debugFlag:
         print "With higgs mass window cut [%f, %f]:"%(masswindow[0], masswindow[1])
@@ -72,5 +74,6 @@ def getSignalEfficiencies(massWindowToCheck):
         print "   efficiency with no btagging is: %f" % noBtagEfficiency
         print "   total btagged category signal efficiency is: %f" % totalBtagEfficiency
         print "   total anti-btagged category signal efficiency is: %f" % totalAntiBtagEfficiency
+  print efficiencies
   return efficiencies
       

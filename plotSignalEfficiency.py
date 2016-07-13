@@ -3,9 +3,11 @@ from HgParameters import getNormalizations
 from checkSignalEfficiency import getSignalEfficiencies
 
 massWindowToCheck = [110, 140]
+#massWindowToCheck = [90, 150]
+
 signalEfficiencies = getSignalEfficiencies(massWindowToCheck)
 "plotting signal efficiencies for masswindow (%f, %f)" % (massWindowToCheck[0], massWindowToCheck[1])
-outfile = TFile("efficienciesGraphs.root", "RECREATE")
+outfile = TFile("efficienciesGraphs_masswindow_%f-%f.root"%(massWindowToCheck[0], massWindowToCheck[1]), "RECREATE")
 outfile.cd()
 
 canvases = []
