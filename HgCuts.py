@@ -1,6 +1,7 @@
-# functions to define the selection cuts for 
 import copy
 from ROOT import TCut
+# functions to define the selection cuts for H(bb)Gamma 
+# John Hakala 7/13/16
 
 def getCutValues():
   cutValues = {}

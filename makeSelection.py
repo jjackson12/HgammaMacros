@@ -4,6 +4,9 @@ from pyrootTools import *
 from HgParameters import *
 from HgCuts import getDefaultCuts, combineCuts
 
+# macro for plotting post-selection for H(bb)gamma
+# John Hakala 7/13/16
+
 samplesDirs = getSamplesDirs()
 #dataFileName = samplesDirs["dataDir"]
 mass = "1000"
