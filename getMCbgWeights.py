@@ -4,7 +4,7 @@ from ROOT import *
 # John Hakala 5/11/2016
 
 def getFilePrefix():
-  return "/ddTree_june29_small3_"
+  return "newerDD_"
 
 def getMCbgSampleXsects():
   sampleXsects = {}
@@ -37,6 +37,8 @@ def getMCbgSampleEvents(small3Dir):
     sampleEvents[key]=nEvents;
   return sampleEvents
 
+def getSignalsToInclude():
+  return ["Hgamma_m750.root", "Hgamma_m1000.root", "Hgamma_m2000.root", "Hgamma_m3000.root"]
 
 def getWeightsDict(small3Dir):
   sampleXsects = getMCbgSampleXsects() 
@@ -50,31 +52,37 @@ def getWeightsDict(small3Dir):
     weight = expectedEvents/sampleEvents[key]
     sampleWeights[key] = weight
   signalWeight = .5
-  sampleWeights["signal-750.root"] = signalWeight
-  sampleWeights["signal-1.root"]   = signalWeight
-  sampleWeights["signal-2.root"]   = signalWeight
-  sampleWeights["signal-3.root"]   = signalWeight
+  for signalToInclude in getSignalsToInclude():
+    sampleWeights[signalToInclude] = signalWeight
   sampleWeights["SilverJson.root"] = 1
 
   return sampleWeights
+
+def getMCbgWeightsDict(small3Dir):
+ weights = getWeightsDict(small3Dir) 
+ nonMCbgs = getSignalsToInclude()
+ nonMCbgs.append("SilverJson.root")
+ for nonMCbg in nonMCbgs:
+   weights.pop(nonMCbg)
+ return weights
 
 
 def getSmall3ddTreeDict(ddDir):
   s3dd = {}
   
-  s3dd["GJets_HT-100To200.root"    ] = "%s/small3_GJets_HT-100To200_may5.root"%ddDir
-  s3dd["GJets_HT-200To400.root"    ] = "%s/small3_GJets_HT-200To400_may5.root"%ddDir
-  s3dd["GJets_HT-400To600.root"    ] = "%s/small3_GJets_HT-400To600_may5.root"%ddDir
-  s3dd["GJets_HT-600ToInf.root"    ] = "%s/small3_GJets_HT-600ToInf_may5.root"%ddDir
-  s3dd["QCD_HT100to200.root"       ] = "%s/small3_QCD_HT100to200_may5.root"%ddDir
-  s3dd["QCD_HT200to300.root"       ] = "%s/small3_QCD_HT200to300_may5.root"%ddDir
-  s3dd["QCD_HT300to500.root"       ] = "%s/small3_QCD_HT300to500_may5.root"%ddDir
-  s3dd["QCD_HT500to700.root"       ] = "%s/small3_QCD_HT500to700_may5.root"%ddDir
-  s3dd["QCD_HT700to1000.root"      ] = "%s/small3_QCD_HT700to1000_may5.root"%ddDir
-  s3dd["QCD_HT1000to1500.root"     ] = "%s/small3_QCD_HT1000to1500_may5.root"%ddDir
-  s3dd["QCD_HT1500to2000.root"     ] = "%s/small3_QCD_HT1500to2000_may5.root"%ddDir
-  s3dd["QCD_HT2000toInf.root"      ] = "%s/small3_QCD_HT2000toInf_may5.root"%ddDir
-  s3dd["DYJetsToQQ_HT180.root"     ] = "%s/small3_DYJetsToQQ_HT180_may5.root"%ddDir
-  s3dd["WJetsToQQ_HT-600ToInf.root"] = "%s/small3_WJetsToQQ_HT-600ToInf_may5.root"%ddDir
+  s3dd["GJets_HT-100To200.root"    ] = "%s/newerDD_GJets_HT-100To200.root"%ddDir
+  s3dd["GJets_HT-200To400.root"    ] = "%s/newerDD_GJets_HT-200To400.root"%ddDir
+  s3dd["GJets_HT-400To600.root"    ] = "%s/newerDD_GJets_HT-400To600.root"%ddDir
+  s3dd["GJets_HT-600ToInf.root"    ] = "%s/newerDD_GJets_HT-600ToInf.root"%ddDir
+  s3dd["QCD_HT100to200.root"       ] = "%s/newerDD_QCD_HT100to200.root"%ddDir
+  s3dd["QCD_HT200to300.root"       ] = "%s/newerDD_QCD_HT200to300.root"%ddDir
+  s3dd["QCD_HT300to500.root"       ] = "%s/newerDD_QCD_HT300to500.root"%ddDir
+  s3dd["QCD_HT500to700.root"       ] = "%s/newerDD_QCD_HT500to700.root"%ddDir
+  s3dd["QCD_HT700to1000.root"      ] = "%s/newerDD_QCD_HT700to1000.root"%ddDir
+  s3dd["QCD_HT1000to1500.root"     ] = "%s/newerDD_QCD_HT1000to1500.root"%ddDir
+  s3dd["QCD_HT1500to2000.root"     ] = "%s/newerDD_QCD_HT1500to2000.root"%ddDir
+  s3dd["QCD_HT2000toInf.root"      ] = "%s/newerDD_QCD_HT2000toInf.root"%ddDir
+  s3dd["DYJetsToQQ_HT180.root"     ] = "%s/newerDD_DYJetsToQQ_HT180.root"%ddDir
+  s3dd["WJetsToQQ_HT-600ToInf.root"] = "%s/newerDD_WJetsToQQ_HT-600ToInf.root"%ddDir
 
   return s3dd

@@ -54,3 +54,33 @@ def drawWithCutInNewCanvas(tree, var, comboCut, label):
   tree.Draw(var, comboCut)
   newCan.Print("%s_%s.pdf"%(var, label))
 
+def getSortedDictKeys(inDict):
+  keyNumList = []
+  allKeysAreInts    = True
+  allKeysAreStrings = True
+  allKeysAreFloats  = True
+  for key in inDict.keys(): 
+    if type(key) is not int:
+      allKeysAreInts = False
+    else:
+      keyNumList.append(key)
+    if type(key) is not str:
+      allKeysAreStrings = False
+    else:
+      keyNumList.append(int(key))
+    if type(key) is not float:
+      allKeysAreFloats = False
+    else:
+      keyNumList.append(key)
+
+  keyNumList.sort()
+  #print "allKeysAreStrings: %r" % allKeysAreStrings
+  #print "allKeysAreInts: %r" % allKeysAreInts
+  #print "allKeysAreFloats: %r" % allKeysAreFloats
+  if allKeysAreStrings:
+    keyStrList = []
+    for key in keyNumList:
+      keyStrList.append(str(key))
+    return keyStrList
+  else:
+    return keyNumList

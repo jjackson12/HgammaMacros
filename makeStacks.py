@@ -1,7 +1,7 @@
 from ROOT import *
 from testpy import getRangesDict, getHiggsRangesDict, getSidebandRangesDict, makeAllHists
 from HgParameters import getSamplesDirs
-from getMCbgWeights import getWeightsDict
+from getMCbgWeights import getWeightsDict, getMCbgWeightsDict
 
 histsDir = "~/WZgammaMacros/weightedMCbgHists/"
 sampleDirs = getSamplesDirs()
@@ -26,12 +26,12 @@ print higgsRangesDict
 print ""
 print ""
 print "getMCbgWeights(): "
-mcBgWeights = getWeightsDict(sampleDirs["small3sDir"])
+mcBgWeights = getMCbgWeightsDict(sampleDirs["small3sDir"])
 print mcBgWeights
 treekey="higgs"
 for cutName in ["btag", "antibtag", "nobtag"]:
   nonEmptyFilesDict = makeAllHists(cutName)
-  print nonEmptyFilesDict
+  print "done making all histograms."
   thstacks=[]
   cans=[]
   hists=[]
@@ -41,7 +41,9 @@ for cutName in ["btag", "antibtag", "nobtag"]:
     cans.append(TCanvas())
     thstacks.append(THStack())
     for filekey in mcBgWeights.keys():
+      print "looking for file with filekey: %s" % filekey
       filename = varkey+"_"+treekey+"_"+filekey
+      print "expected filename is %s" % filename
       if nonEmptyFilesDict["weightedMCbgHists_%s/%s" % (cutName, filename)] == "nonempty":
         tfiles.append(TFile(histsDir + filename))
         hists.append(tfiles[-1].Get("hist_%s" % filename))

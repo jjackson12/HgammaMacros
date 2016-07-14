@@ -27,9 +27,13 @@ def getNormalizations():
 
 def getMassWindows():
   massWindows = {}
+  massWindows[650]  = [600,   700]
   massWindows[750]  = [700,   800]
   massWindows[1000] = [900,  1100]
-  massWindows[2000] = [1850, 2150]
+  massWindows[1250] = [1150,  1350]
+  massWindows[1500] = [1350, 1650]
+  massWindows[1750] = [1550, 1950]
+  massWindows[2000] = [1800, 2200]
   massWindows[3000] = [2200, 4000]
   return massWindows
 

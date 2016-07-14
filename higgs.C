@@ -19,6 +19,7 @@ int higgs::Loop(std::string category, float HbbCutValue,  float pToverMcutValue,
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
+      //if (jentry%500 == 0) cout << "Scanned " << jentry << " events." << endl;
       if (  Cut( ientry,
                  category, 
                  HbbCutValue, 
@@ -45,9 +46,9 @@ Int_t higgs::Cut(Long64_t entry, std::string category, float HbbCutValue, float 
        &&  higgsJet_pruned_abseta   < jetEtaCutValue
        &&  phJetDeltaR_higgs        > deltaRcutValue
        &&  phPtOverMgammaj          > pToverMcutValue
-       &&  (     (category == "btag" && higgsJet_HbbTag >= HbbCutValue) 
+       &&  (     (category == "btag"     && higgsJet_HbbTag >= HbbCutValue) 
               || (category == "antibtag" && higgsJet_HbbTag <= HbbCutValue)
-              || category == "nobtag" 
+              ||  category == "nobtag" 
            )
      ) return 1;
 
