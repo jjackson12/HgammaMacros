@@ -1,3 +1,3 @@
 from ROOT import *
 from recheckOptimization import makeOptGraphs
-makeOptGraphs()
+makeOptGraphs("btag", [110, 140])

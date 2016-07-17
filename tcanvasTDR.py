@@ -2,10 +2,11 @@ from ROOT import *
 import CMS_lumi, tdrstyle
 
 
-def TDRify(originalcanvas, name, outputdir):
-    originalcanvas.Draw()
-    canvas=originalcanvas.Clone()
-    print "\n --->TDRifying!"
+def TDRify(canvas, name="test", writeOutput=False, outputdir="~/physics/_tests"):
+    
+    canvas.Draw()
+    #canvas=originalcanvas.Clone()
+    #print "\n --->TDRifying!"
     tdrstyle.setTDRStyle()
     gStyle.SetOptStat(0)
     CMS_lumi.lumi_13TeV = "2.6 fb^{-1}"
@@ -51,18 +52,19 @@ def TDRify(originalcanvas, name, outputdir):
         if primitive.GetName() in ["data"]:
             primitive.SetStats(kFALSE)
     canvas.cd()
-    print "cd'd to canvas"
+    #print "cd'd to canvas"
     canvas.Update()
-    print "updated canvas"
+    #print "updated canvas"
     canvas.RedrawAxis()
-    print "redrew axis"
+    #print "redrew axis"
 
     canvas.Print("%s/%s_plot.pdf"%(outputdir, name))
-    outputFilename = "%s/%s_plot.root"%(outputdir, name)
-    outfile = TFile(outputFilename, "RECREATE")
-    outfile.cd()
-    canvas.SetName("ddPlot")
-    canvas.Write()
-    outfile.Close()
-    print " --->done TDRifying! \n\n"
-    return outputFilename
+    if writeOutput:
+      outputFilename = "%s/%s_plot.root"%(outputdir, name)
+      outfile = TFile(outputFilename, "RECREATE")
+      outfile.cd()
+      canvas.SetName("ddPlot")
+      canvas.Write()
+      outfile.Close()
+    #print " --->done TDRifying! \n\n"
+    return canvas

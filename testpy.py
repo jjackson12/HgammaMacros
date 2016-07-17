@@ -4,22 +4,24 @@ from getMCbgWeights import *
 from HgParameters import *
 from HgCuts import *
 
+printCuts = False
+
 
 def getHiggsRangesDict():
   rangesDict = {}
   rangesDict["cosThetaStar"] = [0., 1.]
   rangesDict["phPtOverMgammaj"]=[0., 2.]
   rangesDict["leadingPhPhi"]=[-3.5, 3.5]
-  rangesDict["leadingPhPt"]=[0., 4000.]
-  rangesDict["leadingPhAbsEta"]=[0.,4.]
+  rangesDict["leadingPhPt"]=[0., 2000.]
+  rangesDict["leadingPhAbsEta"]=[0.,1.6]
   rangesDict["leadingPhEta"]=[-4.,4.]
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
   rangesDict["%sJet_pruned_abseta"%label]=[0., 2.5]
   rangesDict["%sJett2t1"%label]=[0, 1]
-  rangesDict["%sPrunedJetCorrMass"%label]=[0,300]
-  rangesDict["phJetDeltaR_%s"%label]=[0,15]
-  rangesDict["phJetInvMass_pruned_%s"%label]=[0,8000]
+  rangesDict["%sPrunedJetCorrMass"%label]=[90,150]
+  rangesDict["phJetDeltaR_%s"%label]=[0,4]
+  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
   return rangesDict
 
 # this is for making stackplots from the ddTrees
@@ -36,15 +38,15 @@ def getSidebandRangesDict(sideband):
   rangesDict["cosThetaStar"] = [0., 1.]
   rangesDict["phPtOverMgammaj"]=[0., 2.]
   rangesDict["leadingPhPhi"]=[-3.5, 3.5]
-  rangesDict["leadingPhPt"]=[0., 4000.]
-  rangesDict["leadingPhAbsEta"]=[0.,4.]
+  rangesDict["leadingPhPt"]=[0., 2000.]
+  rangesDict["leadingPhAbsEta"]=[0.,1.6]
   rangesDict["leadingPhEta"]=[-4.,4.]
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-  rangesDict["%sJet_pruned_abseta"%label]=[0., 4.]
-  rangesDict["%sJett2t1"%label]=[-1, 1]
+  rangesDict["%sJet_pruned_abseta"%label]=[0., 2.5]
+  rangesDict["%sJett2t1"%label]=[0, 1]
   rangesDict["%sPrunedJetCorrMass"%label]=[0,4000]
-  rangesDict["phJetDeltaR_%s"%label]=[0,15]
-  rangesDict["phJetInvMass_pruned_%s"%label]=[0,8000]
+  rangesDict["phJetDeltaR_%s"%label]=[0,4]
+  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
   return rangesDict
 
 def getRangesDict():
@@ -100,9 +102,20 @@ def makeAllHists(cutName):
           cut = getAntiBtagComboCut(region)
         elif cutName == "nobtag":
           cut = getNoBtagComboCut(region)
+        elif cutName == "preselection":
+          cut = TCut()
         else:
           print "Invalid category! Must be btag, antibtag, or nobtag."
-        nEntries = tree.Draw("%s>> hist_%s_%s_%s"%(var, var, region, key), cut)
+        if printCuts:
+          print "got cutname %s, the cuts are:" % cutName
+          print cut
+        #if cutName is "preselection":
+        #  nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)
+        #  filename = "weightedMCbgHists_%s/%s_%s_%s"%("preselection", var, region, key)
+        #elif not preselection:
+        histName = "hist_%s_%s_%s"%(var, region, key)
+        nEntries = tree.Draw("%s>> %s"%(var, histName))
+
         filename = "weightedMCbgHists_%s/%s_%s_%s"%(cutName, var, region, key)
         if not nEntries == 0:
           outFile = TFile(filename, "RECREATE")
