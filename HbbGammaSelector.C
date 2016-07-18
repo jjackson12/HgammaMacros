@@ -144,6 +144,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
     leadingPhMVA                     = -999. ;
     leadingPhCat                     = -999. ;
     triggerFired                     = false ; 
+    requireTrigger                   = true  ;
     leadingPhAbsEta                  = -999  ;
     cosThetaStar                     =   -99 ; 
     phPtOverMgammaj                  =   -99 ; 
@@ -312,7 +313,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_higgsJetTau2/pruned_higgsJetTau1 << endl;
         }
                 
-        if (triggerFired ) {
+        if (triggerFired || !requireTrigger) {
           higgsJett2t1 = pruned_higgsJetTau2/pruned_higgsJetTau1;
           higgsJett2t1Hist->Fill(higgsJett2t1);
           boostedPho = leadingPhoton;
@@ -362,7 +363,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
         }
           higgsJet_pruned.SetT(90);
           sumVector = leadingPhoton + higgsJet_pruned;
-          if (triggerFired)phCorrJetInvMassHist_pruned_higgs->Fill(sumVector.M());
+          if (triggerFired || !requireTrigger)phCorrJetInvMassHist_pruned_higgs->Fill(sumVector.M());
       }
       if(eventHasSideLowThreePrunedJet && sideLowThreeJet_pruned.Pt() > 200 && abs(sideLowThreeJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + sideLowThreeJet_pruned;
@@ -372,7 +373,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_sideLowThreeJetTau2/pruned_sideLowThreeJetTau1 << endl;
         }
                 
-        if (triggerFired ) {
+        if (triggerFired || !requireTrigger) {
           sideLowThreeJett2t1 = pruned_sideLowThreeJetTau2/pruned_sideLowThreeJetTau1;
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));
@@ -397,7 +398,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_sideLowFourJetTau2/pruned_sideLowFourJetTau1 << endl;
         }
                 
-        if (triggerFired ) {
+        if (triggerFired || !requireTrigger) {
           sideLowFourJett2t1 = pruned_sideLowFourJetTau2/pruned_sideLowFourJetTau1;
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));

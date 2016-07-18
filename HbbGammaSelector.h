@@ -30,6 +30,7 @@ public :
 
   // Variables calculated using events
   bool  triggerFired                = false ; 
+  bool  requireTrigger              = true  ; 
   bool  trigger2_Fired              = false ; 
   bool  trigger3_Fired              = false ; 
   bool  phoIsTight                  = false ; 
