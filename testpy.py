@@ -13,14 +13,14 @@ def getHiggsRangesDict():
   rangesDict["phPtOverMgammaj"]=[0., 2.]
   rangesDict["leadingPhPhi"]=[-3.5, 3.5]
   rangesDict["leadingPhPt"]=[0., 2000.]
-  rangesDict["leadingPhAbsEta"]=[0.,1.6]
-  rangesDict["leadingPhEta"]=[-4.,4.]
+  rangesDict["leadingPhAbsEta"]=[0.,2.5]
+  rangesDict["leadingPhEta"]=[-2.8,2.8]
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-  rangesDict["%sJet_pruned_abseta"%label]=[0., 2.5]
+  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
   rangesDict["%sJett2t1"%label]=[0, 1]
-  rangesDict["%sPrunedJetCorrMass"%label]=[90,150]
-  rangesDict["phJetDeltaR_%s"%label]=[0,4]
+  rangesDict["%sPrunedJetCorrMass"%label]=[0,700]
+  rangesDict["phJetDeltaR_%s"%label]=[0,6]
   rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
   return rangesDict
 
@@ -39,13 +39,13 @@ def getSidebandRangesDict(sideband):
   rangesDict["phPtOverMgammaj"]=[0., 2.]
   rangesDict["leadingPhPhi"]=[-3.5, 3.5]
   rangesDict["leadingPhPt"]=[0., 2000.]
-  rangesDict["leadingPhAbsEta"]=[0.,1.6]
-  rangesDict["leadingPhEta"]=[-4.,4.]
+  rangesDict["leadingPhAbsEta"]=[0.,2.5]
+  rangesDict["leadingPhEta"]=[-2.8,2.8]
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-  rangesDict["%sJet_pruned_abseta"%label]=[0., 2.5]
+  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
   rangesDict["%sJett2t1"%label]=[0, 1]
-  rangesDict["%sPrunedJetCorrMass"%label]=[0,4000]
-  rangesDict["phJetDeltaR_%s"%label]=[0,4]
+  rangesDict["%sPrunedJetCorrMass"%label]=[0, 4000]
+  rangesDict["phJetDeltaR_%s"%label]=[0,6]
   rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
   return rangesDict
 

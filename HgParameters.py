@@ -45,4 +45,20 @@ def getSigNevents():
     sigNevents[mass] = hCounter.GetEntries()
   return sigNevents
 
+def getVariableDict():
+  varDict = {}
+  varDict["higgsJet_pruned_abseta"]    = "#||{#eta_{J}}"
+  varDict["leadingPhEta"]              = "#eta_{#gamma}"
+  varDict["higgsJet_HbbTag"]           = "Hb#bar{b} tagger discriminant"
+  varDict["phJetDeltaR_higgs"]         = "#DeltaR(#gamma, jet)"
+  varDict["leadingPhPt"]               = "p_{T}^{#gamma} (GeV)"
+  varDict["higgsJett2t1"]              = "#tau_{21}"
+  varDict["leadingPhAbsEta"]           = "#||{#eta_{#gamma}}"
+  varDict["phPtOverMgammaj"]           = "#frac{p_{T}^{#gamma}}{m_{#gammaJ}}"
+  varDict["leadingPhPhi"]              = "#phi_{#gamma}"
+  varDict["cosThetaStar"]              = "#||{cos(#theta*)}"
+  varDict["phJetInvMass_pruned_higgs"] = "m_{#gammaJ} (GeV)"
+  varDict["higgsPrunedJetCorrMass"]    = "m_{J}^{pruned} (GeV)"
+  return varDict
+
 
