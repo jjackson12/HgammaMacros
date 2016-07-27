@@ -21,21 +21,50 @@ def combineCuts(cutDict):
     combinedCut += cutDict[cut]
   return combinedCut
 
+def getVarKeys():
+  varKeys = {}
+  varKeys["higgsJett2t1"]              = "t2t1"
+  varKeys["higgsJet_HbbTag"]           = "btagHolder"
+  varKeys["cosThetaStar"]              = "cosThetaStar"
+  varKeys["phPtOverMgammaj"]           = "ptOverM"
+  varKeys["leadingPhEta"]              = "phEta"
+  varKeys["leadingPhPhi"]              = "phPhi"
+  varKeys["leadingPhPt"]               = "phPt"
+  varKeys["leadingPhAbsEta"]           = "phEta"
+  varKeys["phJetInvMass_pruned_higgs"] = "turnon"
+  varKeys["phJetDeltaR_higgs"]         = "deltaR"
+  varKeys["higgsJet_pruned_abseta"]    = "jetEta"
+  varKeys["higgsPrunedJetCorrMass"]    = "higgsWindow"
+  return varKeys
+
+def makeHiggsWindow():
+    cutValues = getCutValues()
+    cuts = {}
+    cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
+    cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
+    return combineCuts(cuts)
+
 def getDefaultCuts(region):
     cutValues = getCutValues()
 
     cuts = {} 
-    cuts["phEta"]    = TCut( "leadingPhAbsEta<%f"           % cutValues["phEta"]  )
-    cuts["ptOverM"]  = TCut( "phPtOverMgammaj>%f"           % cutValues["ptOverM"]    )
+    cuts["phEta"]           = TCut( "leadingPhAbsEta<%f"           % cutValues["phEta"]  )
+    cuts["ptOverM"]         = TCut( "phPtOverMgammaj>%f"           % cutValues["ptOverM"]    )
+    cuts ["phPhi"]          = TCut()
+    cuts ["t2t1"]           = TCut()
+    cuts ["btagHolder"]     = TCut()
+    cuts ["cosThetaStar"]   = TCut()
+    cuts ["phPt"]           = TCut()
     if region is "higgs":
       cuts["turnon"]   = TCut( "phJetInvMass_pruned_higgs>%f"      % cutValues["minInvMass"]     )
       cuts["deltaR"]   = TCut( "phJetDeltaR_higgs>%f"              % cutValues["deltaR"]         )
       cuts["jetEta"]   = TCut( "higgsJet_pruned_abseta<%f"         % cutValues["jetEta"]         )
       cuts["btag"]     = TCut( "higgsJet_HbbTag>%f"                % cutValues["Hbb"]            )
       cuts["antibtag"] = TCut( "higgsJet_HbbTag<%f"                % cutValues["Hbb"]            )
-      cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
-      cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
-    elif region is "side5070" or "side100110":
+      #cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
+      #cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
+      cuts["higgsWindow"]   = makeHiggsWindow()
+    elif region is "side5070" or region is "side100110":
       if region is "side5070":
         index = "Three"
       else:
@@ -54,6 +83,11 @@ def getBtagComboCut(region):
     btagCuts = copy.deepcopy(getDefaultCuts(region))
     btagCuts.pop("antibtag")
     return combineCuts(btagCuts)
+
+def getBtagComboCut(region):
+    btagCuts = copy.deepcopy(getDefaultCuts(region))
+    btagCuts.pop("antibtag")
+    return combineCuts(btagCuts)
     
 def getAntiBtagComboCut(region):
     antibtagCuts = copy.deepcopy(getDefaultCuts(region))
@@ -65,3 +99,12 @@ def getNoBtagComboCut(region):
     nobtagCuts.pop("btag")
     nobtagCuts.pop("antibtag")
     return combineCuts(nobtagCuts)
+
+def getNminus1ComboCut(region, popVar, withBtag):
+    nobtagCuts = copy.deepcopy(getDefaultCuts(region))
+    nobtagCuts.pop("antibtag")
+    if not withBtag:
+      nobtagCuts.pop("btag")
+    nobtagCuts.pop(getVarKeys()[popVar])
+    return combineCuts(nobtagCuts)
+

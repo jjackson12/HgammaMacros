@@ -22,8 +22,10 @@ def getSignalEfficiencies(massWindowToCheck):
 
   # create a dict of dd trees by masses
   for mass in getNormalizations().keys():
-    sigDDs[mass] = TFile("%s/newerDD_Hgamma_m%s.root" % (samplesDirs["ddDir"], mass))
+    sigDDs[mass] = TFile("%s/ddTree_Hgamma_m%s.root" % (samplesDirs["ddDir"], mass))
     higgsTrees[mass] = sigDDs[mass].Get("higgs")
+    print "higgsTrees:"
+    print higgsTrees
 
   # loop over all the masses
   for key in higgsTrees.keys():

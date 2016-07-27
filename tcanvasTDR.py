@@ -2,7 +2,7 @@ from ROOT import *
 import CMS_lumi, tdrstyle
 
 
-def TDRify(canvas, name="test", writeOutput=False, outputdir="~/physics/_tests"):
+def TDRify(canvas, inset=False, name="test", writeOutput=False, outputdir="~/physics/_tests"):
     
     canvas.Draw()
     #canvas=originalcanvas.Clone()
@@ -30,7 +30,7 @@ def TDRify(canvas, name="test", writeOutput=False, outputdir="~/physics/_tests")
 
     #tgraph = tfile.Get("")
     #tgraph.Draw()
-    canvas.Draw()
+    #canvas.Draw()
 
 
 
@@ -45,7 +45,8 @@ def TDRify(canvas, name="test", writeOutput=False, outputdir="~/physics/_tests")
     canvas.SetTickx(0)
     canvas.SetTicky(0)
 
-    CMS_lumi.CMS_lumi(canvas, iPeriod, iPos)
+    if not inset:
+        CMS_lumi.CMS_lumi(canvas, iPeriod, iPos)
     gStyle.SetOptStat(0)
     for primitive in canvas.GetListOfPrimitives():
         #print primitive
@@ -58,8 +59,8 @@ def TDRify(canvas, name="test", writeOutput=False, outputdir="~/physics/_tests")
     canvas.RedrawAxis()
     #print "redrew axis"
 
-    canvas.Print("%s/%s_plot.pdf"%(outputdir, name))
     if writeOutput:
+      canvas.Print("%s/%s_plot.pdf"%(outputdir, name))
       outputFilename = "%s/%s_plot.root"%(outputdir, name)
       outfile = TFile(outputFilename, "RECREATE")
       outfile.cd()

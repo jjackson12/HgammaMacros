@@ -107,6 +107,9 @@ void HbbGammaSelector::Loop(string outputFileName) {
   fChain->SetBranchStatus( "jetAK8_IDTight"           ,  1 );  
   fChain->SetBranchStatus( "jetAK8_IDTightLepVeto"    ,  1 );  
   fChain->SetBranchStatus( "jetAK8_Hbbtag"            ,  1 );  
+  fChain->SetBranchStatus("EVENT_run"      ,  1 );
+  fChain->SetBranchStatus("EVENT_lumiBlock"      ,  1 );
+  fChain->SetBranchStatus("EVENT_event"      ,  1 );
   fChain->SetBranchStatus("subjetAK8_pruned_csv"      ,  1 );
 
   if (fChain == 0) return;
@@ -225,8 +228,8 @@ void HbbGammaSelector::Loop(string outputFileName) {
       // Get leading jet variables, requiring tight jet ID
         tmpLeadingJet.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
 
-        //if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) {
-        if (true) {
+        //if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) { 
+        if (!eventHasHiggsPrunedJet) { 
           eventHasHiggsPrunedJet = true;
           if(debugFlag && dumpEventInfo) {
             cout << "    pruned higgs AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
@@ -326,23 +329,23 @@ void HbbGammaSelector::Loop(string outputFileName) {
           leadingPhAbsEta = std::abs(leadingPhEta);
           phJetInvMass_pruned_higgs=sumVector.M();
           phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_pruned);
-          //if (
-          //  (EVENT_run == 259862  && EVENT_lumiBlock == 401   && EVENT_event == 696959109   ) ||
-          //  (EVENT_run == 260431  && EVENT_lumiBlock == 336   && EVENT_event == 568597926   ) ||
-          //  (EVENT_run == 260627  && EVENT_lumiBlock ==1056   && EVENT_event == 1953180760  )
-          //){
-          //std::cout << EVENT_run  << " : "  << EVENT_lumiBlock << " : "  << EVENT_event << std::endl;
+          if (EVENT_run == 257822  && higgsPrunedJetCorrMass < 140 && higgsPrunedJetCorrMass > 110 && higgsJet_HbbTag>0.9) {
+           cout  << endl << EVENT_run << " : " << EVENT_lumiBlock << " : " << EVENT_event << " : " << endl;
+           cout << "  photon pT:" << leadingPhoton.Pt() << endl; 
+           cout << "  photon eta:" << leadingPhoton.Eta() << endl; 
+           cout << "  photon phi:" << leadingPhoton.Phi() << endl; 
+           cout << "  photon E:" << leadingPhoton.E() << endl << endl; 
+          }
+          if (dumpEventInfo) {
+            cout << "   higgsJett2t1              : " <<  higgsJett2t1 << endl;
+            cout << "   cosThetaStar              : " <<  cosThetaStar << endl;
+            cout << "   phPtOverMgammaj           : " <<  phPtOverMgammaj << endl;
+            cout << "   higgsJet_pruned_abseta    : " <<  higgsJet_pruned_abseta<< endl;
+            cout << "   leadingPhAbsEta           : " <<  leadingPhAbsEta << endl;
+            cout << "   phJetInvMass_pruned_higgs : " <<  phJetInvMass_pruned_higgs<< endl;
+            cout << "   phJetDeltaR_higgs         : " <<  phJetDeltaR_higgs<< endl << endl;
 
-          //  cout << "   higgsJett2t1              : " <<  higgsJett2t1 << endl;
-          //  cout << "   boostedPho                : " <<  boostedPho << endl;
-          //  cout << "   boostedJet                : " <<  boostedJet << endl;
-          //  cout << "   cosThetaStar              : " <<  cosThetaStar << endl;
-          //  cout << "   phPtOverMgammaj           : " <<  phPtOverMgammaj << endl;
-          //  cout << "   higgsJet_pruned_abseta    : " <<  higgsJet_pruned_abseta<< endl;
-          //  cout << "   leadingPhAbsEta           : " <<  leadingPhAbsEta << endl;
-          //  cout << "   phJetInvMass_pruned_higgs : " <<  phJetInvMass_pruned_higgs<< endl;
-          //  cout << "   phJetDeltaR_higgs         : " <<  phJetDeltaR_higgs<< endl;
-          //}
+          }
           if ( phJetDeltaR_higgs>0.8) {
             phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(higgsJet_pruned));
             phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - higgsJet_pruned.Eta() ));

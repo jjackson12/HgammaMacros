@@ -54,7 +54,7 @@ def getVariableDict():
   varDict["leadingPhPt"]               = "p_{T}^{#gamma} (GeV)"
   varDict["higgsJett2t1"]              = "#tau_{21}"
   varDict["leadingPhAbsEta"]           = "#||{#eta_{#gamma}}"
-  varDict["phPtOverMgammaj"]           = "#frac{p_{T}^{#gamma}}{m_{#gammaJ}}"
+  varDict["phPtOverMgammaj"]           = "p_{T}^{#gamma}/m_{#gammaJ}  "
   varDict["leadingPhPhi"]              = "#phi_{#gamma}"
   varDict["cosThetaStar"]              = "#||{cos(#theta*)}"
   varDict["phJetInvMass_pruned_higgs"] = "m_{#gammaJ} (GeV)"
