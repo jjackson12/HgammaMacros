@@ -4,13 +4,13 @@ from getMCbgWeights import *
 from HgParameters import *
 from HgCuts import *
 
-printCuts = False
+printCuts = True
 
 
 def getHiggsRangesDict():
   rangesDict = {}
   rangesDict["cosThetaStar"] = [0., 1.]
-  rangesDict["phPtOverMgammaj"]=[0., 2.]
+  rangesDict["phPtOverMgammaj"]=[0., 1.2]
   rangesDict["leadingPhPhi"]=[-3.5, 3.5]
   rangesDict["leadingPhPt"]=[0., 2000.]
   rangesDict["leadingPhAbsEta"]=[0.,2.5]
@@ -54,14 +54,14 @@ def getRangesDict():
   higgsRangesDict = getHiggsRangesDict()
   for key in higgsRangesDict.keys():
     rangesDict[key]=higgsRangesDict[key]
-  lowFourRangesDict = getSidebandRangesDict("100110")
-  for key in lowFourRangesDict.keys():
-    rangesDict[key]=lowFourRangesDict[key]
-  lowThreeRangesDict = getSidebandRangesDict("5070")
-  print lowThreeRangesDict
-  for key in lowThreeRangesDict.keys():
-    rangesDict[key]=lowThreeRangesDict[key]
-  print rangesDict
+  #lowFourRangesDict = getSidebandRangesDict("100110")
+  #for key in lowFourRangesDict.keys():
+  #  rangesDict[key]=lowFourRangesDict[key]
+  #lowThreeRangesDict = getSidebandRangesDict("5070")
+  ##print lowThreeRangesDict
+  #for key in lowThreeRangesDict.keys():
+  #  rangesDict[key]=lowThreeRangesDict[key]
+  #print rangesDict
   return rangesDict
 
 #def makeHist(tree, hist, var, key, region):
@@ -78,10 +78,11 @@ def getRangesDict():
 #    outFile.Close()
 #    return True
 
-def makeAllHists(cutName):
+def makeAllHists(cutName, withBtag=True):
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["small3sDir"])
-  regions = ["higgs", "side100110", "side5070"]
+  #regions = ["higgs", "side100110", "side5070"]
+  regions = ["higgs"]
   rangesDict = getRangesDict()
   nonEmptyFilesDict={}
   for key in getWeightsDict(getSamplesDirs()["small3sDir"]).keys():
@@ -96,27 +97,36 @@ def makeAllHists(cutName):
           varNames.append(branch.GetName())
       for var in varNames:
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
-        if   cutName=="btag":
+        if   cutName in "btag":
           cut = getBtagComboCut(region)
-        elif cutName=="antibtag":
+        elif cutName in "antibtag":
           cut = getAntiBtagComboCut(region)
-        elif cutName == "nobtag":
+        elif cutName in "nobtag":
           cut = getNoBtagComboCut(region)
+        elif cutName in "nMinus1":
+          cut = getNminus1ComboCut(region, var, withBtag)
         elif cutName == "preselection":
           cut = TCut()
         else:
-          print "Invalid category! Must be btag, antibtag, or nobtag."
+          print "Invalid category! Must be btag, antibtag, nMinus1, or preselection."
         if printCuts:
-          print "got cutname %s, the cuts are:" % cutName
+          print "got cutName %s, the cuts are:" % cutName
           print cut
         #if cutName is "preselection":
         #  nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)
         #  filename = "weightedMCbgHists_%s/%s_%s_%s"%("preselection", var, region, key)
         #elif not preselection:
         histName = "hist_%s_%s_%s"%(var, region, key)
-        nEntries = tree.Draw("%s>> %s"%(var, histName))
-
-        filename = "weightedMCbgHists_%s/%s_%s_%s"%(cutName, var, region, key)
+        print "cut is: " 
+        print cut
+        nEntries = tree.Draw("%s>> %s"%(var, histName), cut)
+        if cutName in "nMinus1":
+          if withBtag:
+              filename = "weightedMCbgHists_%s_withBtag/%s_%s_%s"%(cutName, var, region, key)
+          else:
+              filename = "weightedMCbgHists_%s_noBtag/%s_%s_%s"%(cutName, var, region, key)
+        else:
+          filename = "weightedMCbgHists_%s/%s_%s_%s"%(cutName, var, region, key)
         if not nEntries == 0:
           outFile = TFile(filename, "RECREATE")
           outFile.cd()

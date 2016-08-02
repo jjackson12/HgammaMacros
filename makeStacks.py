@@ -151,18 +151,26 @@ for withBtag in [True, False]:
       #for sigMass in [650, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000]:
       if showSigs:
         colors={}
-        colors[750]=kCyan
+        colors[750]=kCyan-6
         colors[1000]=kOrange
         colors[2000]=kMagenta
-        colors[3000]=kViolet
+        colors[3000]=kRed
         for sigMass in [750, 1000, 2000, 3000]:
           sigFileName = varkey+"_"+treekey+"_Hgamma_m%i.root"%sigMass
-          sigfiles.append(TFile("weightedMCbgHists_%s/%s"%(cutName, sigFileName)))
+          if cutName in "nMinus1":
+            if withBtag:
+              sigfiles.append(TFile("weightedMCbgHists_%s_withBtag/%s"%(cutName, sigFileName)))
+            else:
+              sigfiles.append(TFile("weightedMCbgHists_%s_noBtag/%s"%(cutName, sigFileName)))
+          else:
+            outDirName = "stackplots_%s" % cutName
+            sigfiles.append(TFile("weightedMCbgHists_%s/%s"%(cutName, sigFileName)))
           sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
           sighists[-1].SetLineStyle(3)
           sighists[-1].SetLineWidth(2)
           sighists[-1].SetLineColor(colors[sigMass])
           sighists[-1].SetTitle("H#gamma(%r TeV)"%(sigMass/float(1000)))
+          sighists[-1].SetMarkerSize(0)
           sighists[-1].Draw("SAME")
 
       pads[-1].SetBottomMargin(0)
