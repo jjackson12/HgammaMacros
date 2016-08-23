@@ -41,7 +41,18 @@ def getMCbgSampleEvents(small3Dir):
   return sampleEvents
 
 def getSignalsToInclude():
-  return ["Hgamma_m750.root", "Hgamma_m1000.root", "Hgamma_m2000.root", "Hgamma_m3000.root"]
+  return [  "Hgamma_m650.root",
+            "Hgamma_m750.root",
+            "Hgamma_m1000.root",
+            "Hgamma_m1250.root",
+            "Hgamma_m1500.root",
+            "Hgamma_m1750.root",
+            "Hgamma_m2000.root",
+            "Hgamma_m2500.root",
+            "Hgamma_m3000.root",
+            "Hgamma_m3500.root",
+            "Hgamma_m4000.root"
+          ]
 
 def getWeightsDict(small3Dir):
   sampleXsects = getMCbgSampleXsects() 
@@ -58,7 +69,17 @@ def getWeightsDict(small3Dir):
   for signalToInclude in getSignalsToInclude():
     sampleWeights[signalToInclude] = signalWeight
   sampleWeights["SilverJson.root"] = 1
-
+  sampleWeights["Hgamma_m650.root"] = .8
+  sampleWeights["Hgamma_m750.root"] = .8
+  sampleWeights["Hgamma_m1000.root"] = .8
+  sampleWeights["Hgamma_m1250.root"] = .8
+  sampleWeights["Hgamma_m1500.root"] = .8
+  sampleWeights["Hgamma_m1750.root"] = .8
+  sampleWeights["Hgamma_m2000.root"] = .8
+  sampleWeights["Hgamma_m2500.root"] = .8
+  sampleWeights["Hgamma_m3000.root"] = .8
+  sampleWeights["Hgamma_m3500.root"] = .8
+  sampleWeights["Hgamma_m4000.root"] = .8
   return sampleWeights
 
 def getMCbgWeightsDict(small3Dir):
@@ -90,20 +111,20 @@ def getMCbgOrderedList():
 def getMCbgColors():
   color = TColor()
   sampleColors = {}
-  sampleColors["GJets_HT-100To200.root"    ] = color.GetColor(.0, .0, 0.55) 
-  sampleColors["GJets_HT-200To400.root"    ] = color.GetColor(.05, .1, 0.7)
-  sampleColors["GJets_HT-400To600.root"    ] = color.GetColor(.1, .2, 0.85)
-  sampleColors["GJets_HT-600ToInf.root"    ] = color.GetColor(.15, .3, 1.0)
-  sampleColors["QCD_HT100to200.root"       ] = color.GetColor(.0, 0.3, 0.15)
-  sampleColors["QCD_HT200to300.root"       ] = color.GetColor(.03, .4, 0.175)
-  sampleColors["QCD_HT300to500.root"       ] = color.GetColor(.06, .5, 0.2)
-  sampleColors["QCD_HT500to700.root"       ] = color.GetColor(.09, .6, 0.225)
-  sampleColors["QCD_HT700to1000.root"      ] = color.GetColor(.12, .7, 0.25)
-  sampleColors["QCD_HT1000to1500.root"     ] = color.GetColor(.15, .8, 0.275)
-  sampleColors["QCD_HT1500to2000.root"     ] = color.GetColor(.18, .9, 0.3)
-  sampleColors["QCD_HT2000toInf.root"      ] = color.GetColor(.21, .95, 0.325)
-  sampleColors["DYJetsToQQ_HT180.root"     ] = color.GetColor(.8, .4, .4)
-  sampleColors["WJetsToQQ_HT-600ToInf.root"] = color.GetColor(.9, .7, 0.3)
+  sampleColors["GJets_HT-100To200.root"    ] = color.GetColor(.1, .1, 0.55) 
+  sampleColors["GJets_HT-200To400.root"    ] = color.GetColor(.225, .3, 0.7)
+  sampleColors["GJets_HT-400To600.root"    ] = color.GetColor(.35, .5, 0.85)
+  sampleColors["GJets_HT-600ToInf.root"    ] = color.GetColor(.475, .6, 1.0)
+  sampleColors["QCD_HT100to200.root"       ] = color.GetColor(.1, 0.3, 0.25)
+  sampleColors["QCD_HT200to300.root"       ] = color.GetColor(.13, .4, 0.275)
+  sampleColors["QCD_HT300to500.root"       ] = color.GetColor(.16, .5, 0.3)
+  sampleColors["QCD_HT500to700.root"       ] = color.GetColor(.19, .6, 0.325)
+  sampleColors["QCD_HT700to1000.root"      ] = color.GetColor(.22, .7, 0.35)
+  sampleColors["QCD_HT1000to1500.root"     ] = color.GetColor(.25, .8, 0.375)
+  sampleColors["QCD_HT1500to2000.root"     ] = color.GetColor(.28, .9, 0.4)
+  sampleColors["QCD_HT2000toInf.root"      ] = color.GetColor(.31, .95, 0.425)
+  sampleColors["DYJetsToQQ_HT180.root"     ] = color.GetColor(.6, .2, .2)
+  sampleColors["WJetsToQQ_HT-600ToInf.root"] = color.GetColor(.85, .85, 0.3)
   return sampleColors
 
 def getMCbgLabels():

@@ -109,6 +109,9 @@ void HbbGammaSelector::Loop(string outputFileName) {
   fChain->SetBranchStatus( "jetAK8_IDTight"           ,  1 );  
   fChain->SetBranchStatus( "jetAK8_IDTightLepVeto"    ,  1 );  
   fChain->SetBranchStatus( "jetAK8_Hbbtag"            ,  1 );  
+  fChain->SetBranchStatus("EVENT_run"      ,  1 );
+  fChain->SetBranchStatus("EVENT_lumiBlock"      ,  1 );
+  fChain->SetBranchStatus("EVENT_event"      ,  1 );
   fChain->SetBranchStatus("subjetAK8_pruned_csv"      ,  1 );
 
   if (fChain == 0) return;
@@ -227,8 +230,8 @@ void HbbGammaSelector::Loop(string outputFileName) {
       // Get leading jet variables, requiring tight jet ID
         tmpLeadingJet.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
 
-        //if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) {
-        if (true) {
+        //if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) { 
+        if (!eventHasHiggsPrunedJet) { 
           eventHasHiggsPrunedJet = true;
           if(debugFlag && dumpEventInfo) {
             cout << "    pruned higgs AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;

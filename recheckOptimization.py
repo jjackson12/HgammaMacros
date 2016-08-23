@@ -25,6 +25,7 @@ def calcSoverRootB(sampleFile, mass, higgswindow, masswindow, category, HbbCutVa
   
   bgFileName = sampleFile
   bgFile = TFile(bgFileName)
+  #print "bgFilename: %s" % bgFileName
   sigWindowBgTree = bgFile.Get(sigWindowTreeName)
   #print sigWindowBgTree
   sigWindowBg = higgs(sigWindowBgTree)
@@ -40,7 +41,7 @@ def calcSoverRootB(sampleFile, mass, higgswindow, masswindow, category, HbbCutVa
   nSignalWindowEventsInBkg = sigWindowBg.Loop(category, HbbCutValue, pToverMcutValue, deltaRcutValue, jetEtaCutValue, phoEtaCutValue, jetMassLowerBound, jetMassUpperBound, lowerMassBound, upperMassBound)
   #print "      Number of signal window events in background is: %i" % nSignalWindowEventsInBkg
   
-  mcSigFileName = "%s/newerDD_Hgamma_m%s.root" % (samplesDirs["ddDir"], mass)
+  mcSigFileName = "%s/ddTree_Hgamma_m%s.root" % (samplesDirs["ddDir"], mass)
   mcSigFile = TFile(mcSigFileName)
   sigWindowMCsigTree = mcSigFile.Get(sigWindowTreeName)
   sigWindowMCsig = higgs(sigWindowMCsigTree)
