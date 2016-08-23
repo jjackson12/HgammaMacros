@@ -10,11 +10,12 @@ from copy import deepcopy
 # new script to make all stackplots.
 # John Hakala 7/14/16
 
-for withBtag in [True, False]:
+#for withBtag in [True, False]:
+for withBtag in [False]:
   printNonempties = False
   printFileNames  = False
-  showSigs        = True
-  blindData       = True
+  showSigs        = False
+  blindData       = False
 
   sampleDirs = getSamplesDirs()
 
@@ -44,9 +45,9 @@ for withBtag in [True, False]:
   #for cutName in ["antibtag"]:
   #for cutName in ["btag"]:
   #for cutName in [ "nobtag"]:
-  #for cutName in [ "preselection"]:
-  for cutName in [ "nMinus1"]:
+  #for cutName in [ "nMinus1"]:
   #for cutName in [ "btag", "antibtag", "nobtag", "preselection", "nMinus1"]:
+  for cutName in [ "preselection"]:
     if cutName in [ "nMinus1" ]:
       if withBtag:
         histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag/"%cutName 

@@ -93,7 +93,7 @@ def makeAllHists(cutName, withBtag=True):
       tree = tfile.Get(region)
       varNames = []
       for branch in tree.GetListOfBranches():
-        if not "csvValues" in branch.GetName() and not "subjetCut" in branch.GetName():
+        if not "csvValues" in branch.GetName() and not "subjetCut" in branch.GetName() and not "triggerFired" in branch.GetName():
           varNames.append(branch.GetName())
       for var in varNames:
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
