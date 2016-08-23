@@ -12,6 +12,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
   // Flags for running this macro
   bool debugFlag                     =  false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
   bool checkTrigger                  =  false ;
+  //bool ignoreAllCuts                 =  false ;
   bool dumpEventInfo                 =  false ;
   int  entriesToCheck                =  30000 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
   int  reportEvery                   =  5000  ;
@@ -53,6 +54,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
   outputTreeHiggs->Branch("phJetDeltaR_higgs", &phJetDeltaR_higgs);
   outputTreeHiggs->Branch("higgsJet_pruned_abseta", &higgsJet_pruned_abseta);
   outputTreeHiggs->Branch("higgsPrunedJetCorrMass", &higgsPrunedJetCorrMass);
+  outputTreeHiggs->Branch("triggerFired", &triggerFired);
 
   outputTree5070->Branch("sideLowThreeJett2t1", &sideLowThreeJett2t1);
   outputTree5070->Branch("cosThetaStar", &cosThetaStar);
@@ -144,7 +146,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
     leadingPhMVA                     = -999. ;
     leadingPhCat                     = -999. ;
     triggerFired                     = false ; 
-    requireTrigger                   = true  ;
+    //requireTrigger                   = false  ;
     leadingPhAbsEta                  = -999  ;
     cosThetaStar                     =   -99 ; 
     phPtOverMgammaj                  =   -99 ; 
@@ -202,7 +204,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
       // Fill the leading photon variables, regardless of the ID
 
       // Fill the leading photon variables, requiring the photon to pass the ID requirements
-      if (ph_pt->at(iPh) > leadingPhPt && phoIsTight && phoEtaPassesCut && phoPtPassesCut ) {
+      if ( ph_pt->at(iPh) > leadingPhPt && phoIsTight && phoEtaPassesCut && phoPtPassesCut) {
         leadingPhPt  = ph_pt     ->  at(iPh) ;
         leadingPhE   = ph_e      ->  at(iPh) ;
         leadingPhEta = ph_eta    ->  at(iPh) ;
@@ -304,8 +306,8 @@ void HbbGammaSelector::Loop(string outputFileName) {
 
     // Fill histograms with events that have a photon passing ID and a loose jet
     // TODO: photon pT cut applied here. unhardcode
-    if (eventHasTightPho  && leadingPhoton.Pt()>180 && abs(leadingPhoton.Eta()) < 2.6) {
-      if(eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 200 && abs(higgsJet_pruned.Eta()) < 2.6 ) {
+    if ( (eventHasTightPho  && leadingPhoton.Pt()>180 && abs(leadingPhoton.Eta()) < 2.6)) {
+      if( (eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 200 && abs(higgsJet_pruned.Eta()) < 2.6 )) {
         sumVector = leadingPhoton + higgsJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -313,7 +315,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_higgsJetTau2/pruned_higgsJetTau1 << endl;
         }
                 
-        if (triggerFired || !requireTrigger) {
+        if (triggerFired ) {//|| !requireTrigger || ignoreAllCuts) {
           higgsJett2t1 = pruned_higgsJetTau2/pruned_higgsJetTau1;
           higgsJett2t1Hist->Fill(higgsJett2t1);
           boostedPho = leadingPhoton;
@@ -343,7 +345,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           //  cout << "   phJetInvMass_pruned_higgs : " <<  phJetInvMass_pruned_higgs<< endl;
           //  cout << "   phJetDeltaR_higgs         : " <<  phJetDeltaR_higgs<< endl;
           //}
-          if ( phJetDeltaR_higgs>0.8) {
+          if ( phJetDeltaR_higgs>0.8 ) {
             phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(higgsJet_pruned));
             phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - higgsJet_pruned.Eta() ));
             phJetDeltaR_pruned->Fill(leadingPhoton.DeltaR(higgsJet_pruned));
@@ -363,7 +365,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
         }
           higgsJet_pruned.SetT(90);
           sumVector = leadingPhoton + higgsJet_pruned;
-          if (triggerFired || !requireTrigger)phCorrJetInvMassHist_pruned_higgs->Fill(sumVector.M());
+          if (triggerFired ) phCorrJetInvMassHist_pruned_higgs->Fill(sumVector.M());
       }
       if(eventHasSideLowThreePrunedJet && sideLowThreeJet_pruned.Pt() > 200 && abs(sideLowThreeJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + sideLowThreeJet_pruned;
@@ -373,7 +375,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_sideLowThreeJetTau2/pruned_sideLowThreeJetTau1 << endl;
         }
                 
-        if (triggerFired || !requireTrigger) {
+        if (triggerFired ){//|| !requireTrigger) {
           sideLowThreeJett2t1 = pruned_sideLowThreeJetTau2/pruned_sideLowThreeJetTau1;
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));
@@ -390,7 +392,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           sideLowThreeJet_pruned.SetT(90);
           sumVector = leadingPhoton + sideLowThreeJet_pruned;
       }
-      if(eventHasSideLowFourPrunedJet && sideLowFourJet_pruned.Pt() > 200 && abs(sideLowFourJet_pruned.Eta()) < 2.6 ) {
+      if( (eventHasSideLowFourPrunedJet && sideLowFourJet_pruned.Pt() > 200 && abs(sideLowFourJet_pruned.Eta()) < 2.6 )) {
         sumVector = leadingPhoton + sideLowFourJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
@@ -398,7 +400,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_sideLowFourJetTau2/pruned_sideLowFourJetTau1 << endl;
         }
                 
-        if (triggerFired || !requireTrigger) {
+        if (triggerFired ){//|| !requireTrigger || ignoreAllCuts) {
           sideLowFourJett2t1 = pruned_sideLowFourJetTau2/pruned_sideLowFourJetTau1;
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));

@@ -9,8 +9,7 @@ from HgCuts import getDefaultCuts, combineCuts
 
 samplesDirs = getSamplesDirs()
 #dataFileName = samplesDirs["dataDir"]
-mass = "1000"
-sampleFileName="%s/newerDD_Hgamma_m%s.root" % (samplesDirs["ddDir"], mass)
+sampleFileName="testSilver.root" 
 
 cuts = getDefaultCuts("higgs")
 
