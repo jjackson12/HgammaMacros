@@ -47,7 +47,7 @@ for withBtag in [False]:
   #for cutName in [ "nobtag"]:
   #for cutName in [ "nMinus1"]:
   #for cutName in [ "btag", "antibtag", "nobtag", "preselection", "nMinus1"]:
-  for cutName in [ "preselection"]:
+  for cutName in [ "antibtag"]:
     if cutName in [ "nMinus1" ]:
       if withBtag:
         histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag/"%cutName 

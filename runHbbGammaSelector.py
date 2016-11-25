@@ -10,6 +10,11 @@ from ROOT import *
 import os, subprocess
 from sys import argv
 
+print "argv[0]: %s" % argv[0]
+print "argv[1]: %s" % argv[1]
+print "argv[2]: %s" % argv[2]
+print "argv[3]: %s" % argv[3]
+
 # function to compile a C/C++ macro for loading into a pyroot session
 if len(argv) != 4:
    print "please supply three arguments to the macro: the input ntuple, the output filename, and either 'load' or 'compile'."   

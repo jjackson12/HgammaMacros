@@ -4,25 +4,28 @@ from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["HgammaFlatTuples"] = "~/physics/nTuplizerStep/Hgamma_flatTuples/"
-  response["small3sDir"]       = "~/physics/nTuplizerStep/small3s"
-  response["ddDir"]            = "~/WZgammaMacros/newerDDs/"
-  response["dataDir"]          = "~/physics/treeCheckerStep/newDDs_Sig_July5/ddTree_june29_small3_SilverJson.root"
+  response["HgammaFlatTuples"] = "~/hbbgamma80X/small3s"
+  response["small3sDir"]       = "~/hbbgamma80X/small3s"
+  response["ddDir"]            = "~/WZgammaMacros/80XDDs/"
+  response["dataDir"]          = "~/WZgammaMacros/80XDDs/ddTree_Hgamma_data27fb-1.root"
   return response
 
 def getNormalizations():
   normalizations = {}
   normalizations["650"]  = 1.0
   normalizations["750"]  = 1.0
+  normalizations["850"]  = 1.0
   normalizations["1000"] = 0.8
-  normalizations["1250"] = 0.8
-  normalizations["1500"] = 0.4
+  normalizations["1150"] = 0.8
+  normalizations["1300"] = 0.4
+  normalizations["1450"] = 0.4
+  normalizations["1600"] = 0.4
   normalizations["1750"] = 0.4
-  normalizations["2000"] = 0.1
-  normalizations["2500"] = 0.1
-  normalizations["3000"] = 0.1  
-  normalizations["3500"] = 0.1  
-  normalizations["4000"] = 0.1  
+  normalizations["1900"] = 0.1
+  normalizations["2050"] = 0.1
+  normalizations["2450"] = 0.1
+  normalizations["2850"] = 0.1  
+  normalizations["3250"] = 0.1  
   return normalizations
 
 def getMassWindows():
@@ -40,7 +43,7 @@ def getMassWindows():
 def getSigNevents():
   sigNevents = {}
   for mass in getNormalizations().keys():
-    flattuple = TFile("%s/flatTuple_Hgamma_m%s.root"%(getSamplesDirs()["HgammaFlatTuples"], mass))
+    flattuple = TFile("%s/flatTuple_m%s.root"%(getSamplesDirs()["HgammaFlatTuples"], mass))
     hCounter = flattuple.Get("ntuplizer/hCounter")
     sigNevents[mass] = hCounter.GetEntries()
   return sigNevents

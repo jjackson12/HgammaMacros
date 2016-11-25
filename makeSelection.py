@@ -11,7 +11,7 @@ samplesDirs = getSamplesDirs()
 #dataFileName = samplesDirs["dataDir"]
 mass = "1000"
 print "using samples directory: %s" % samplesDirs
-sampleFileName="%s/ddTree_SilverJson.root" % (samplesDirs["ddDir"])
+sampleFileName="%s/ddTree_Hgamma_data27fb-1.root" % (samplesDirs["ddDir"])
 #sampleFileName="testSilver.root"
 
 cuts = getDefaultCuts("higgs")
@@ -39,40 +39,40 @@ print "higgsTree: ",
 print higgsTree
 print "\nall cuts, btag cat\n   "
 print higgsTree.Draw("phJetInvMass_pruned_higgs", btagComboCut)
-print "\nall cuts, antibtag cat\n   "
-print higgsTree.Draw("phJetInvMass_pruned_higgs", antibtagComboCut)
-print "\nno btag cut\n   "
-print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
+#print "\nall cuts, antibtag cat\n   "
+#print higgsTree.Draw("phJetInvMass_pruned_higgs", antibtagComboCut)
+#print "\nno btag cut\n   "
+#print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
 
 notagCuts.pop("ptOverM")
 notagComboCut = combineCuts(notagCuts)
-print "\nno pT/M cut\n   "
-print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
-
-
-notagCuts.pop("phEta")
-notagComboCut = combineCuts(notagCuts)
-print "\nno phEta cut\n   "
-print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
-
-
-notagCuts.pop("jetEta")
-notagComboCut = combineCuts(notagCuts)
-print "\nno jetEta cut\n   "
-print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
-
-notagCuts.pop("deltaR")
-notagComboCut = combineCuts(notagCuts)
-print "\nno deltaR cut\n   "
-print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
-
-notagCuts.pop("turnon")
-notagComboCut = combineCuts(notagCuts)
-print "\nno turnon cut\n   "
-print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
-
-
-
-
-print notagComboCut
-
+#print "\nno pT/M cut\n   "
+#print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
+#
+#
+#notagCuts.pop("phEta")
+#notagComboCut = combineCuts(notagCuts)
+#print "\nno phEta cut\n   "
+#print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
+#
+#
+#notagCuts.pop("jetEta")
+#notagComboCut = combineCuts(notagCuts)
+#print "\nno jetEta cut\n   "
+#print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
+#
+#notagCuts.pop("deltaR")
+#notagComboCut = combineCuts(notagCuts)
+#print "\nno deltaR cut\n   "
+#print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
+#
+#notagCuts.pop("turnon")
+#notagComboCut = combineCuts(notagCuts)
+#print "\nno turnon cut\n   "
+#print higgsTree.Draw("phJetInvMass_pruned_higgs", notagComboCut)
+#
+#
+#
+#
+#print notagComboCut
+#
