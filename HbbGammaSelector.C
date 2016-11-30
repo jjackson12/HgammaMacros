@@ -15,6 +15,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
   bool checkTrigger                  =  false ;
   //bool ignoreAllCuts                 =  false ;
   bool dumpEventInfo                 =  false ;
+  bool noHLTinfo                     =  true  ;  // This is for the 2016 MC with no HLT info
   int  entriesToCheck                =  100000000 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
   int  reportEvery                   =  5000  ;
 
@@ -34,17 +35,17 @@ void HbbGammaSelector::Loop(string outputFileName) {
   float HmassCutHigh                 =  140. ;
 
   TFile* outputFile                 = new TFile(outputFileName.c_str(), "RECREATE");
+  outputFile->cd();
 
   //TTree* outputTreeSig    = new TTree("sig",               "sig");
   TTree* outputTreeHiggs  = new TTree("higgs",           "higgs");
+  outputTreeHiggs -> SetAutoSave(-500000000);
   TTree* outputTree5070   = new TTree("side5070",     "side5070");
   TTree* outputTree100110 = new TTree("side100110", "side100110");
 
 
   outputTreeHiggs->Branch("higgsJett2t1", &higgsJett2t1);
   outputTreeHiggs->Branch("higgsJet_HbbTag", &higgsJet_HbbTag);
-  //outputTreeHiggs->Branch("higgs_csvValues", &higgs_csvValues);
-  //outputTreeHiggs->Branch("higgs_subjetCutDecisions", &higgs_subjetCutDecisions);
   outputTreeHiggs->Branch("cosThetaStar", &cosThetaStar);
   outputTreeHiggs->Branch("phPtOverMgammaj", &phPtOverMgammaj);
   outputTreeHiggs->Branch("leadingPhEta", &leadingPhEta);
@@ -225,13 +226,11 @@ void HbbGammaSelector::Loop(string outputFileName) {
     // Loop over AK8 jets
     for (uint iJet = 0; iJet<jetAK8_pt->size() ; ++iJet) { 
       if (debugFlag && dumpEventInfo) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_pt->at(iJet) << endl;
-      //if (debugFlag && dumpEventInfo) cout << "    jetAK8_IDLoose[" << iJet << "] is : " << jetAK8_IDLoose->at(iJet) << endl;
  
-      if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_mass->at(iJet)>40 && jetAK8_pt->at(iJet)>300) { 
+      if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_pt->at(iJet)>200) { 
       // Get leading jet variables, requiring tight jet ID
         tmpLeadingJet.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
 
-        //if (jetAK8_pruned_massCorr->at(iJet) > HmassCutLow  && jetAK8_pruned_massCorr->at(iJet) < HmassCutHigh && !eventHasHiggsPrunedJet) { 
         if (!eventHasHiggsPrunedJet) { 
           eventHasHiggsPrunedJet = true;
           if(debugFlag && dumpEventInfo) {
@@ -259,48 +258,49 @@ void HbbGammaSelector::Loop(string outputFileName) {
             }
           }
         }
-          if (iJet<jetAK8_pruned_massCorr->size() && jetAK8_pruned_massCorr->at(iJet) >sidebandThreeCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandThreeCutHigh && !eventHasSideLowThreePrunedJet) {
-            eventHasSideLowThreePrunedJet = true;
-            sideLowThreeJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-            if (sideLowThreeJet_pruned.DeltaR(leadingPhoton) < 0.8) {
-              sideLowThreeJet_pruned.SetPtEtaPhiE(0,0,0,0);
-              eventHasSideLowThreePrunedJet = false;
-            }
-            else if (iJet<jetAK8_pruned_massCorr->size() ) {
-              sideLowThreePrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
-              sideLowThreeJet_HbbTag = jetAK8_Hbbtag->at(iJet);
-              pruned_sideLowThreeJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-              pruned_sideLowThreeJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-              pruned_sideLowThreeJetTau3 = jetAK8_tau3 ->  at(iJet) ;
-            }
+        else if (debugFlag && dumpEventInfo) cout << " this event failed the jet requirement for the higgs branch!" << endl;
+        if (iJet<jetAK8_pruned_massCorr->size() && jetAK8_pruned_massCorr->at(iJet) >sidebandThreeCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandThreeCutHigh && !eventHasSideLowThreePrunedJet) {
+          eventHasSideLowThreePrunedJet = true;
+          sideLowThreeJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
+          if (sideLowThreeJet_pruned.DeltaR(leadingPhoton) < 0.8) {
+            sideLowThreeJet_pruned.SetPtEtaPhiE(0,0,0,0);
+            eventHasSideLowThreePrunedJet = false;
           }
+          else if (iJet<jetAK8_pruned_massCorr->size() ) {
+            sideLowThreePrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+            sideLowThreeJet_HbbTag = jetAK8_Hbbtag->at(iJet);
+            pruned_sideLowThreeJetTau1 = jetAK8_tau1 ->  at(iJet) ;
+            pruned_sideLowThreeJetTau2 = jetAK8_tau2 ->  at(iJet) ;
+            pruned_sideLowThreeJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+          }
+        }
 
-          if(debugFlag && dumpEventInfo) {
-            cout << "    pruned sideLow AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
-            cout << "    pruned sideLow AK8 jet mass is: " << jetAK8_mass->at(iJet) << endl ;
-            cout << "    pruned sideLow AK8 jet eta is: "  << jetAK8_eta->at(iJet)  << endl ;
-            cout << "    pruned sideLow AK8 jet phi is: "  << jetAK8_phi->at(iJet)  << endl ;
-            cout << "    pruned sideLow AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
+        if(debugFlag && dumpEventInfo) {
+          cout << "    pruned sideLow AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
+          cout << "    pruned sideLow AK8 jet mass is: " << jetAK8_mass->at(iJet) << endl ;
+          cout << "    pruned sideLow AK8 jet eta is: "  << jetAK8_eta->at(iJet)  << endl ;
+          cout << "    pruned sideLow AK8 jet phi is: "  << jetAK8_phi->at(iJet)  << endl ;
+          cout << "    pruned sideLow AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
+        }
+        if (iJet<jetAK8_pruned_massCorr->size()  && jetAK8_pruned_massCorr->at(iJet) >sidebandFourCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandFourCutHigh && !eventHasSideLowFourPrunedJet) {
+          eventHasSideLowFourPrunedJet = true;
+          sideLowFourJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
+          if (sideLowFourJet_pruned.DeltaR(leadingPhoton) < 0.8) {
+            sideLowFourJet_pruned.SetPtEtaPhiE(0,0,0,0);
+            eventHasSideLowFourPrunedJet = false;
           }
-          if (iJet<jetAK8_pruned_massCorr->size()  && jetAK8_pruned_massCorr->at(iJet) >sidebandFourCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandFourCutHigh && !eventHasSideLowFourPrunedJet) {
-            eventHasSideLowFourPrunedJet = true;
-            sideLowFourJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-            if (sideLowFourJet_pruned.DeltaR(leadingPhoton) < 0.8) {
-              sideLowFourJet_pruned.SetPtEtaPhiE(0,0,0,0);
-              eventHasSideLowFourPrunedJet = false;
-            }
-            else if (iJet<jetAK8_pruned_massCorr->size()){
-              sideLowFourPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
-              sideLowFourJet_HbbTag = jetAK8_Hbbtag->at(iJet);
-              pruned_sideLowFourJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-              pruned_sideLowFourJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-              pruned_sideLowFourJetTau3 = jetAK8_tau3 ->  at(iJet) ;
-              //sideLowFour_csvValues = getLeadingSubjets(subjetAK8_pruned_csv->at(iJet));
-              //cout << "    for sideband jet, get csv values " << sideLowFour_csvValues.leading << ", " << sideLowFour_csvValues.subleading << endl;
-              //sideLowFour_subjetCutDecisions = getSubjetCutDecisions(sideLowFour_csvValues);
-              //cout << "    for sideband jet, get loose_loose = " << sideLowFour_subjetCutDecisions.loose_loose << endl;
-            }
+          else if (iJet<jetAK8_pruned_massCorr->size()){
+            sideLowFourPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+            sideLowFourJet_HbbTag = jetAK8_Hbbtag->at(iJet);
+            pruned_sideLowFourJetTau1 = jetAK8_tau1 ->  at(iJet) ;
+            pruned_sideLowFourJetTau2 = jetAK8_tau2 ->  at(iJet) ;
+            pruned_sideLowFourJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+            //sideLowFour_csvValues = getLeadingSubjets(subjetAK8_pruned_csv->at(iJet));
+            //cout << "    for sideband jet, get csv values " << sideLowFour_csvValues.leading << ", " << sideLowFour_csvValues.subleading << endl;
+            //sideLowFour_subjetCutDecisions = getSubjetCutDecisions(sideLowFour_csvValues);
+            //cout << "    for sideband jet, get loose_loose = " << sideLowFour_subjetCutDecisions.loose_loose << endl;
           }
+        }
       } 
     }
 
@@ -318,8 +318,8 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                  sumvector M is: " << sumVector.M() << endl;
           cout << "                                    tau2/tau1 is: " << pruned_higgsJetTau2/pruned_higgsJetTau1 << endl;
         }
-        triggerFired = true;        
-        if (triggerFired ) {//|| !requireTrigger || ignoreAllCuts) {
+        if (noHLTinfo) triggerFired = true;        
+        if (triggerFired ) {//|| !requireTrigger || ignoreAllCuts) 
           higgsJett2t1 = pruned_higgsJetTau2/pruned_higgsJetTau1;
           higgsJett2t1Hist->Fill(higgsJett2t1);
           boostedPho = leadingPhoton;
@@ -332,23 +332,6 @@ void HbbGammaSelector::Loop(string outputFileName) {
           leadingPhAbsEta = std::abs(leadingPhEta);
           phJetInvMass_pruned_higgs=sumVector.M();
           phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_pruned);
-          //if (
-          //  (EVENT_run == 259862  && EVENT_lumiBlock == 401   && EVENT_event == 696959109   ) ||
-          //  (EVENT_run == 260431  && EVENT_lumiBlock == 336   && EVENT_event == 568597926   ) ||
-          //  (EVENT_run == 260627  && EVENT_lumiBlock ==1056   && EVENT_event == 1953180760  )
-          //){
-          //std::cout << EVENT_run  << " : "  << EVENT_lumiBlock << " : "  << EVENT_event << std::endl;
-
-          //  cout << "   higgsJett2t1              : " <<  higgsJett2t1 << endl;
-          //  cout << "   boostedPho                : " <<  boostedPho << endl;
-          //  cout << "   boostedJet                : " <<  boostedJet << endl;
-          //  cout << "   cosThetaStar              : " <<  cosThetaStar << endl;
-          //  cout << "   phPtOverMgammaj           : " <<  phPtOverMgammaj << endl;
-          //  cout << "   higgsJet_pruned_abseta    : " <<  higgsJet_pruned_abseta<< endl;
-          //  cout << "   leadingPhAbsEta           : " <<  leadingPhAbsEta << endl;
-          //  cout << "   phJetInvMass_pruned_higgs : " <<  phJetInvMass_pruned_higgs<< endl;
-          //  cout << "   phJetDeltaR_higgs         : " <<  phJetDeltaR_higgs<< endl;
-          //}
           if ( phJetDeltaR_higgs>0.8 ) {
             phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(higgsJet_pruned));
             phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - higgsJet_pruned.Eta() ));
@@ -363,13 +346,20 @@ void HbbGammaSelector::Loop(string outputFileName) {
             higgsJetPhiHist->Fill(higgsJet_pruned.Phi());
             phPtOverMgammajHist->Fill(phPtOverMgammaj);
             cosThetaStarHist->Fill(cosThetaStar);
+            if (debugFlag && dumpEventInfo) cout << "this event passed!" << endl;
 
           }
+          else if (debugFlag && dumpEventInfo) cout << "this event failed the DR cut!" << endl;
           outputTreeHiggs->Fill();
         }
-          higgsJet_pruned.SetT(90);
-          sumVector = leadingPhoton + higgsJet_pruned;
-          if (triggerFired ) phCorrJetInvMassHist_pruned_higgs->Fill(sumVector.M());
+        else if (debugFlag && dumpEventInfo) cout << "this event failed the trigger cut!" << endl;
+        higgsJet_pruned.SetT(90);
+        sumVector = leadingPhoton + higgsJet_pruned;
+        if (triggerFired ) phCorrJetInvMassHist_pruned_higgs->Fill(sumVector.M());
+      }
+      else if (debugFlag && dumpEventInfo) {
+        cout << " this event failed 'if( (eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 200 && abs(higgsJet_pruned.Eta()) < 2.6 ))'" << endl;
+        cout << "eventHasHiggsPrunedJet="  << eventHasHiggsPrunedJet << ", higgsJet_pruned.Pt()=" << higgsJet_pruned.Pt() << ", abs(higgsJet_pruned.Eta())=" << higgsJet_pruned.Eta() << endl;
       }
       if(eventHasSideLowThreePrunedJet && sideLowThreeJet_pruned.Pt() > 200 && abs(sideLowThreeJet_pruned.Eta()) < 2.6 ) {
         sumVector = leadingPhoton + sideLowThreeJet_pruned;
@@ -379,7 +369,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_sideLowThreeJetTau2/pruned_sideLowThreeJetTau1 << endl;
         }
                 
-        if (triggerFired ){//|| !requireTrigger) {
+        if (triggerFired ){//|| !requireTrigger) 
           sideLowThreeJett2t1 = pruned_sideLowThreeJetTau2/pruned_sideLowThreeJetTau1;
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));
@@ -404,7 +394,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_sideLowFourJetTau2/pruned_sideLowFourJetTau1 << endl;
         }
                 
-        if (triggerFired ){//|| !requireTrigger || ignoreAllCuts) {
+        if (triggerFired ){//|| !requireTrigger || ignoreAllCuts) 
           sideLowFourJett2t1 = pruned_sideLowFourJetTau2/pruned_sideLowFourJetTau1;
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));
@@ -425,13 +415,9 @@ void HbbGammaSelector::Loop(string outputFileName) {
     if (debugFlag && entriesToCheck == jentry) break; // when debugFlag is true, break the event loop after reaching entriesToCheck 
   }
 
-  outputFile->cd();
-
-  outputTreeHiggs->Write();
-  outputTree5070->Write();
-  outputTree100110->Write();
 
 
+  outputFile->Write();
   outputFile->Close();
 
   cout.flush();

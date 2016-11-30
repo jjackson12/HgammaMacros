@@ -4,10 +4,11 @@ from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["HgammaFlatTuples"] = "~/hbbgamma80X/small3s"
-  response["small3sDir"]       = "~/hbbgamma80X/small3s"
-  response["ddDir"]            = "~/WZgammaMacros/80XDDs/"
-  response["dataDir"]          = "~/WZgammaMacros/80XDDs/ddTree_Hgamma_data27fb-1.root"
+  response["HgammaFlatTuples"] = "~/physics/80Xsignals"
+  response["small3sDir"]       = "~/physics/nov21_ntuples"
+  response["ddDir"]            = "~/WZgammaMacros/80XDDs_Nov21/"
+  response["sigDDdir"]         = "~/WZgammaMacros/80XDDs_sigs"
+  response["dataDir"]          = "~/WZgammaMacros/80XDDs_Nov21/ddTree_SilverJson.root"
   return response
 
 def getNormalizations():
@@ -29,6 +30,7 @@ def getNormalizations():
   return normalizations
 
 def getMassWindows():
+  # TODO: this needs updating for the new signals
   massWindows = {}
   massWindows[650]  = [600,   700]
   massWindows[750]  = [700,   800]
