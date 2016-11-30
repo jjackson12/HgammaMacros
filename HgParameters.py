@@ -22,11 +22,11 @@ def getNormalizations():
   normalizations["1450"] = 0.4
   normalizations["1600"] = 0.4
   normalizations["1750"] = 0.4
-  normalizations["1900"] = 0.1
-  normalizations["2050"] = 0.1
-  normalizations["2450"] = 0.1
-  normalizations["2850"] = 0.1  
-  normalizations["3250"] = 0.1  
+  normalizations["1900"] = 0.2
+  normalizations["2050"] = 0.2
+  normalizations["2450"] = 0.2
+  normalizations["2850"] = 0.2  
+  normalizations["3250"] = 0.2  
   return normalizations
 
 def getMassWindows():
@@ -34,12 +34,18 @@ def getMassWindows():
   massWindows = {}
   massWindows[650]  = [600,   700]
   massWindows[750]  = [700,   800]
+  massWindows[850]  = [800,   900]
   massWindows[1000] = [900,  1100]
-  massWindows[1250] = [1150,  1350]
-  massWindows[1500] = [1350, 1650]
+  massWindows[1150] = [1050, 1250]
+  massWindows[1300] = [1175, 1425]
+  massWindows[1450] = [1300, 1600]
+  massWindows[1600] = [1400, 1800]
   massWindows[1750] = [1550, 1950]
-  massWindows[2000] = [1800, 2200]
-  massWindows[3000] = [2200, 4000]
+  massWindows[1900] = [1700, 2100]
+  massWindows[2050] = [1850, 2250]
+  massWindows[2450] = [2200, 2700]
+  massWindows[2850] = [2600, 3100]
+  massWindows[3250] = [3000, 3500]
   return massWindows
 
 def getSigNevents():
