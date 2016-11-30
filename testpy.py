@@ -130,6 +130,9 @@ def makeAllHists(cutName, withBtag=True):
         if not nEntries == 0:
           outFile = TFile(filename, "RECREATE")
           outFile.cd()
+          print "applying weight %s to sample %s" % (weightsDict[key], filename )
+          print " weightsDict has keys: " 
+          print weightsDict.keys()
           for histBin in range(0,hist.GetXaxis().GetNbins()):
             hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
           hist.Write()
