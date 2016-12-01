@@ -97,6 +97,7 @@ def makeAllHists(cutName, withBtag=True):
           varNames.append(branch.GetName())
       for var in varNames:
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
+        # TODO: this is a hack temporarily
         if   cutName in "btag":
           cut = getBtagComboCut(region)
         elif cutName in "antibtag":
@@ -107,6 +108,9 @@ def makeAllHists(cutName, withBtag=True):
           cut = getNminus1ComboCut(region, var, withBtag)
         elif cutName == "preselection":
           cut = TCut()
+        elif cutName == "onlyWindow":
+          cut = getOnlyWindowComboCut(region)
+
         else:
           print "Invalid category! Must be btag, antibtag, nMinus1, or preselection."
         if printCuts:
@@ -135,6 +139,7 @@ def makeAllHists(cutName, withBtag=True):
           print weightsDict.keys()
           for histBin in range(0,hist.GetXaxis().GetNbins()):
             hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
+          hist.Rebin(5)
           hist.Write()
           outFile.Close()
           nonEmptyFilesDict[filename]="nonempty"

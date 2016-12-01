@@ -15,7 +15,7 @@ for withBtag in [False]:
   printNonempties = False
   printFileNames  = False
   showSigs        = True
-  blindData       = True
+  blindData       = False
 
   sampleDirs = getSamplesDirs()
 
@@ -45,8 +45,8 @@ for withBtag in [False]:
   #for cutName in ["antibtag"]:
   #for cutName in ["btag"]:
   #for cutName in [ "nobtag"]:
-  for cutName in [ "nMinus1"]:
-  #for cutName in [ "preselection"]:
+  #for cutName in [ "btag"]:
+  for cutName in [ "onlyWindow"]:
   #for cutName in [ "btag", "antibtag", "nobtag", "preselection", "nMinus1"]:
   #for cutName in [ "antibtag"]:
     if cutName in [ "nMinus1" ]:

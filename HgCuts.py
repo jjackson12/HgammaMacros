@@ -11,7 +11,9 @@ def getCutValues():
   cutValues["deltaR"]      = 1.1
   cutValues["ptOverM"]     = 0.35
   cutValues["Hbb"]         = 0.9
-  cutValues["higgsWindow"] = [110.0, 140.0]
+  # WARNING WARNING TODO this is just for s+g
+  #cutValues["higgsWindow"] = [110.0, 140.0]
+  cutValues["higgsWindow"] = [50.0, 9999999999.9]
   return cutValues
 
 
@@ -98,6 +100,13 @@ def getNoBtagComboCut(region):
     nobtagCuts = copy.deepcopy(getDefaultCuts(region))
     nobtagCuts.pop("btag")
     nobtagCuts.pop("antibtag")
+    return combineCuts(nobtagCuts)
+
+def getOnlyWindowComboCut(region):
+    nobtagCuts = copy.deepcopy(getDefaultCuts(region))
+    for cut in nobtagCuts.keys():
+      if not cut == "higgsWindow":
+        nobtagCuts.pop(cut)
     return combineCuts(nobtagCuts)
 
 def getNminus1ComboCut(region, popVar, withBtag):
