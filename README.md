@@ -17,7 +17,7 @@ cd CMSSW_8_0_X
 cmsenv
 ```
 ##3) Create histograms for all sample using HbbGammaSelector.C
-The EXOVVNtuples are processed by the `HbbGammaSelector` class, defined in [`HbbGammaSelector.C`](HbbGammaSelector.C) and [`HbbGammaSelector.h`](HbbGammaSelector.h). This class is compiled, loaded, and its `Loop` method to process the ntuple is called using the python script [`runHbbGammaSelector.py`](runHbbGammaSelector.py). [`runHbbGammaSelector.py`](runHbbGammaSelector.py) requires three arguments: the input ntuple and a name for the output file. The bash scripts [`makeAllNewerDDs.sh`](makeAllNewerDDs.sh) and [`makeAllSigDDs.sh`](makeAllSigDDs.sh) give an example of processing many files at once. In this readme, the output files from HbbGammaSelector are called "DDs."
+The EXOVVNtuples are processed by the `HbbGammaSelector` class, defined in [`HbbGammaSelector.C`](HbbGammaSelector.C) and [`HbbGammaSelector.h`](HbbGammaSelector.h). This class is compiled, loaded, and its `Loop` method to process the ntuple is called using the python script [`runHbbGammaSelector.py`](runHbbGammaSelector.py). [`runHbbGammaSelector.py`](runHbbGammaSelector.py) requires three arguments: the input ntuple, a name for the output file, and either `compile` or `load`, depending on whether you want the macro recompiled (e.g. if there were any changes made to the source) or whether it should be loaded from a previously compiled library (e.g. if doing batch processing). The bash scripts [`makeAllNewerDDs.sh`](makeAllNewerDDs.sh) and [`makeAllSigDDs.sh`](makeAllSigDDs.sh) give an example of processing many files at once. In this readme, the output files from HbbGammaSelector are called "DDs."
 ```
 cd ~/my/example/dir/WZgammaMacros
 ./makeAllNewerDDs.sh 
