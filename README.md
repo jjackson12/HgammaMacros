@@ -12,59 +12,23 @@ git clone git@github.com:jhakala/WZgammaMacros.git
 ROOT 6.02 and python 2.7.6 is recommended to run these. On lxplus, the default versions are ROOT 5.32 and python 2.6.6. One way to get up-to-date versions is:
 ```
 cd ~/other/example/dir
-cmsrel CMSSW_7_4_16_patch1
-cd CMSSW_7_4_16_patch1/src
+cmsrel CMSSW_8_0_X # X > 19
+cd CMSSW_8_0_X
 cmsenv
 ```
-##3) Create histograms for a sample using treeChecker
-The EXOVVNtuples are processed by the `treeChecker` class, defined in [`treeChecker.C`](treeChecker.C) and [`treeChecker.h`](treeChecker.h). This class is compiled, loaded, and its `Loop` method to process the ntuple is called using the python script [`runTreeChecker.py`](runTreeChecker.py). [`runTreeChecker.py`](runTreeChecker.py) requires two arguments: the input ntuple and a name for the output file.
+##3) Create histograms for all sample using HbbGammaSelector.C
+The EXOVVNtuples are processed by the `HbbGammaSelector` class, defined in [`HbbGammaSelector.C`](HbbGammaSelector.C) and [`HbbGammaSelector.h`](HbbGammaSelector.h). This class is compiled, loaded, and its `Loop` method to process the ntuple is called using the python script [`runHbbGammaSelector.py`](runHbbGammaSelector.py). [`runHbbGammaSelector.py`](runHbbGammaSelector.py) requires three arguments: the input ntuple and a name for the output file. The bash scripts [`makeAllNewerDDs.sh`](makeAllNewerDDs.sh) and [`makeAllSigDDs.sh`](makeAllSigDDs.sh) give an example of processing many files at once. In this readme, the output files from HbbGammaSelector are called "DDs."
 ```
 cd ~/my/example/dir/WZgammaMacros
-python runTreeChecker.py myInputNtuple.root myHistograms.root
+./makeAllNewerDDs.sh 
 ```
-
-The WZgamma ntuples are stored on lxplus eos in the directory `/store/group/phys_b2g/WZgamma2016`. The easiest way to access them is:
+##4) Make stackplots
+Once signals, MC backgrounds, and the data are processed, the location of the input ntuples and the output DDs must be specified in [`HgParameters.py`](HgParameters.py). In that file as well as [`HgCuts.py`](HgCuts.py) and [`getMCbgWeights.py`](getMCbgWeights.py),  various settings for processing the data are defined, including sample names, cut values, and plotting details. Once these are specified accordingly, one can make stackplots of all variables for all samples using  [`makeStacks.py`](makeStacks.py). 
 ```
-mkdir ~/myEosMountpoint
-eosmount ~/myEosMountpoint
-# and for example:
-root -l ~/myEosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_zJetsToQQHT600toInf_Jan14/flatTuple_1.root
+python makeStacks.py -b
 ```
-Since TChains are slow, I recommend processing a complete dataset by first using `hadd` to combine all the ntuples from a given dataset into a single giant ntuple. For example:
+##5) Make optimization plots
+After making all the stackplots, optimization plots can be made using [`plotOpts.py`](plotOpts.py).
 ```
-hadd myGJets100-200tuple.root ~/myEosMountpoint/store/group/phys_b2g/WZgamma2016/WZgammaNtuples_gJetsHT100to200_Jan13/*.root
-python runTreeChecker.py myGJets100-200tuple.root myGJets100-200histos.root
+python plotOpts.py -b
 ```
-
-##4) Format histograms using the python scripts
-The following python scripts format the histograms in the output from the last step into pretty pdfs which are placed into a directory named `output`:
-* [`formatMVAvsEprofiles.py`](formatMVAvsEprofiles.py)
-* [`formatPreSelectionPlots.py`](formatPreSelectionPlots.py)
-* [`formatSubjetVarsPlots.py`](formatSubjetVarsPlots.py)
-* [`makeTriggerTurnOnPlot.py`](makeTriggerTurnOnPlot.py)
-
-To run a formatting script, supply it one argument: the input histograms file. For example:
-```
-python formatPreSelectionPlots.py myHistograms.root
-```
-Or, to suppress pyroot's crazy flashing plots:
-```
-python formatPreSelectionPlots.py myHistograms.root -b
-```
-The python script [`makeAllPlots.py`](makeAllPlots.py) will run all of the above scripts, and similarly it takes one argument, the histograms file:
-```
-python makeAllPlots.py myHistograms.root
-```
-##5) Make a stackplot of all samples
-Once you've done step 3 for all the samples, I recommend combining all the background MC histograms with their corresponding weights using `haddws`, which can be checked out from github here: https://github.com/hkaushalya/haddws
-Follow the instructions there to combine the gJets and qcd background histograms.
-
-Once you have combined the background samples by `haddws`ing them with appropriate weights, make a stack plot using [`makeStackPlot.py`](makeStackPlot.py). First, create a text file that defines your input files for the backgrounds, signals, and data: an example is in [`stackPlotInputs.tx`](stackPlotInputs.tx).
-
-Then make the stackplot, specifying whether you require the trigger defined in treeChecker.C to be fired:
-```
-python makeStackPlot.py myStackPlotInputs.txt requireTrigger
-# or
-python makeStackPlot.py myStackPlotInputs.txt noTrigger
-```
-
