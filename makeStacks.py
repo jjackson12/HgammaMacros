@@ -14,8 +14,8 @@ from copy import deepcopy
 for withBtag in [False]:
   printNonempties = False
   printFileNames  = False
-  showSigs        = False
-  blindData       = False
+  showSigs        = True
+  blindData       = True
 
   sampleDirs = getSamplesDirs()
 
@@ -45,9 +45,10 @@ for withBtag in [False]:
   #for cutName in ["antibtag"]:
   #for cutName in ["btag"]:
   #for cutName in [ "nobtag"]:
-  #for cutName in [ "nMinus1"]:
+  for cutName in [ "nMinus1"]:
+  #for cutName in [ "preselection"]:
   #for cutName in [ "btag", "antibtag", "nobtag", "preselection", "nMinus1"]:
-  for cutName in [ "preselection"]:
+  #for cutName in [ "antibtag"]:
     if cutName in [ "nMinus1" ]:
       if withBtag:
         histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag/"%cutName 
@@ -97,6 +98,7 @@ for withBtag in [False]:
             thisFileName = "weightedMCbgHists_%s_noBtag/%s" % (cutName, filename)
         else:
           thisFileName = "weightedMCbgHists_%s/%s" % (cutName, filename)
+          print "going to use the hist from file %s in building THStack " % thisFileName
         if nonEmptyFilesDict[thisFileName] == "nonempty":
           if printFileNames:
             print thisFileName
@@ -133,7 +135,9 @@ for withBtag in [False]:
       thstacks[-1].Draw()
       thstacks[-1].SetMinimum(0.08)
       thstacks[-1].SetMaximum(thstacks[-1].GetMaximum()*45)
+      print thstacks[-1]
       if varkey in varDict.keys():
+        print "going to set title for thstacks[-1] to %s " % varkey
         thstacks[-1].GetXaxis().SetTitle(varDict[varkey])
       thstacks[-1].GetYaxis().SetTitle("Events/%g"%thstacks[-1].GetXaxis().GetBinWidth(1))
       thstacks[-1].GetYaxis().SetLabelSize(0.04)
@@ -154,10 +158,10 @@ for withBtag in [False]:
         colors={}
         colors[750]=kCyan-6
         colors[1000]=kOrange
-        colors[2000]=kMagenta
-        colors[3000]=kRed
-        for sigMass in [750, 1000, 2000, 3000]:
-          sigFileName = varkey+"_"+treekey+"_Hgamma_m%i.root"%sigMass
+        colors[2050]=kMagenta
+        colors[3250]=kRed
+        for sigMass in [750, 1000, 2050, 3250]:
+          sigFileName = varkey+"_"+treekey+"_signal_m%i.root"%sigMass
           if cutName in "nMinus1":
             if withBtag:
               sigfiles.append(TFile("weightedMCbgHists_%s_withBtag/%s"%(cutName, sigFileName)))

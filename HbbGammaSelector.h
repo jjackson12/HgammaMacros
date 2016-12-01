@@ -31,7 +31,7 @@ public :
   // Variables calculated using events
   bool  triggerFired                = false ; 
   bool  ignoreAllCuts               = true  ; 
-  bool  requireTrigger              = true  ; 
+  bool  requireTrigger              = false  ; 
   bool  trigger2_Fired              = false ; 
   bool  trigger3_Fired              = false ; 
   bool  phoIsTight                  = false ; 
