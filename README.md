@@ -1,4 +1,4 @@
-#WZgammaMacros
+#HgammaMacros
 Macros for analyzing ntuples from the [EXOVVNtuplizer](https://github.com/jhakala/EXOVVNtuplizerRunII)
 
 These instructions were tested on lxplus.
