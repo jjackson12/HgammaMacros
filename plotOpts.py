@@ -3,6 +3,9 @@ from ROOT import *
 from testpy import getRangesDict, getHiggsRangesDict
 from getMCbgWeights import getMCbgLabels
 
+# John Hakala, 12/1/2016
+# Makes optimization plots by sliding cuts over N-1 stackplots from makeStacks.py
+
 def whichVarAmI(inFileName):
   for key in getRangesDict().keys():
     if key in inFileName:
