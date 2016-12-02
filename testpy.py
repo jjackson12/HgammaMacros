@@ -4,6 +4,9 @@ from getMCbgWeights import *
 from HgParameters import *
 from HgCuts import *
 
+# John Hakala, 12/1/2016
+# A poorly-named collection of functions that churns out all the possible histograms from DDtrees
+
 printCuts = True
 
 
