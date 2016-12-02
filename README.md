@@ -6,7 +6,7 @@ These instructions were tested on lxplus.
 Go to the directory where you want to check the code out and clone the code:
 ```
 cd ~/my/example/dir
-git clone git@github.com:jhakala/WZgammaMacros.git
+git clone git@github.com:jhakala/HgammaMacros.git
 ```
 ##2) Use an up-to-date version of ROOT and python
 ROOT 6.02 and python 2.7.6 is recommended to run these. On lxplus, the default versions are ROOT 5.32 and python 2.6.6. One way to get up-to-date versions is:
@@ -19,7 +19,7 @@ cmsenv
 ##3) Create histograms for all sample using HbbGammaSelector.C
 The EXOVVNtuples are processed by the `HbbGammaSelector` class, defined in [`HbbGammaSelector.C`](HbbGammaSelector.C) and [`HbbGammaSelector.h`](HbbGammaSelector.h). This class is compiled, loaded, and its `Loop` method to process the ntuple is called using the python script [`runHbbGammaSelector.py`](runHbbGammaSelector.py). [`runHbbGammaSelector.py`](runHbbGammaSelector.py) requires three arguments: the input ntuple, a name for the output file, and either `compile` or `load`, depending on whether you want the macro recompiled (e.g. if there were any changes made to the source) or whether it should be loaded from a previously compiled library (e.g. if doing batch processing). The bash scripts [`makeAllNewerDDs.sh`](makeAllNewerDDs.sh) and [`makeAllSigDDs.sh`](makeAllSigDDs.sh) give an example of processing many files at once. In this readme, the output files from HbbGammaSelector are called "DDs."
 ```
-cd ~/my/example/dir/WZgammaMacros
+cd ~/my/example/dir/HgammaMacros
 ./makeAllNewerDDs.sh 
 ```
 ##4) Make stackplots
