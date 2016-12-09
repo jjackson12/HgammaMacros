@@ -1,0 +1,6 @@
+old/*
+*.pyc
+*_C.d
+*_C.so
+*.pcm
+.DS_Store
