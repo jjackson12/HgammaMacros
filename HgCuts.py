@@ -12,6 +12,7 @@ def getCutValues():
   cutValues["ptOverM"]     = 0.35
   cutValues["Hbb"]         = 0.9
   cutValues["higgsWindow"] = [110.0, 140.0]
+  cutValues["sidebandWindow"] = [100.0, 110.0]
   return cutValues
 
 
@@ -37,14 +38,17 @@ def getVarKeys():
   varKeys["higgsPrunedJetCorrMass"]    = "higgsWindow"
   return varKeys
 
-def makeHiggsWindow():
+def makeHiggsWindow(sideband=False):
     cutValues = getCutValues()
     cuts = {}
-    cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
-    cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
+    window = "higgsWindow"
+    if sideband:
+      window = "sidebandWindow"
+    cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues[window][0] )
+    cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues[window][1] )
     return combineCuts(cuts)
 
-def getDefaultCuts(region):
+def getDefaultCuts(region, sideband=False):
     cutValues = getCutValues()
 
     cuts = {} 
@@ -63,7 +67,7 @@ def getDefaultCuts(region):
       cuts["antibtag"] = TCut( "higgsJet_HbbTag<%f"                % cutValues["Hbb"]            )
       #cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
       #cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
-      cuts["higgsWindow"]   = makeHiggsWindow()
+      cuts["higgsWindow"]   = makeHiggsWindow(sideband)
     elif region is "side5070" or region is "side100110":
       if region is "side5070":
         index = "Three"
@@ -79,29 +83,29 @@ def getDefaultCuts(region):
       quit()
     return cuts
     
-def getBtagComboCut(region):
-    btagCuts = copy.deepcopy(getDefaultCuts(region))
+def getBtagComboCut(region, sideband=False):
+    btagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     btagCuts.pop("antibtag")
     return combineCuts(btagCuts)
 
-def getBtagComboCut(region):
-    btagCuts = copy.deepcopy(getDefaultCuts(region))
+def getBtagComboCut(region, sideband=False):
+    btagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     btagCuts.pop("antibtag")
     return combineCuts(btagCuts)
     
-def getAntiBtagComboCut(region):
-    antibtagCuts = copy.deepcopy(getDefaultCuts(region))
+def getAntiBtagComboCut(region, sideband=False):
+    antibtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     antibtagCuts.pop("btag")
     return combineCuts(antibtagCuts)
 
-def getNoBtagComboCut(region):
-    nobtagCuts = copy.deepcopy(getDefaultCuts(region))
+def getNoBtagComboCut(region, sideband=False):
+    nobtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     nobtagCuts.pop("btag")
     nobtagCuts.pop("antibtag")
     return combineCuts(nobtagCuts)
 
-def getNminus1ComboCut(region, popVar, withBtag):
-    nobtagCuts = copy.deepcopy(getDefaultCuts(region))
+def getNminus1ComboCut(region, popVar, withBtag, sideband=False):
+    nobtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     nobtagCuts.pop("antibtag")
     if not withBtag:
       nobtagCuts.pop("btag")

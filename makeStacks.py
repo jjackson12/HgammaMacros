@@ -2,7 +2,7 @@ from os import path, makedirs
 from optparse import OptionParser
 from ROOT import *
 from pyrootTools import getSortedDictKeys, drawInNewCanvas
-from testpy import getRangesDict, getHiggsRangesDict, getSidebandRangesDict, makeAllHists
+from testpy import getRangesDict, getHiggsRangesDict, makeAllHists
 from HgParameters import getSamplesDirs, getVariableDict
 from getMCbgWeights import getWeightsDict, getMCbgWeightsDict, getMCbgColors, getMCbgOrderedList, getMCbgLabels
 from tcanvasTDR import TDRify
@@ -15,9 +15,11 @@ gROOT.SetBatch()
 
 parser = OptionParser()
 parser.add_option("-c", "--cutName", dest="cutName",
-                  help="the set of cuts to apply"                    )
+                  help="the set of cuts to apply"                                      )
 parser.add_option("-w", "--withBtag", dest="withBtag", default=False,
-                  help="whether or not to apply the btag cut"        )
+                  help="whether or not to apply the btag cut"                          )
+parser.add_option("-s", "--sideband", dest="sideband", default=False,
+                  help="if sideband=='True', then look in sideband, not Higgs window." )
 (options, args) = parser.parse_args()
 print "options: ",
 print options
@@ -25,7 +27,8 @@ print "args: ",
 print args
 
 #for withBtag in [True, False]:
-for withBtag in [options.withBtag=="True"]:
+sideband = (options.sideband == "True")
+for withBtag in [options.withBtag == "True"]:
   print "withBtag is %r" % withBtag
   printNonempties = False
   printFileNames  = False
@@ -67,10 +70,10 @@ for withBtag in [options.withBtag=="True"]:
         histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag/"%cutName 
       if not withBtag:
         histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_noBtag/"%cutName 
-      nonEmptyFilesDict = makeAllHists(cutName, withBtag)
+      nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
     else:
       histsDir = "~/WZgammaMacros/weightedMCbgHists_%s/"%cutName
-      nonEmptyFilesDict = makeAllHists(cutName)
+      nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
     print "done making all histograms."
     thstacks=[]
     thstackCopies=[]

@@ -27,30 +27,30 @@ def getHiggsRangesDict():
   rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
   return rangesDict
 
-# this is for making stackplots from the ddTrees
-def getSidebandRangesDict(sideband):
-  rangesDict = {}
-  if sideband == "100110":
-    index="Four"
-  elif sideband == "5070":
-    index="Three"
-  else:
-    print "Invalid sideband! Either 100110 or 5070."
-    quit()
-  label="sideLow%s"%index
-  rangesDict["cosThetaStar"] = [0., 1.]
-  rangesDict["phPtOverMgammaj"]=[0., 2.]
-  rangesDict["leadingPhPhi"]=[-3.5, 3.5]
-  rangesDict["leadingPhPt"]=[0., 2000.]
-  rangesDict["leadingPhAbsEta"]=[0.,2.5]
-  rangesDict["leadingPhEta"]=[-2.8,2.8]
-  rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
-  rangesDict["%sJett2t1"%label]=[0, 1]
-  rangesDict["%sPrunedJetCorrMass"%label]=[0, 4000]
-  rangesDict["phJetDeltaR_%s"%label]=[0,6]
-  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
-  return rangesDict
+## this is for making stackplots from the ddTrees
+#def getSidebandRangesDict(sideband):
+#  rangesDict = {}
+#  if sideband == "100110":
+#    index="Four"
+#  elif sideband == "5070":
+#    index="Three"
+#  else:
+#    print "Invalid sideband! Either 100110 or 5070."
+#    quit()
+#  label="sideLow%s"%index
+#  rangesDict["cosThetaStar"] = [0., 1.]
+#  rangesDict["phPtOverMgammaj"]=[0., 2.]
+#  rangesDict["leadingPhPhi"]=[-3.5, 3.5]
+#  rangesDict["leadingPhPt"]=[0., 2000.]
+#  rangesDict["leadingPhAbsEta"]=[0.,2.5]
+#  rangesDict["leadingPhEta"]=[-2.8,2.8]
+#  rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
+#  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
+#  rangesDict["%sJett2t1"%label]=[0, 1]
+#  rangesDict["%sPrunedJetCorrMass"%label]=[0, 4000]
+#  rangesDict["phJetDeltaR_%s"%label]=[0,6]
+#  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
+#  return rangesDict
 
 def getRangesDict():
   rangesDict = {}
@@ -81,7 +81,7 @@ def getRangesDict():
 #    outFile.Close()
 #    return True
 
-def makeAllHists(cutName, withBtag=True):
+def makeAllHists(cutName, withBtag=True, sideband=False):
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["small3sDir"])
   #regions = ["higgs", "side100110", "side5070"]
@@ -101,13 +101,13 @@ def makeAllHists(cutName, withBtag=True):
       for var in varNames:
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
         if   cutName in "btag":
-          cut = getBtagComboCut(region)
+          cut = getBtagComboCut(region, sideband)
         elif cutName in "antibtag":
-          cut = getAntiBtagComboCut(region)
+          cut = getAntiBtagComboCut(region, sideband)
         elif cutName in "nobtag":
-          cut = getNoBtagComboCut(region)
+          cut = getNoBtagComboCut(region, sideband)
         elif cutName in "nMinus1":
-          cut = getNminus1ComboCut(region, var, withBtag)
+          cut = getNminus1ComboCut(region, var, withBtag, sideband)
         elif cutName == "preselection":
           cut = TCut()
         else:
