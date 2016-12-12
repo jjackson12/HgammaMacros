@@ -16,10 +16,12 @@ gROOT.SetBatch()
 parser = OptionParser()
 parser.add_option("-c", "--cutName", dest="cutName",
                   help="the set of cuts to apply"                                      )
-parser.add_option("-w", "--withBtag", dest="withBtag", default=False,
+parser.add_option("-w", "--withBtag", dest="withBtag", default="False",
                   help="whether or not to apply the btag cut"                          )
-parser.add_option("-s", "--sideband", dest="sideband", default=False,
+parser.add_option("-s", "--sideband", dest="sideband", default="False",
                   help="if sideband=='True', then look in sideband, not Higgs window." )
+parser.add_option("-r", "--showSigs", dest="showSigs", default="True",
+                  help="if showSigs=='False', then do not show signals overlaid."      )
 (options, args) = parser.parse_args()
 print "options: ",
 print options
@@ -28,13 +30,13 @@ print args
 
 #for withBtag in [True, False]:
 sideband = (options.sideband == "True")
+showSigs = (not options.showSigs == "False")
 for withBtag in [options.withBtag == "True"]:
   print "withBtag is %r" % withBtag
   printNonempties = False
   printFileNames  = False
-  showSigs        = True
 
-  if options.cutName=="preselection":
+  if options.cutName=="preselection" or sideband:
     blindData       = False
   else:
     blindData    = True
@@ -67,13 +69,14 @@ for withBtag in [options.withBtag == "True"]:
   for cutName in [options.cutName]:
     if cutName in [ "nMinus1" ]:
       if withBtag:
-        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag/"%cutName 
+        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag"%cutName 
       if not withBtag:
-        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_noBtag/"%cutName 
-      nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
+        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_noBtag"%cutName 
     else:
-      histsDir = "~/WZgammaMacros/weightedMCbgHists_%s/"%cutName
-      nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
+      histsDir = "~/WZgammaMacros/weightedMCbgHists_%s"%cutName
+    if sideband:
+      histsDir += "_sideband"
+    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
     print "done making all histograms."
     thstacks=[]
     thstackCopies=[]
@@ -107,18 +110,20 @@ for withBtag in [options.withBtag == "True"]:
         if printNonempties:
           print "The nonempty files dict is:"
           print nonEmptyFilesDict
+        dirName = "weightedMCbgHists_%s" % cutName
         if cutName in "nMinus1":
           if withBtag:
-            thisFileName = "weightedMCbgHists_%s_withBtag/%s" % (cutName, filename)
+            dirName += "_withBtag"
           else:
-            thisFileName = "weightedMCbgHists_%s_noBtag/%s" % (cutName, filename)
-        else:
-          thisFileName = "weightedMCbgHists_%s/%s" % (cutName, filename)
-          print "going to use the hist from file %s in building THStack " % thisFileName
+            dirName += "_noBtag"
+        if sideband:
+          dirName += "_sideband"
+        thisFileName = "%s/%s" % (dirName, filename)
+        print "going to use the hist from file %s in building THStack " % thisFileName
         if nonEmptyFilesDict[thisFileName] == "nonempty":
           #if printFileNames:
           #  print thisFileName
-          tfiles.append(TFile(histsDir + filename))
+          tfiles.append(TFile(path.join(histsDir , filename)))
           hists.append(tfiles[-1].Get("hist_%s" % filename))
           hists[-1].SetFillColor(getMCbgColors()[filekey])
           drawInNewCanvas(hists[-1])
@@ -141,6 +146,8 @@ for withBtag in [options.withBtag == "True"]:
           outDirName = "stackplots_%s_noBtag" % cutName
       else:
         outDirName = "stackplots_%s" % cutName
+      if sideband:
+        outDirName +="_sideband"
       if not path.exists(outDirName):
         makedirs(outDirName)
       outfileName = "%s/%s_stack_%s.root"%(outDirName, cutName, varkey)
@@ -161,13 +168,15 @@ for withBtag in [options.withBtag == "True"]:
       thstacks[-1].GetYaxis().SetTitleOffset(1.2)
 
       dataFileName = varkey+"_"+treekey+"_SilverJson.root"
+      dName = "weightedMCbgHists_%s" % cutName
       if cutName in "nMinus1":
         if withBtag:
-          datafiles.append(TFile("weightedMCbgHists_%s_withBtag/%s" % (cutName, dataFileName)))
+          dName += "_withBtag"
         else:
-          datafiles.append(TFile("weightedMCbgHists_%s_noBtag/%s" % (cutName, dataFileName)))
-      else:
-        datafiles.append(TFile("weightedMCbgHists_%s/%s"%(cutName, dataFileName)))
+          dName += "_noBtag"
+      if sideband:
+        dName += "_sideband"
+      datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
       print datafiles[-1]
       datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
       print datahists[-1]
@@ -184,14 +193,16 @@ for withBtag in [options.withBtag == "True"]:
         colors[3250]=kRed
         for sigMass in [750, 1000, 2050, 3250]:
           sigFileName = varkey+"_"+treekey+"_signal_m%i.root"%sigMass
+          rName = "weightedMCbgHists_%s" % cutName
           if cutName in "nMinus1":
             if withBtag:
-              sigfiles.append(TFile("weightedMCbgHists_%s_withBtag/%s"%(cutName, sigFileName)))
+              rName += "_withBtag"
             else:
-              sigfiles.append(TFile("weightedMCbgHists_%s_noBtag/%s"%(cutName, sigFileName)))
-          else:
-            outDirName = "stackplots_%s" % cutName
-            sigfiles.append(TFile("weightedMCbgHists_%s/%s"%(cutName, sigFileName)))
+              rName += "_noBtag"
+          if sideband:
+            rName += "_sideband"
+          outDirName = "stackplots_%s" % rName
+          sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
           sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
           sighists[-1].SetLineStyle(3)
           sighists[-1].SetLineWidth(2)

@@ -131,6 +131,8 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
               directory = "weightedMCbgHists_%s_noBtag"%cutName
         else:
           directory = "weightedMCbgHists_%s"%cutName
+        if sideband:
+          directory += "_sideband"
         filename = "%s/%s_%s_%s"%(directory, var, region, key)
         if not os.path.exists(directory):
           os.makedirs(directory)
