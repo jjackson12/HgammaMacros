@@ -123,13 +123,17 @@ def makeAllHists(cutName, withBtag=True):
         print "cut is: " 
         print cut
         nEntries = tree.Draw("%s>> %s"%(var, histName), cut)
+        directory = ""
         if cutName in "nMinus1":
           if withBtag:
-              filename = "weightedMCbgHists_%s_withBtag/%s_%s_%s"%(cutName, var, region, key)
+              directory = "weightedMCbgHists_%s_withBtag"%cutName
           else:
-              filename = "weightedMCbgHists_%s_noBtag/%s_%s_%s"%(cutName, var, region, key)
+              directory = "weightedMCbgHists_%s_noBtag"%cutName
         else:
-          filename = "weightedMCbgHists_%s/%s_%s_%s"%(cutName, var, region, key)
+          directory = "weightedMCbgHists_%s"%cutName
+        filename = "%s/%s_%s_%s"%(directory, var, region, key)
+        if not os.path.exists(directory):
+          os.makedirs(directory)
         if not nEntries == 0:
           outFile = TFile(filename, "RECREATE")
           outFile.cd()

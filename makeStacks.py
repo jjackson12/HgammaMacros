@@ -1,4 +1,5 @@
 from os import path, makedirs
+from optparse import OptionParser
 from ROOT import *
 from pyrootTools import getSortedDictKeys, drawInNewCanvas
 from testpy import getRangesDict, getHiggsRangesDict, getSidebandRangesDict, makeAllHists
@@ -10,12 +11,26 @@ from copy import deepcopy
 # new script to make all stackplots.
 # John Hakala 7/14/16
 
+gROOT.SetBatch()
+
+parser = OptionParser()
+parser.add_option("-c", "--cutName", dest="cutName",
+                  help="the set of cuts to apply"                    )
+parser.add_option("-w", "--withBtag", dest="withBtag", default=False,
+                  help="whether or not to apply the btag cut"        )
+(options, args) = parser.parse_args()
+print "options: ",
+print options
+print "args: ",
+print args
+
 #for withBtag in [True, False]:
-for withBtag in [False]:
+for withBtag in [options.withBtag=="True"]:
+  print "withBtag is %r" % withBtag
   printNonempties = False
   printFileNames  = False
   showSigs        = True
-  blindData       = True
+  blindData       = False
 
   sampleDirs = getSamplesDirs()
 
@@ -42,13 +57,7 @@ for withBtag in [False]:
   mcBgWeights = getMCbgWeightsDict(sampleDirs["small3sDir"])
   print mcBgWeights
   treekey="higgs"
-  #for cutName in ["antibtag"]:
-  #for cutName in ["btag"]:
-  #for cutName in [ "nobtag"]:
-  for cutName in [ "nMinus1"]:
-  #for cutName in [ "preselection"]:
-  #for cutName in [ "btag", "antibtag", "nobtag", "preselection", "nMinus1"]:
-  #for cutName in [ "antibtag"]:
+  for cutName in [options.cutName]:
     if cutName in [ "nMinus1" ]:
       if withBtag:
         histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag/"%cutName 
@@ -100,8 +109,8 @@ for withBtag in [False]:
           thisFileName = "weightedMCbgHists_%s/%s" % (cutName, filename)
           print "going to use the hist from file %s in building THStack " % thisFileName
         if nonEmptyFilesDict[thisFileName] == "nonempty":
-          if printFileNames:
-            print thisFileName
+          #if printFileNames:
+          #  print thisFileName
           tfiles.append(TFile(histsDir + filename))
           hists.append(tfiles[-1].Get("hist_%s" % filename))
           hists[-1].SetFillColor(getMCbgColors()[filekey])
@@ -145,7 +154,13 @@ for withBtag in [False]:
       thstacks[-1].GetYaxis().SetTitleOffset(1.2)
 
       dataFileName = varkey+"_"+treekey+"_SilverJson.root"
-      datafiles.append(TFile("weightedMCbgHists_%s/%s"%(cutName, dataFileName)))
+      if cutName in "nMinus1":
+        if withBtag:
+          datafiles.append(TFile("weightedMCbgHists_%s_withBtag/%s" % (cutName, dataFileName)))
+        else:
+          datafiles.append(TFile("weightedMCbgHists_%s_noBtag/%s" % (cutName, dataFileName)))
+      else:
+        datafiles.append(TFile("weightedMCbgHists_%s/%s"%(cutName, dataFileName)))
       print datafiles[-1]
       datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
       print datahists[-1]
