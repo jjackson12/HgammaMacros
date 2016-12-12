@@ -30,7 +30,11 @@ for withBtag in [options.withBtag=="True"]:
   printNonempties = False
   printFileNames  = False
   showSigs        = True
-  blindData       = False
+
+  if options.cutName=="preselection":
+    blindData       = False
+  else:
+    blindData    = True
 
   sampleDirs = getSamplesDirs()
 
