@@ -28,25 +28,64 @@ def getSoverRootB(bkg, sig, start, goUpOrDown, withBtag):
   else:
     return "b=0"
 
-def makeOpt(inFileName, upDown, withBtag):
-  inFile     = TFile(inFileName)
+def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag):
+  inFile_higgswindow     = TFile(inFileName_higgswindow)
+  inFile_sideband     = TFile(inFileName_sideband)
 
-  for key in inFile.GetListOfKeys():
+  for key in inFile_higgswindow.GetListOfKeys():
     #print key.GetName()
     if "c1" in key.GetName():
-      canName = key.GetName()
-  #print "canName: %s" % canName 
-  can = inFile.Get(canName)
-  can.Draw()
-  for prim in can.GetListOfPrimitives():
+      can_higgswindow = inFile_higgswindow.Get(key.GetName()).DrawClone()
+      can_higgswindow.SetName("c1_higgswindow")
+      canName_higgswindow = "c1_higgswindow"
+        
+  for key in inFile_higgswindow.GetListOfKeys():
+    print "inFile_higgswindow has key: ", 
+    print key.GetName()
+  print "canName_higgswindow: %s" % canName_higgswindow 
+  print can_higgswindow
+  can_higgswindow.Draw()
+  for prim in can_higgswindow.GetListOfPrimitives():
+    print "can_higgswindow has primitive: %s" % prim.GetName()
     if "stack" in prim.GetName():
-      padName = prim.GetName()
+      prim.SetName("stack_higgswindow")
+      padName_higgswindow = "stack_higgswindow"
+      print "using higgswindow stack: %s" % padName_higgswindow
     if "ratio" in prim.GetName():
-      bottomPadName = prim.GetName()
+      prim.SetName("ratio_higgswindow")
+      bottomPadName_higgswindow = "ratio_higgswindow"
 
-  pad = can.GetPrimitive(padName)
 
-  for subprim in pad.GetListOfPrimitives():
+  for key in inFile_sideband.GetListOfKeys():
+    #print key.GetName()
+    if "c1" in key.GetName():
+      can_sideband = inFile_sideband.Get(key.GetName()).DrawClone()
+      can_sideband.SetName("c1_sideband")
+      canName_sideband = "c1_sideband"
+  #print "canName: %s" % canName 
+  can_sideband.Draw()
+  for prim in can_sideband.GetListOfPrimitives():
+    if "stack" in prim.GetName():
+      prim.SetName("stack_sideband")
+      padName_sideband = "stack_sideband"
+    if "ratio" in prim.GetName():
+      prim.SetName("ratio_sideband")
+      bottomPadName_sideband = "ratio_sideband"
+
+  pad_higgswindow = can_higgswindow.GetPrimitive(padName_higgswindow)
+  pad_sideband = can_sideband.GetPrimitive(padName_sideband)
+
+  print "pad_higgswindow: ",
+  print pad_higgswindow
+  for subprim in pad_higgswindow.GetListOfPrimitives():
+    print "pad_higgswindow has primitive: %s" % subprim.GetName()
+  print "pad_sideband: ",
+  print pad_sideband
+  for subprim in pad_sideband.GetListOfPrimitives():
+    print "pad_sideband has primitive: %s" % subprim.GetName()
+
+  for subprim in pad_higgswindow.GetListOfPrimitives():
+    print "pad_higgswindow has primitive: %s" % subprim.GetName()
     if "m750" in subprim.GetName():
       name750 = subprim.GetName()
     if "m1000" in subprim.GetName():
@@ -60,24 +99,27 @@ def makeOpt(inFileName, upDown, withBtag):
     if "THStack" in subprim.IsA().GetName():
       subprim.SetName("theStack")
     if "SilverJson" in subprim.GetName():
+      subprim.Delete()
+  for subprim in pad_sideband.GetListOfPrimitives():
+    if "SilverJson" in subprim.GetName():
       subprim.SetName("theSideband")
-  stack = pad.GetPrimitive("theStack")
-  theSideband = pad.GetPrimitive("theSideband")
+  stack = pad_higgswindow.GetPrimitive("theStack")
+  theSideband = pad_sideband.GetPrimitive("theSideband")
   #print stack
 
-  m750 = pad.GetPrimitive(name750)
+  m750 = pad_higgswindow.GetPrimitive(name750)
   m750.SetLineColor(kTeal)
   m750.SetLineStyle(2)
   m750.SetLineWidth(3)
-  m1000 = pad.GetPrimitive(name1000)
+  m1000 = pad_higgswindow.GetPrimitive(name1000)
   m1000.SetLineColor(kOrange-3)
   m1000.SetLineStyle(2)
   m1000.SetLineWidth(3)
-  m2050 = pad.GetPrimitive(name2050)
+  m2050 = pad_higgswindow.GetPrimitive(name2050)
   m2050.SetLineColor(kPink-3)
   m2050.SetLineStyle(2)
   m2050.SetLineWidth(3)
-  m3250 = pad.GetPrimitive(name3250)
+  m3250 = pad_higgswindow.GetPrimitive(name3250)
   m3250.SetLineColor(kRed+2)
   m3250.SetLineStyle(2)
   m3250.SetLineWidth(3)
@@ -94,8 +136,8 @@ def makeOpt(inFileName, upDown, withBtag):
   graphPoints3250 = []
   #graphPoints4000 = []
   nSteps = total.GetNbinsX()
-  lowerBound = getRangesDict()[whichVarAmI(inFileName)][0]
-  upperBound = getRangesDict()[whichVarAmI(inFileName)][1]
+  lowerBound = getRangesDict()[whichVarAmI(inFileName_higgswindow)][0]
+  upperBound = getRangesDict()[whichVarAmI(inFileName_higgswindow)][1]
   stepSize = (upperBound-lowerBound)/nSteps
   for i in range(0, total.GetNbinsX()):
     slideValue = lowerBound+i*stepSize
@@ -147,23 +189,31 @@ def makeOpt(inFileName, upDown, withBtag):
     graph750.SetPoint(graph750.GetN(), graphPoint750[0], graphPoint750[1])
     #print "set point in graph750"
 
-  bottomPad = can.GetPrimitive(bottomPadName)
-  bottomPad.cd()
-  bottomPad.Clear()
+  bottomPad_higgswindow = can_higgswindow.GetPrimitive(bottomPadName_higgswindow)
+  bottomPad_higgswindow.cd()
+  bottomPad_higgswindow.Clear()
   graph1000.Draw()
   graph1000.GetXaxis().SetLimits(lowerBound, upperBound)
   #graph1000.Draw()
   #graph1000.GetXaxis().SetLimits(lowerBound, upperBound)
-  bottomPad.SetBottomMargin(0.18)
-  bottomPad.SetBorderSize(0)
-  bottomPad.Draw()
-  pad.SetBottomMargin(0.15)
-  can.cd()
+  bottomPad_higgswindow.SetBottomMargin(0.18)
+  bottomPad_higgswindow.SetBorderSize(0)
+  bottomPad_higgswindow.Draw()
+  pad_higgswindow.SetBottomMargin(0.15)
+  can_higgswindow.cd()
   #pad.SetBBoxY1(-2)
   #pad.SetBBoxY2(105)
-  pad.Draw()
+  pad_higgswindow.Draw()
+  pad_higgswindow.cd()
+  theSideband.SetMarkerStyle(20)
+  theSideband.SetMarkerColor(kBlack)
+  theSideband.SetLineColor(kBlack)
+  theSideband.Draw("SAME PE")
+  for prim in pad_higgswindow.GetListOfPrimitives():
+    if "TLegend" in prim.IsA().GetName():
+      prim.InsertEntry("theSideband", "Sideband 100 GeV < m_{j} < 110 GeV")
 
-  bottomPad.cd()
+  bottomPad_higgswindow.cd()
   graph1000.GetYaxis().SetTitle("S/#sqrt{B} (a.u.)")
   graph1000.GetYaxis().SetLabelSize(0)
   graph1000.GetXaxis().SetLabelSize(0.1)
@@ -206,9 +256,9 @@ def makeOpt(inFileName, upDown, withBtag):
   graph750.SetLineWidth(2)
   graph750.SetLineColor(kTeal)
   graph750.SetFillColor(kWhite)
-  bottomPad.BuildLegend()
+  bottomPad_higgswindow.BuildLegend()
   legendLabels = getMCbgLabels()
-  for prim in bottomPad.GetListOfPrimitives():
+  for prim in bottomPad_higgswindow.GetListOfPrimitives():
     if "TLegend" in prim.IsA().GetName():
       prim.SetX1NDC(0.753)
       prim.SetY1NDC(0.703)
@@ -219,27 +269,29 @@ def makeOpt(inFileName, upDown, withBtag):
           if mass in subprim.GetLabel():
             subprim.SetLabel("H#gamma(%r TeV)"%(float(mass)/float(1000)))
             subprim.SetOption("lf")
-  can.cd()
-  bottomPad.Draw()
-  pad.SetBorderSize(0)
+  can_higgswindow.cd()
+  bottomPad_higgswindow.Draw()
+  pad_higgswindow.SetBorderSize(0)
 
   
   if withBtag:
-    outFileName="optplots_nMinus1_withBtag_dd/%s"%inFileName.split("/")[1]
+    outFileName="optplots_nMinus1_withBtag_dd/%s"%inFileName_higgswindow.split("/")[1]
   else:
-    outFileName="optplots_nMinus1_noBtag_dd/%s"%inFileName.split("/")[1]
+    outFileName="optplots_nMinus1_noBtag_dd/%s"%inFileName_higgswindow.split("/")[1]
   outFileName=outFileName.split(".")[0]
   outFile = TFile("%s_%r.root"%(outFileName, upDown), "RECREATE")
   outFile.cd()
-  can.Write()
-  can.Print("%s_%r.pdf"%(outFileName, upDown))
+  can_higgswindow.Write()
+  can_higgswindow.Print("%s_%r.pdf"%(outFileName, upDown))
   outFile.Close()
 
+#for direction in ["up", "down"]:
+#  for key in getHiggsRangesDict().keys():
+#    sideband_varName = "stackplots_nMinus1_withBtag_sideband/nMinus1_stack_%s.root"%key
+#    higgswindow_varName = "stackplots_nMinus1_withBtag/nMinus1_stack_%s.root"%key
+#    makeOpt(sideband_varName, higgswindow_varName, direction, True)
 for direction in ["up", "down"]:
   for key in getHiggsRangesDict().keys():
-    varName = "stackplots_nMinus1_withBtag_sideband/nMinus1_stack_%s.root"%key
-    makeOpt(varName, direction, True)
-for direction in ["up", "down"]:
-  for key in getHiggsRangesDict().keys():
-    varName = "stackplots_nMinus1_noBtag_sideband/nMinus1_stack_%s.root"%key
-    makeOpt(varName, direction, False)
+    sideband_varName = "stackplots_nMinus1_noBtag_sideband/nMinus1_stack_%s.root"%key
+    higgswindow_varName = "stackplots_nMinus1_noBtag/nMinus1_stack_%s.root"%key
+    makeOpt(sideband_varName, higgswindow_varName, direction, False)
