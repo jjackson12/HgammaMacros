@@ -6,9 +6,9 @@ def getSamplesDirs():
   response = {}
   response["HgammaFlatTuples"] = "~/physics/80Xsignals"
   response["small3sDir"]       = "~/physics/nov21_ntuples"
-  response["ddDir"]            = "~/WZgammaMacros/80XDDs_Nov21/"
-  response["sigDDdir"]         = "~/WZgammaMacros/80XDDs_sigs"
-  response["dataDir"]          = "~/WZgammaMacros/80XDDs_Nov21/ddTree_SilverJson.root"
+  response["ddDir"]            = "~/WZgammaMacros/80XDDs_Dec13/"
+  response["sigDDdir"]         = "~/WZgammaMacros/80XDDs_Dec13_sigs"
+  response["dataDir"]          = "~/WZgammaMacros/80XDDs_Dec13/ddTree_SilverJson.root"
   return response
 
 def getNormalizations():

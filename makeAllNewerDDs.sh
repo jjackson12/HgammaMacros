@@ -11,18 +11,16 @@ data=( 2016B-0 2016B-1 2016C 2016D 2016E 2016F 2016G-0 2016G-1 2016Hv2-0 2016Hv2
 #  python runHbbGammaSelector.py ~/physics/nTuplizerStep/small3s/small3_${file}.root newerDDs/ddTree_${file}.root load
 #done
 #
-for file in "${data[@]}"; do python runHbbGammaSelector.py ~/physics/nov21_ntuples/fragments/dataFrags/${file}.root 80XDDs_Nov21/dataFrags/ddTree_${file}.root load & done
+#for file in "${data[@]}"; do python runHbbGammaSelector.py ~/physics/nov21_ntuples/fragments/dataFrags/${file}.root 80XDDs_Nov21/dataFrags/ddTree_${file}.root load & done
 #
-for file in "${backgrounds[@]}"; do python runHbbGammaSelector.py ~/physics/nov21_ntuples/${file}.root 80XDDs_Nov21/ddTree_${file}.root load & done
 #
-##initialMass=650
 ##python runHbbGammaSelector.py ~/WZgammaMacros/HgSig_flatTuples_July19/flatTuple_Hgamma_m${initialMass}.root newerDDs/ddTree_Hgamma_m${initialMass}.root compile
 
 #masses=( 650 750 1000 1250 1500 1750 2000 2500 3000 3500 4000 )
 #masses=( 750 1000 1250 1500 1750 2000 2500 3000 3500 4000 )
 
-#masses=(650 750 850 1000 1150 1300 1450 1600 1750 1900 2050 2450 2850 3250)
-#for mass in "${masses[@]}"
-#do
-#  python runHbbGammaSelector.py ~/hbbgamma80X/small3s/flatTuple_m${mass}.root 80XDDs/ddTree_Hgamma_m${mass}.root load
-#done
+initialMass=650
+python runHbbGammaSelector.py ~/physics/80Xsignals/flatTuple_m${initialMass}.root 80XDDs_Dec13_sigs/ddTree_Hgamma_m${initialMass}.root compile
+masses=(750 850 1000 1150 1300 1450 1600 1750 1900 2050 2450 2850 3250)
+for mass in "${masses[@]}"; do python runHbbGammaSelector.py ~/physics/80Xsignals/flatTuple_m${mass}.root 80XDDs_Dec13_sigs/ddTree_Hgamma_m${mass}.root load & done
+for file in "${backgrounds[@]}"; do python runHbbGammaSelector.py ~/physics/nov21_ntuples/${file}.root 80XDDs_Dec13/ddTree_${file}.root load & done
