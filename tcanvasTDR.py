@@ -9,7 +9,7 @@ def TDRify(canvas, inset=False, name="test", writeOutput=False, outputdir="~/phy
     #print "\n --->TDRifying!"
     tdrstyle.setTDRStyle()
     gStyle.SetOptStat(0)
-    CMS_lumi.lumi_13TeV = "36.2 fb^{-1}"
+    CMS_lumi.lumi_13TeV = "36.42 fb^{-1}"
     CMS_lumi.writeExtraText = 1
     CMS_lumi.extraText = "Preliminary"
     CMS_lumi.lumi_sqrtS = "13 TeV" # used with iPeriod = 0, e.g. for simulation-only plots (default is an empty string)
