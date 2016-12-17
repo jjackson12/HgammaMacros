@@ -15,7 +15,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
   bool checkTrigger                  =  false ;
   //bool ignoreAllCuts                 =  false ;
   bool dumpEventInfo                 =  false ;
-  bool noHLTinfo                     =  true  ;  // This is for the 2016 MC with no HLT info
+  bool noHLTinfo                     =  false  ;  // This is for the 2016 MC with no HLT info
   int  entriesToCheck                =  100000000 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
   int  reportEvery                   =  5000  ;
 
@@ -188,7 +188,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
       if (checkTrigger && debugFlag) { 
         cout << "       " << it->first << " = " << it->second << endl;
       }
-      if (it->first == "HLT_Photon175_v1" || it->first == "HLT_Photon175_v2" ||  it->first == "HLT_Photon175_v3" ||  it->first =="HLT_Photon165_HE10_v1" ||  it->first =="HLT_Photon165_HE10_v2" ||  it->first =="HLT_Photon165_HE10_v3")  {
+      if (it->first.find("HLT_Photon175_") != std::string::npos ||  it->first.find("HLT_Photon165_HE10_") != std::string::npos)  {
         triggerFired |= (1==it->second);
       }
     }
