@@ -12,6 +12,10 @@ parser.add_option("-i", "--inDir", dest="inDir",
 parser.add_option("-o", "--outDir", dest="outDir", 
                   help = "the output directory")
 (options, args) = parser.parse_args()
+if options.inDir is None:  
+    parser.error('Input dir not given')
+if options.outDir is None:  
+    parser.error('Output dir not given')
 
 inFiles=[]
 for inF in listdir(options.inDir):
