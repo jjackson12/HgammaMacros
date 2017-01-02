@@ -1,37 +1,40 @@
 from os import path, makedirs
 from optparse import OptionParser
-from ROOT import *
-from pyrootTools import getSortedDictKeys, drawInNewCanvas
-from testpy import getRangesDict, getHiggsRangesDict, makeAllHists
-from HgParameters import getSamplesDirs, getVariableDict
-from getMCbgWeights import getWeightsDict, getMCbgWeightsDict, getMCbgColors, getMCbgOrderedList, getMCbgLabels
-from tcanvasTDR import TDRify
 from copy import deepcopy
 
 # new script to make all stackplots.
 # John Hakala 7/14/16
 
-gROOT.SetBatch()
-
 parser = OptionParser()
 parser.add_option("-c", "--cutName", dest="cutName",
                   help="the set of cuts to apply"                                      )
-parser.add_option("-w", "--withBtag", dest="withBtag", default="False",
-                  help="whether or not to apply the btag cut"                          )
-parser.add_option("-s", "--sideband", dest="sideband", default="False",
-                  help="if sideband=='True', then look in sideband, not Higgs window." )
-parser.add_option("-r", "--showSigs", dest="showSigs", default="True",
-                  help="if showSigs=='False', then do not show signals overlaid."      )
+parser.add_option("-w", action="store_true", dest="withBtag"  , default=False,
+                  help="if -w is used, then apply the btag cut"                        )
+parser.add_option("-r", action="store_false", dest="showSigs" , default=True,
+                  help="if -r is used, then do not show signals overlaid."             )
+parser.add_option("-s", action="store_true", dest="sideband"  , default=False,
+                  help="if -s is used, then look in sideband, not Higgs window."       )
+parser.add_option("-b", action="store_true", dest="batch"     , default=False,
+                  help = "turn on batch mode"                                          )
 (options, args) = parser.parse_args()
 print "options: ",
 print options
 print "args: ",
 print args
 
+from ROOT import *
+if options.batch:
+  gROOT.SetBatch()
+
+from pyrootTools import getSortedDictKeys, drawInNewCanvas
+from testpy import getRangesDict, getHiggsRangesDict, makeAllHists
+from HgParameters import getSamplesDirs, getVariableDict
+from getMCbgWeights import getWeightsDict, getMCbgWeightsDict, getMCbgColors, getMCbgOrderedList, getMCbgLabels
+from tcanvasTDR import TDRify
 #for withBtag in [True, False]:
-sideband = (options.sideband == "True")
-showSigs = (not options.showSigs == "False")
-for withBtag in [options.withBtag == "True"]:
+sideband = options.sideband
+showSigs = options.showSigs
+for withBtag in [options.withBtag]:
   print "withBtag is %r" % withBtag
   printNonempties = False
   printFileNames  = False
@@ -39,7 +42,7 @@ for withBtag in [options.withBtag == "True"]:
   if options.cutName=="preselection" or sideband:
     blindData       = False
   else:
-    blindData    = True
+    blindData    = False
 
   sampleDirs = getSamplesDirs()
 
