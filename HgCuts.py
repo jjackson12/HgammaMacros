@@ -88,11 +88,6 @@ def getBtagComboCut(region, sideband=False):
     btagCuts.pop("antibtag")
     return combineCuts(btagCuts)
 
-def getBtagComboCut(region, sideband=False):
-    btagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
-    btagCuts.pop("antibtag")
-    return combineCuts(btagCuts)
-    
 def getAntiBtagComboCut(region, sideband=False):
     antibtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     antibtagCuts.pop("btag")
