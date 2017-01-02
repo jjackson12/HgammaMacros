@@ -13,6 +13,7 @@ fitFunctionBtag.SetParameters(0, .06, 500, 100000, 2500)
 #fitFunctionBtag.SetParameters(0.54, 0, 1.2, 566, 1930, 392, -.04)
 #fitFunctionBtag = TF1("fitFunctionBtag", "pol6", 60, 4000)
 #fitFunctionBtag.SetParameters(0, 0, 0, 0, 0, 0)
+print "Fitting the BTAG category:"
 graphBtag.Fit(fitFunctionBtag)
 
 graphAntiBtag = tfile.Get("SigEff_antibtag")
@@ -26,5 +27,5 @@ graphAntiBtag.Draw("AP")
 #fitFunctionAntiBtag.SetParameters(0.1, 700, 200, 0.2, .01)
 fitFunctionAntiBtag = TF1("fitFunctionAntiBtag", "[0]*TMath::ATan((x-[1])/[2])+[3]", 650, 4000)
 fitFunctionAntiBtag.SetParameters(0.1, 700, 200,  .01)
+print "Fitting the ANTIBTAG category"
 graphAntiBtag.Fit(fitFunctionAntiBtag)
-print 
