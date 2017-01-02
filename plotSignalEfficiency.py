@@ -1,49 +1,53 @@
+from optparse import OptionParser
+from glob import glob
+from natsort import natsorted
 from ROOT import TFile, TGraph, TCanvas
 from HgParameters import getNormalizations
 from checkSignalEfficiency import getSignalEfficiencies
 
 massWindowToCheck = [110, 140]
-#massWindowToCheck = [90, 150]
 
-#signalEfficiencies = getSignalEfficiencies(massWindowToCheck)
-#print signalEfficiencies
-signalEfficiencies={}
-with open("btagEffs.tx") as bf:
-  lines = bf.readlines()
-  for line in lines:
-    lineparts = line.split(", ")
-    signalEfficiencies["btag_%s"%str(lineparts[0])] = float(lineparts[1])
-with open("antibtagEffs.tx") as af:
-  lines = af.readlines()
-  for line in lines:
-    lineparts = line.split(", ")
-    signalEfficiencies["antibtag_%s"%str(lineparts[0])] = float(lineparts[1])
-print signalEfficiencies
-
-##"plotting signal efficiencies for masswindow (%r, %r)" % (massWindowToCheck[0], massWindowToCheck[1])
 outfile = TFile("efficienciesGraphs_masswindow_%r-%r.root"%(massWindowToCheck[0], massWindowToCheck[1]), "RECREATE")
 outfile.cd()
 
-canvases = []
+def getSignalEfficiencies(category):
+  if not (category == "btag" or category == "antibtag"):
+    exit("something went wrong with the categories!")
+  signalEfficiencies={}
+  fileNames = glob("sigHists_Dec31/%s/histos_flatTuple_m*.root" % category)
+  fileNames = natsorted(fileNames)
+  for histFileName in fileNames:
+    histFile = TFile(histFileName)
+    histMass = histFileName.replace("sigHists_Dec31/%s/histos_flatTuple_m" % category,"").replace(".root", "")
+    numberFound = 0
+    print " >> checking file %s for a matching histogram..." % histFile.GetName()
+    for key in histFile.GetListOfKeys():
+      if "distribs" in key.GetName() and "_0" == key.GetName()[-2:]:
+        print "   >>>> this one seems to match: %s " % key.GetName()
+        numberFound += 1
+        signalEfficiencies[histMass] = histFile.Get(key.GetName()).GetSumOfWeights()
+    if numberFound != 1:
+      exit("found more than one histogram that seems to be the right one!!!!")
+      
+  return signalEfficiencies
+
+
 graphs   = []
 
-
-
 for category in ['btag', 'antibtag']:
-  canvases.append(TCanvas())
+  #canvases.append(TCanvas())
   graphs.append(TGraph())
   graphs[-1].SetNameTitle("SigEff_%s" % category, "Signal efficiency, %s category" % category)
   graphs[-1].Draw()
   masses = getNormalizations()  
-  print masses
+  sigEffs = getSignalEfficiencies(category)
+  print sigEffs
   for mass in masses.keys():
-    print "%r: %f" % (float(mass), signalEfficiencies["%s_%s"%(category, str(mass))])
-    #graphs[-1].SetPoint(graphs[-1].GetN(), float(mass), signalEfficiencies[str(mass)][category])
-    graphs[-1].SetPoint(graphs[-1].GetN(), float(mass), signalEfficiencies["%s_%s"%(category, str(mass))])
+    print "%r: %f" % (float(mass), sigEffs["%s" % str(mass)])
+    graphs[-1].SetPoint(graphs[-1].GetN(), float(mass), sigEffs["%s" % str(mass)])
   graphs[-1].GetXaxis().SetTitle("Signal mass (GeV)")
   graphs[-1].GetYaxis().SetTitle("#varepsilon")
   graphs[-1].SetMarkerStyle(2)
+  outfile.cd()
   graphs[-1].Write() 
-outfile.Close()
-
 
