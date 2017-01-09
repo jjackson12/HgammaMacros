@@ -108,6 +108,8 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
           cut = getNoBtagComboCut(region, sideband)
         elif cutName in "nMinus1":
           cut = getNminus1ComboCut(region, var, withBtag, sideband)
+          print "The cut is:"
+          print cut
         elif cutName == "preselection":
           cut = TCut()
         else:

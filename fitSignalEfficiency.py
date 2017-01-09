@@ -29,3 +29,6 @@ fitFunctionAntiBtag = TF1("fitFunctionAntiBtag", "[0]*TMath::ATan((x-[1])/[2])+[
 fitFunctionAntiBtag.SetParameters(0.1, 700, 200,  .01)
 print "Fitting the ANTIBTAG category"
 graphAntiBtag.Fit(fitFunctionAntiBtag)
+
+can1.Print("sigEff_btag.root")
+can2.Print("sigEff_antibtag.root")
