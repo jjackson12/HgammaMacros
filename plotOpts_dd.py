@@ -30,7 +30,7 @@ def getSoverRootB(bkg, sig, start, goUpOrDown, withBtag):
 
 def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCans, srPads, sbCans, sbPads, stacks, sidebands, i):
   
-  debug=False
+  debug=True
   inFile_higgswindow     = TFile(inFileName_higgswindow)
   if debug:
     print "inFile_higgswindow is: %s" % inFile_higgswindow.GetName()
@@ -106,13 +106,14 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
 
   for subprim in pad_higgswindow.GetListOfPrimitives():
     #print "pad_higgswindow has primitive: %s" % subprim.GetName()
+    print "found subprim with name %s" % subprim.GetName()
     if "m750" in subprim.GetName():
       name750 = subprim.GetName()
     if "m1000" in subprim.GetName():
       name1000 = subprim.GetName()
-    if "m2050" in subprim.GetName():
+    if "m650" in subprim.GetName():
       name2050 = subprim.GetName()
-    if "m3250" in subprim.GetName():
+    if "m850" in subprim.GetName():
       name3250 = subprim.GetName()
     #if "m4000" in subprim.GetName():
     #  name4000 = subprim.GetName()
@@ -310,9 +311,9 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
 
   
   if withBtag:
-    outFileName="optplots_nMinus1_withBtag_dd/%s"%inFileName_higgswindow.split("/")[1]
+    outFileName="optplots_nMinus1_withBtag_dd_lowmass/%s"%inFileName_higgswindow.split("/")[1]
   else:
-    outFileName="optplots_nMinus1_noBtag_dd/%s"%inFileName_higgswindow.split("/")[1]
+    outFileName="optplots_nMinus1_noBtag_dd_lowmass/%s"%inFileName_higgswindow.split("/")[1]
   outFileName=outFileName.split(".")[0]
   outFile = TFile("%s_%r.root"%(outFileName, upDown), "RECREATE")
   outFile.cd()

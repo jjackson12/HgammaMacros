@@ -192,9 +192,9 @@ for withBtag in [options.withBtag]:
         colors={}
         colors[750]=kCyan-6
         colors[1000]=kOrange
-        colors[2050]=kMagenta
-        colors[3250]=kRed
-        for sigMass in [750, 1000, 2050, 3250]:
+        colors[650]=kMagenta
+        colors[850]=kRed
+        for sigMass in [650, 750, 850, 1000]:
           sigFileName = varkey+"_"+treekey+"_signal_m%i.root"%sigMass
           rName = "weightedMCbgHists_%s" % cutName
           if cutName in "nMinus1":
