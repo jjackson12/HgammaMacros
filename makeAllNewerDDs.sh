@@ -31,7 +31,7 @@
 #masses=( 650 750 1000 1250 1500 1750 2000 2500 3000 3500 4000 )
 #masses=( 750 1000 1250 1500 1750 2000 2500 3000 3500 4000 )
 #
-export OUTSIGDIR=80XDDs_Apr17_sigs
+export OUTSIGDIR=80XDDs_Apr17_puppiSoftdrop_sigs
 initialMass=650
 python runHbbGammaSelector.py ~/physics/80Xsignals/flatTuple_m${initialMass}.root ${OUTSIGDIR}/ddTree_Hgamma_m${initialMass}.root compile
 masses=(750 850 1000 1150 1300 1450 1600 1750 1900 2050 2450 2850 3250)
