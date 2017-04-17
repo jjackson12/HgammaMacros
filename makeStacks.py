@@ -1,21 +1,51 @@
 from os import path, makedirs
-from ROOT import *
-from pyrootTools import getSortedDictKeys, drawInNewCanvas
-from testpy import getRangesDict, getHiggsRangesDict, getSidebandRangesDict, makeAllHists
-from HgParameters import getSamplesDirs, getVariableDict
-from getMCbgWeights import getWeightsDict, getMCbgWeightsDict, getMCbgColors, getMCbgOrderedList, getMCbgLabels
-from tcanvasTDR import TDRify
+from optparse import OptionParser
 from copy import deepcopy
 
 # new script to make all stackplots.
 # John Hakala 7/14/16
 
+parser = OptionParser()
+parser.add_option("-c", "--cutName", dest="cutName",
+                  help="the set of cuts to apply"                                      )
+parser.add_option("-w", action="store_true", dest="withBtag"  , default=False,
+                  help="if -w is used, then apply the btag cut"                        )
+parser.add_option("-r", action="store_false", dest="showSigs" , default=True,
+                  help="if -r is used, then do not show signals overlaid."             )
+parser.add_option("-s", action="store_true", dest="sideband"  , default=False,
+                  help="if -s is used, then look in sideband, not Higgs window."       )
+parser.add_option("-l", action="store_false", dest="addLines"     , default=True,
+                  help = "if -l is used, then do not draw a line at 1 in the ratios"   )
+parser.add_option("-b", action="store_true", dest="batch"     , default=False,
+                  help = "turn on batch mode"                                          )
+(options, args) = parser.parse_args()
+print "options: ",
+print options
+print "args: ",
+print args
+
+from ROOT import *
+if options.batch:
+  gROOT.SetBatch()
+
+from pyrootTools import getSortedDictKeys, drawInNewCanvas
+from testpy import getRangesDict, getHiggsRangesDict, makeAllHists
+from HgParameters import getSamplesDirs, getVariableDict
+from getMCbgWeights import getWeightsDict, getMCbgWeightsDict, getMCbgColors, getMCbgOrderedList, getMCbgLabels
+from tcanvasTDR import TDRify
 #for withBtag in [True, False]:
-for withBtag in [False]:
+sideband = options.sideband
+showSigs = options.showSigs
+addLines = options.addLines
+for withBtag in [options.withBtag]:
+  print "withBtag is %r" % withBtag
   printNonempties = False
   printFileNames  = False
-  showSigs        = False
-  blindData       = False
+
+  if options.cutName=="preselection" or sideband:
+    blindData       = False
+  else:
+    blindData    = True
 
   sampleDirs = getSamplesDirs()
 
@@ -42,21 +72,17 @@ for withBtag in [False]:
   mcBgWeights = getMCbgWeightsDict(sampleDirs["small3sDir"])
   print mcBgWeights
   treekey="higgs"
-  #for cutName in ["antibtag"]:
-  #for cutName in ["btag"]:
-  #for cutName in [ "nobtag"]:
-  #for cutName in [ "nMinus1"]:
-  #for cutName in [ "btag", "antibtag", "nobtag", "preselection", "nMinus1"]:
-  for cutName in [ "preselection"]:
+  for cutName in [options.cutName]:
     if cutName in [ "nMinus1" ]:
       if withBtag:
-        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag/"%cutName 
+        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag"%cutName 
       if not withBtag:
-        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_noBtag/"%cutName 
-      nonEmptyFilesDict = makeAllHists(cutName, withBtag)
+        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_noBtag"%cutName 
     else:
-      histsDir = "~/WZgammaMacros/weightedMCbgHists_%s/"%cutName
-      nonEmptyFilesDict = makeAllHists(cutName)
+      histsDir = "~/WZgammaMacros/weightedMCbgHists_%s"%cutName
+    if sideband:
+      histsDir += "_sideband"
+    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
     print "done making all histograms."
     thstacks=[]
     thstackCopies=[]
@@ -69,6 +95,7 @@ for withBtag in [False]:
     datafiles=[]
     sighists=[]
     sigfiles=[]
+    lines=[]
     legendLabels = getMCbgLabels()
     varDict = getVariableDict()
 
@@ -90,17 +117,20 @@ for withBtag in [False]:
         if printNonempties:
           print "The nonempty files dict is:"
           print nonEmptyFilesDict
+        dirName = "weightedMCbgHists_%s" % cutName
         if cutName in "nMinus1":
           if withBtag:
-            thisFileName = "weightedMCbgHists_%s_withBtag/%s" % (cutName, filename)
+            dirName += "_withBtag"
           else:
-            thisFileName = "weightedMCbgHists_%s_noBtag/%s" % (cutName, filename)
-        else:
-          thisFileName = "weightedMCbgHists_%s/%s" % (cutName, filename)
+            dirName += "_noBtag"
+        if sideband:
+          dirName += "_sideband"
+        thisFileName = "%s/%s" % (dirName, filename)
+        print "going to use the hist from file %s in building THStack " % thisFileName
         if nonEmptyFilesDict[thisFileName] == "nonempty":
-          if printFileNames:
-            print thisFileName
-          tfiles.append(TFile(histsDir + filename))
+          #if printFileNames:
+          #  print thisFileName
+          tfiles.append(TFile(path.join(histsDir , filename)))
           hists.append(tfiles[-1].Get("hist_%s" % filename))
           hists[-1].SetFillColor(getMCbgColors()[filekey])
           drawInNewCanvas(hists[-1])
@@ -123,6 +153,8 @@ for withBtag in [False]:
           outDirName = "stackplots_%s_noBtag" % cutName
       else:
         outDirName = "stackplots_%s" % cutName
+      if sideband:
+        outDirName +="_sideband"
       if not path.exists(outDirName):
         makedirs(outDirName)
       outfileName = "%s/%s_stack_%s.root"%(outDirName, cutName, varkey)
@@ -133,7 +165,9 @@ for withBtag in [False]:
       thstacks[-1].Draw()
       thstacks[-1].SetMinimum(0.08)
       thstacks[-1].SetMaximum(thstacks[-1].GetMaximum()*45)
+      print thstacks[-1]
       if varkey in varDict.keys():
+        print "going to set title for thstacks[-1] to %s " % varkey
         thstacks[-1].GetXaxis().SetTitle(varDict[varkey])
       thstacks[-1].GetYaxis().SetTitle("Events/%g"%thstacks[-1].GetXaxis().GetBinWidth(1))
       thstacks[-1].GetYaxis().SetLabelSize(0.04)
@@ -141,7 +175,15 @@ for withBtag in [False]:
       thstacks[-1].GetYaxis().SetTitleOffset(1.2)
 
       dataFileName = varkey+"_"+treekey+"_SilverJson.root"
-      datafiles.append(TFile("weightedMCbgHists_%s/%s"%(cutName, dataFileName)))
+      dName = "weightedMCbgHists_%s" % cutName
+      if cutName in "nMinus1":
+        if withBtag:
+          dName += "_withBtag"
+        else:
+          dName += "_noBtag"
+      if sideband:
+        dName += "_sideband"
+      datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
       print datafiles[-1]
       datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
       print datahists[-1]
@@ -154,18 +196,20 @@ for withBtag in [False]:
         colors={}
         colors[750]=kCyan-6
         colors[1000]=kOrange
-        colors[2000]=kMagenta
-        colors[3000]=kRed
-        for sigMass in [750, 1000, 2000, 3000]:
-          sigFileName = varkey+"_"+treekey+"_Hgamma_m%i.root"%sigMass
+        colors[2050]=kMagenta
+        colors[3250]=kRed
+        for sigMass in [750, 1000, 2050, 3250]:
+          sigFileName = varkey+"_"+treekey+"_signal_m%i.root"%sigMass
+          rName = "weightedMCbgHists_%s" % cutName
           if cutName in "nMinus1":
             if withBtag:
-              sigfiles.append(TFile("weightedMCbgHists_%s_withBtag/%s"%(cutName, sigFileName)))
+              rName += "_withBtag"
             else:
-              sigfiles.append(TFile("weightedMCbgHists_%s_noBtag/%s"%(cutName, sigFileName)))
-          else:
-            outDirName = "stackplots_%s" % cutName
-            sigfiles.append(TFile("weightedMCbgHists_%s/%s"%(cutName, sigFileName)))
+              rName += "_noBtag"
+          if sideband:
+            rName += "_sideband"
+          outDirName = "stackplots_%s" % rName
+          sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
           sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
           sighists[-1].SetLineStyle(3)
           sighists[-1].SetLineWidth(2)
@@ -175,7 +219,6 @@ for withBtag in [False]:
           sighists[-1].Draw("SAME")
 
       pads[-1].SetBottomMargin(0)
-      pads[-1].SetLogy()
       pads[-1].BuildLegend()
       cans[-1].cd()
       pads[-1].Draw()
@@ -212,6 +255,10 @@ for withBtag in [False]:
       datahistsCopies[-1].Sumw2()
       datahistsCopies[-1].Divide(fullStack)
       datahistsCopies[-1].Draw("PE")
+      if addLines:
+        lines.append(TLine(fullStack.GetXaxis().GetBinLowEdge(1) , 1, fullStack.GetXaxis().GetBinUpEdge(fullStack.GetXaxis().GetNbins()) ,1))
+        lines[-1].SetLineStyle(2)
+        lines[-1].Draw("SAME")
       datahistsCopies[-1].SetTitle("")
       datahistsCopies[-1].GetYaxis().SetRangeUser(0,2)
       datahistsCopies[-1].SetLineColor(kBlack)

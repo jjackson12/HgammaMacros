@@ -3,6 +3,9 @@ from ROOT import *
 from testpy import getRangesDict, getHiggsRangesDict
 from getMCbgWeights import getMCbgLabels
 
+# John Hakala, 12/1/2016
+# Makes optimization plots by sliding cuts over N-1 stackplots from makeStacks.py
+
 def whichVarAmI(inFileName):
   for key in getRangesDict().keys():
     if key in inFileName:
@@ -48,10 +51,10 @@ def makeOpt(inFileName, upDown, withBtag):
       name750 = subprim.GetName()
     if "m1000" in subprim.GetName():
       name1000 = subprim.GetName()
-    if "m2000" in subprim.GetName():
-      name2000 = subprim.GetName()
-    if "m3000" in subprim.GetName():
-      name3000 = subprim.GetName()
+    if "m2050" in subprim.GetName():
+      name2050 = subprim.GetName()
+    if "m3250" in subprim.GetName():
+      name3250 = subprim.GetName()
     #if "m4000" in subprim.GetName():
     #  name4000 = subprim.GetName()
     if "THStack" in subprim.IsA().GetName():
@@ -67,14 +70,14 @@ def makeOpt(inFileName, upDown, withBtag):
   m1000.SetLineColor(kOrange-3)
   m1000.SetLineStyle(2)
   m1000.SetLineWidth(3)
-  m2000 = pad.GetPrimitive(name2000)
-  m2000.SetLineColor(kPink-3)
-  m2000.SetLineStyle(2)
-  m2000.SetLineWidth(3)
-  m3000 = pad.GetPrimitive(name3000)
-  m3000.SetLineColor(kRed+2)
-  m3000.SetLineStyle(2)
-  m3000.SetLineWidth(3)
+  m2050 = pad.GetPrimitive(name2050)
+  m2050.SetLineColor(kPink-3)
+  m2050.SetLineStyle(2)
+  m2050.SetLineWidth(3)
+  m3250 = pad.GetPrimitive(name3250)
+  m3250.SetLineColor(kRed+2)
+  m3250.SetLineStyle(2)
+  m3250.SetLineWidth(3)
 
   #m4000 = pad.GetPrimitive(name4000)
   total = stack.GetStack().Last()
@@ -84,8 +87,8 @@ def makeOpt(inFileName, upDown, withBtag):
 
   graphPoints750 = []
   graphPoints1000 = []
-  graphPoints2000 = []
-  graphPoints3000 = []
+  graphPoints2050 = []
+  graphPoints3250 = []
   #graphPoints4000 = []
   nSteps = total.GetNbinsX()
   lowerBound = getRangesDict()[whichVarAmI(inFileName)][0]
@@ -95,21 +98,21 @@ def makeOpt(inFileName, upDown, withBtag):
     slideValue = lowerBound+i*stepSize
     sOverRootB750= getSoverRootB(total, m750, slideValue, upDown, withBtag)
     sOverRootB1000= getSoverRootB(total, m1000, slideValue, upDown, withBtag)
-    sOverRootB2000= getSoverRootB(total, m2000, slideValue, upDown, withBtag)
-    sOverRootB3000= getSoverRootB(total, m3000, slideValue, upDown, withBtag)
+    sOverRootB2050= getSoverRootB(total, m2050, slideValue, upDown, withBtag)
+    sOverRootB3250= getSoverRootB(total, m3250, slideValue, upDown, withBtag)
     if type(sOverRootB750) is float : 
       graphPoints750.append([slideValue, sOverRootB750])
       #print "filled point %f %f into graphPoints750" % ( slideValue, sOverRootB750)
     if type(sOverRootB1000) is float : 
       graphPoints1000.append([slideValue, sOverRootB1000])
       #print "filled point %f %f into graphPoints1000" % ( slideValue, sOverRootB1000)
-    if type(sOverRootB2000) is float : 
-      graphPoints2000.append([slideValue, sOverRootB2000])
-      #print "filled point %f %f into graphPoints2000" % ( slideValue, sOverRootB2000)
-    if type(sOverRootB3000) is float : 
-      graphPoints3000.append([slideValue, sOverRootB3000])
+    if type(sOverRootB2050) is float : 
+      graphPoints2050.append([slideValue, sOverRootB2050])
+      #print "filled point %f %f into graphPoints2050" % ( slideValue, sOverRootB2050)
+    if type(sOverRootB3250) is float : 
+      graphPoints3250.append([slideValue, sOverRootB3250])
     #if type(sOverRootB4000) is float : 
-    #  graphPoints4000.append([slideValue, sOverRootB2000])
+    #  graphPoints4000.append([slideValue, sOverRootB2050])
 
 #  print graphPoints
   #graph4000 = TGraph()
@@ -117,17 +120,17 @@ def makeOpt(inFileName, upDown, withBtag):
   #  graph4000.SetPoint(graph4000.GetN(), graphPoint4000[0], graphPoint4000[1])
   #  #print "set point in graph4000"
 
-  graph3000 = TGraph()
-  graph3000.SetName("optGraph_%s"%name3000)
-  for graphPoint3000 in graphPoints3000:
-    graph3000.SetPoint(graph3000.GetN(), graphPoint3000[0], graphPoint3000[1])
-    #print "set point in graph3000"
+  graph3250 = TGraph()
+  graph3250.SetName("optGraph_%s"%name3250)
+  for graphPoint3250 in graphPoints3250:
+    graph3250.SetPoint(graph3250.GetN(), graphPoint3250[0], graphPoint3250[1])
+    #print "set point in graph3250"
 
-  graph2000 = TGraph()
-  graph2000.SetName("optGraph_%s"%name2000)
-  for graphPoint2000 in graphPoints2000:
-    graph2000.SetPoint(graph2000.GetN(), graphPoint2000[0], graphPoint2000[1])
-    #print "set point in graph2000"
+  graph2050 = TGraph()
+  graph2050.SetName("optGraph_%s"%name2050)
+  for graphPoint2050 in graphPoints2050:
+    graph2050.SetPoint(graph2050.GetN(), graphPoint2050[0], graphPoint2050[1])
+    #print "set point in graph2050"
 
   graph1000 = TGraph()
   graph1000.SetName("optGraph_%s"%name1000)
@@ -144,8 +147,8 @@ def makeOpt(inFileName, upDown, withBtag):
   bottomPad = can.GetPrimitive(bottomPadName)
   bottomPad.cd()
   bottomPad.Clear()
-  graph3000.Draw()
-  graph3000.GetXaxis().SetLimits(lowerBound, upperBound)
+  graph1000.Draw()
+  graph1000.GetXaxis().SetLimits(lowerBound, upperBound)
   #graph1000.Draw()
   #graph1000.GetXaxis().SetLimits(lowerBound, upperBound)
   bottomPad.SetBottomMargin(0.18)
@@ -158,43 +161,43 @@ def makeOpt(inFileName, upDown, withBtag):
   pad.Draw()
 
   bottomPad.cd()
-  graph3000.GetYaxis().SetTitle("S/#sqrt{B} (a.u.)")
-  graph3000.GetYaxis().SetLabelSize(0)
-  graph3000.GetXaxis().SetLabelSize(0.1)
-  graph3000.GetYaxis().SetTitleSize(0.12)
-  graph3000.GetYaxis().SetTitleOffset(.3)
-  graph3000.GetXaxis().SetTitle("cut value")
-  graph3000.GetXaxis().SetTitleSize(0.12)
-  graph3000.GetXaxis().SetTitleOffset(0.65)
-  graph3000.SetLineStyle(2)
-  graph3000.SetLineWidth(2)
-  graph3000.SetLineColor(kRed+2)
-  graph3000.SetFillColor(kWhite)
-  graph3000.SetMarkerStyle(20)
-  graph3000.SetMarkerSize(0)
-  #graph3000.GetYaxis().SetTitle("S/#sqrt{B} (a.u.)")
-  #graph3000.GetYaxis().SetLabelSize(0)
-  #graph3000.GetXaxis().SetLabelSize(0.1)
-  #graph3000.GetYaxis().SetTitleSize(0.12)
-  #graph3000.GetYaxis().SetTitleOffset(.3)
-  #graph3000.GetXaxis().SetTitle("cut value")
-  #graph3000.GetXaxis().SetTitleSize(0.12)
-  #graph3000.GetXaxis().SetTitleOffset(0.65)
-  #graph3000.SetLineStyle(2)
-  #graph3000.SetLineWidth(2)
-  #graph3000.SetLineColor(kPink-3)
-  #graph3000.SetMarkerStyle(20)
-  #graph3000.SetMarkerSize(0)
-  graph2000.Draw("SAME")
-  graph2000.SetLineStyle(2)
-  graph2000.SetLineWidth(2)
-  graph2000.SetLineColor(kPink-3)
-  graph2000.SetFillColor(kWhite)
-  graph1000.Draw("SAME")
+  graph1000.GetYaxis().SetTitle("S/#sqrt{B} (a.u.)")
+  graph1000.GetYaxis().SetLabelSize(0)
+  graph1000.GetXaxis().SetLabelSize(0.1)
+  graph1000.GetYaxis().SetTitleSize(0.12)
+  graph1000.GetYaxis().SetTitleOffset(.3)
+  graph1000.GetXaxis().SetTitle("cut value")
+  graph1000.GetXaxis().SetTitleSize(0.12)
+  graph1000.GetXaxis().SetTitleOffset(0.65)
   graph1000.SetLineStyle(2)
   graph1000.SetLineWidth(2)
-  graph1000.SetLineColor(kOrange-3)
+  graph1000.SetLineColor(kRed+2)
   graph1000.SetFillColor(kWhite)
+  graph1000.SetMarkerStyle(20)
+  graph1000.SetMarkerSize(0)
+  #graph3250.GetYaxis().SetTitle("S/#sqrt{B} (a.u.)")
+  #graph3250.GetYaxis().SetLabelSize(0)
+  #graph3250.GetXaxis().SetLabelSize(0.1)
+  #graph3250.GetYaxis().SetTitleSize(0.12)
+  #graph3250.GetYaxis().SetTitleOffset(.3)
+  #graph3250.GetXaxis().SetTitle("cut value")
+  #graph3250.GetXaxis().SetTitleSize(0.12)
+  #graph3250.GetXaxis().SetTitleOffset(0.65)
+  #graph3250.SetLineStyle(2)
+  #graph3250.SetLineWidth(2)
+  #graph3250.SetLineColor(kPink-3)
+  #graph3250.SetMarkerStyle(20)
+  #graph3250.SetMarkerSize(0)
+  graph2050.Draw("SAME")
+  graph2050.SetLineStyle(2)
+  graph2050.SetLineWidth(2)
+  graph2050.SetLineColor(kPink-3)
+  graph2050.SetFillColor(kWhite)
+  graph3250.Draw("SAME")
+  graph3250.SetLineStyle(2)
+  graph3250.SetLineWidth(2)
+  graph3250.SetLineColor(kOrange-3)
+  graph3250.SetFillColor(kWhite)
   graph750.Draw("SAME")
   graph750.SetLineStyle(2)
   graph750.SetLineWidth(2)
@@ -209,7 +212,7 @@ def makeOpt(inFileName, upDown, withBtag):
       prim.SetX2NDC(0.946)
       prim.SetY2NDC(0.911)
       for subprim in prim.GetListOfPrimitives():
-        for mass in ["750", "1000", "2000", "3000"]:
+        for mass in ["750", "1000", "2050", "3250"]:
           if mass in subprim.GetLabel():
             subprim.SetLabel("H#gamma(%r TeV)"%(float(mass)/float(1000)))
             subprim.SetOption("lf")

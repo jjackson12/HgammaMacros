@@ -4,6 +4,9 @@ from getMCbgWeights import *
 from HgParameters import *
 from HgCuts import *
 
+# John Hakala, 12/1/2016
+# A poorly-named collection of functions that churns out all the possible histograms from DDtrees
+
 printCuts = True
 
 
@@ -19,35 +22,35 @@ def getHiggsRangesDict():
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
   rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
   rangesDict["%sJett2t1"%label]=[0, 1]
-  rangesDict["%sPrunedJetCorrMass"%label]=[0,700]
+  rangesDict["%sPrunedJetCorrMass"%label]=[0,200]
   rangesDict["phJetDeltaR_%s"%label]=[0,6]
   rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
   return rangesDict
 
-# this is for making stackplots from the ddTrees
-def getSidebandRangesDict(sideband):
-  rangesDict = {}
-  if sideband == "100110":
-    index="Four"
-  elif sideband == "5070":
-    index="Three"
-  else:
-    print "Invalid sideband! Either 100110 or 5070."
-    quit()
-  label="sideLow%s"%index
-  rangesDict["cosThetaStar"] = [0., 1.]
-  rangesDict["phPtOverMgammaj"]=[0., 2.]
-  rangesDict["leadingPhPhi"]=[-3.5, 3.5]
-  rangesDict["leadingPhPt"]=[0., 2000.]
-  rangesDict["leadingPhAbsEta"]=[0.,2.5]
-  rangesDict["leadingPhEta"]=[-2.8,2.8]
-  rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
-  rangesDict["%sJett2t1"%label]=[0, 1]
-  rangesDict["%sPrunedJetCorrMass"%label]=[0, 4000]
-  rangesDict["phJetDeltaR_%s"%label]=[0,6]
-  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
-  return rangesDict
+## this is for making stackplots from the ddTrees
+#def getSidebandRangesDict(sideband):
+#  rangesDict = {}
+#  if sideband == "100110":
+#    index="Four"
+#  elif sideband == "5070":
+#    index="Three"
+#  else:
+#    print "Invalid sideband! Either 100110 or 5070."
+#    quit()
+#  label="sideLow%s"%index
+#  rangesDict["cosThetaStar"] = [0., 1.]
+#  rangesDict["phPtOverMgammaj"]=[0., 2.]
+#  rangesDict["leadingPhPhi"]=[-3.5, 3.5]
+#  rangesDict["leadingPhPt"]=[0., 2000.]
+#  rangesDict["leadingPhAbsEta"]=[0.,2.5]
+#  rangesDict["leadingPhEta"]=[-2.8,2.8]
+#  rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
+#  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
+#  rangesDict["%sJett2t1"%label]=[0, 1]
+#  rangesDict["%sPrunedJetCorrMass"%label]=[0, 4000]
+#  rangesDict["phJetDeltaR_%s"%label]=[0,6]
+#  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
+#  return rangesDict
 
 def getRangesDict():
   rangesDict = {}
@@ -78,7 +81,7 @@ def getRangesDict():
 #    outFile.Close()
 #    return True
 
-def makeAllHists(cutName, withBtag=True):
+def makeAllHists(cutName, withBtag=True, sideband=False):
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["small3sDir"])
   #regions = ["higgs", "side100110", "side5070"]
@@ -97,14 +100,18 @@ def makeAllHists(cutName, withBtag=True):
           varNames.append(branch.GetName())
       for var in varNames:
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
+        if var == "higgsJet_HbbTag":
+          hist.Rebin(5)
         if   cutName in "btag":
-          cut = getBtagComboCut(region)
+          cut = getBtagComboCut(region, sideband)
         elif cutName in "antibtag":
-          cut = getAntiBtagComboCut(region)
+          cut = getAntiBtagComboCut(region, sideband)
         elif cutName in "nobtag":
-          cut = getNoBtagComboCut(region)
+          cut = getNoBtagComboCut(region, sideband)
         elif cutName in "nMinus1":
-          cut = getNminus1ComboCut(region, var, withBtag)
+          cut = getNminus1ComboCut(region, var, withBtag, sideband)
+          print "The cut is:"
+          print cut
         elif cutName == "preselection":
           cut = TCut()
         else:
@@ -120,16 +127,25 @@ def makeAllHists(cutName, withBtag=True):
         print "cut is: " 
         print cut
         nEntries = tree.Draw("%s>> %s"%(var, histName), cut)
+        directory = ""
         if cutName in "nMinus1":
           if withBtag:
-              filename = "weightedMCbgHists_%s_withBtag/%s_%s_%s"%(cutName, var, region, key)
+              directory = "weightedMCbgHists_%s_withBtag"%cutName
           else:
-              filename = "weightedMCbgHists_%s_noBtag/%s_%s_%s"%(cutName, var, region, key)
+              directory = "weightedMCbgHists_%s_noBtag"%cutName
         else:
-          filename = "weightedMCbgHists_%s/%s_%s_%s"%(cutName, var, region, key)
+          directory = "weightedMCbgHists_%s"%cutName
+        if sideband:
+          directory += "_sideband"
+        filename = "%s/%s_%s_%s"%(directory, var, region, key)
+        if not os.path.exists(directory):
+          os.makedirs(directory)
         if not nEntries == 0:
           outFile = TFile(filename, "RECREATE")
           outFile.cd()
+          print "applying weight %s to sample %s" % (weightsDict[key], filename )
+          print " weightsDict has keys: " 
+          print weightsDict.keys()
           for histBin in range(0,hist.GetXaxis().GetNbins()):
             hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
           hist.Write()
