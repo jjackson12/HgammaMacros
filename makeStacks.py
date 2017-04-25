@@ -85,13 +85,13 @@ for withBtag in [options.withBtag]:
     nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
     print "done making all histograms."
     thstacks=[]
-    thstackCopies=[]
+    #thstackCopies=[]
     cans=[]
     pads=[]
     hists=[]
     tfiles=[]
-    datahists=[]
-    datahistsCopies=[]
+    #datahists=[]
+    #datahistsCopies=[]
     datafiles=[]
     sighists=[]
     sigfiles=[]
@@ -109,7 +109,7 @@ for withBtag in [options.withBtag]:
 
       #### Build the stackplot
       thstacks.append(THStack("thstack_%s_%s"%(cutName, varkey),""))
-      thstackCopies.append(THStack("thstackCopy_%s_%s"%(cutName, varkey),""))
+      #thstackCopies.append(THStack("thstackCopy_%s_%s"%(cutName, varkey),""))
       integralsDict={}
       namesDict={}
       for filekey in mcBgWeights.keys():
@@ -141,7 +141,7 @@ for withBtag in [options.withBtag]:
           if mcBG in key:
             #print "adding %s to stackplot; it has integral %f" % (integralsDict[key], key)
             thstacks[-1].Add(namesDict[key])
-            thstackCopies[-1].Add(namesDict[key])
+            #thstackCopies[-1].Add(namesDict[key])
 
       #### Get the signal histograms
       
@@ -162,17 +162,21 @@ for withBtag in [options.withBtag]:
       cans[-1].cd()
       pads[-1].Draw()
       pads[-1].cd()
-      thstacks[-1].Draw()
+      #thstacks[-1].Draw()
       thstacks[-1].SetMinimum(0.08)
       thstacks[-1].SetMaximum(thstacks[-1].GetMaximum()*45)
       print thstacks[-1]
-      if varkey in varDict.keys():
-        print "going to set title for thstacks[-1] to %s " % varkey
-        thstacks[-1].GetXaxis().SetTitle(varDict[varkey])
-      thstacks[-1].GetYaxis().SetTitle("Events/%g"%thstacks[-1].GetXaxis().GetBinWidth(1))
-      thstacks[-1].GetYaxis().SetLabelSize(0.04)
-      thstacks[-1].GetYaxis().SetTitleSize(0.04)
-      thstacks[-1].GetYaxis().SetTitleOffset(1.2)
+      #if varkey in varDict.keys():
+      #  print "going to set title for thstacks[-1] to %s " % varkey
+      #  print "varkey is:", varkey
+      #  print "varDict[varkey] is:", varDict[varkey]
+      #  print "thstacks[-1].GetXaxis() is:"
+      #  print thstacks[-1].GetXaxis()
+      #  thstacks[-1].GetXaxis().SetTitle(varDict[varkey])
+      #thstacks[-1].GetYaxis().SetTitle("Events/%g"%thstacks[-1].GetXaxis().GetBinWidth(1))
+      #thstacks[-1].GetYaxis().SetLabelSize(0.04)
+      #thstacks[-1].GetYaxis().SetTitleSize(0.04)
+      #thstacks[-1].GetYaxis().SetTitleOffset(1.2)
 
       dataFileName = varkey+"_"+treekey+"_SilverJson.root"
       dName = "weightedMCbgHists_%s" % cutName
@@ -185,12 +189,12 @@ for withBtag in [options.withBtag]:
         dName += "_sideband"
       datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
       print datafiles[-1]
-      datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
-      print datahists[-1]
-      if not blindData:
-        datahists[-1].Draw("PE SAME")
-      datahists[-1].SetMarkerStyle(20)
-      datahistsCopies.append(datahists[-1].Clone())
+      #datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
+      #print datahists[-1]
+      #if not blindData:
+        #datahists[-1].Draw("PE SAME")
+      #datahists[-1].SetMarkerStyle(20)
+      #datahistsCopies.append(datahists[-1].Clone())
       #for sigMass in [650, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000]:
       if showSigs:
         colors={}
@@ -216,14 +220,17 @@ for withBtag in [options.withBtag]:
           sighists[-1].SetLineColor(colors[sigMass])
           sighists[-1].SetTitle("H#gamma(%r TeV)"%(sigMass/float(1000)))
           sighists[-1].SetMarkerSize(0)
-          sighists[-1].Draw("SAME")
+          first = True
+          if first:
+            sighists[-1].Draw("SAME")
+            first = False
 
       pads[-1].SetBottomMargin(0)
       pads[-1].BuildLegend()
       cans[-1].cd()
       pads[-1].Draw()
 
-      TDRify(pads[-1])
+      TDRify(pads[-1], False, pads[-1].GetName())
       for prim in pads[-1].GetListOfPrimitives():
         if "TLegend" in prim.IsA().GetName():
           prim.SetX1NDC(0.753)
@@ -244,28 +251,28 @@ for withBtag in [options.withBtag]:
       pads[-1].SetBottomMargin(0.15)
       pads[-1].cd()
 
-      fullStack = thstackCopies[-1].GetStack().Last()
-      fullStack.Sumw2()
-      if varkey in varDict.keys():
-        fullStack.GetXaxis().SetTitle(varDict[varkey])
-      fullStack.GetXaxis().SetLabelSize(0.10)
-      fullStack.GetXaxis().SetTitleSize(0.13)
-      fullStack.GetXaxis().SetTitleOffset(2)
+      #fullStack = thstackCopies[-1].GetStack().Last()
+      #fullStack.Sumw2()
+      #if varkey in varDict.keys():
+        #fullStack.GetXaxis().SetTitle(varDict[varkey])
+      #fullStack.GetXaxis().SetLabelSize(0.10)
+      #fullStack.GetXaxis().SetTitleSize(0.13)
+      #fullStack.GetXaxis().SetTitleOffset(2)
       gStyle.SetOptStat(0)
-      datahistsCopies[-1].Sumw2()
-      datahistsCopies[-1].Divide(fullStack)
-      datahistsCopies[-1].Draw("PE")
+      #datahistsCopies[-1].Sumw2()
+      #datahistsCopies[-1].Divide(fullStack)
+      #datahistsCopies[-1].Draw("PE")
       if addLines:
         lines.append(TLine(fullStack.GetXaxis().GetBinLowEdge(1) , 1, fullStack.GetXaxis().GetBinUpEdge(fullStack.GetXaxis().GetNbins()) ,1))
         lines[-1].SetLineStyle(2)
         lines[-1].Draw("SAME")
-      datahistsCopies[-1].SetTitle("")
-      datahistsCopies[-1].GetYaxis().SetRangeUser(0,2)
-      datahistsCopies[-1].SetLineColor(kBlack)
-      datahistsCopies[-1].SetStats(kFALSE)
-      datahistsCopies[-1].GetXaxis().SetLabelSize(0.10)
-      datahistsCopies[-1].GetXaxis().SetTitleSize(0.13)
-      datahistsCopies[-1].GetXaxis().SetTitleOffset(2)
+      #datahistsCopies[-1].SetTitle("")
+      #datahistsCopies[-1].GetYaxis().SetRangeUser(0,2)
+      #datahistsCopies[-1].SetLineColor(kBlack)
+      #datahistsCopies[-1].SetStats(kFALSE)
+      #datahistsCopies[-1].GetXaxis().SetLabelSize(0.10)
+      #datahistsCopies[-1].GetXaxis().SetTitleSize(0.13)
+      #datahistsCopies[-1].GetXaxis().SetTitleOffset(2)
 
       pads[-1].cd()
       gStyle.SetOptStat(0)
@@ -277,11 +284,11 @@ for withBtag in [options.withBtag]:
       #    prim.Delete()
       #  if "Stats" in prim.IsA().GetName():
       #    prim.Delete()
-      datahistsCopies[-1].GetYaxis().SetTitle("data/MC")
-      datahistsCopies[-1].GetYaxis().SetTitleSize(0.13)
-      datahistsCopies[-1].GetYaxis().SetTitleOffset(0.24)
-      datahistsCopies[-1].GetYaxis().SetLabelSize(0.08)
-      TDRify(pads[-1], True)
+      #datahistsCopies[-1].GetYaxis().SetTitle("data/MC")
+      #datahistsCopies[-1].GetYaxis().SetTitleSize(0.13)
+      #datahistsCopies[-1].GetYaxis().SetTitleOffset(0.24)
+      #datahistsCopies[-1].GetYaxis().SetLabelSize(0.08)
+      TDRify(pads[-1], True, pads[-1].GetName())
       outfile.cd()
       cans[-1].Write()
       outfile.Close()

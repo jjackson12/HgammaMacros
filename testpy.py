@@ -20,11 +20,11 @@ def getHiggsRangesDict():
   rangesDict["leadingPhEta"]=[-2.8,2.8]
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
+  rangesDict["%sJet_puppi_softdrop_abseta"%label]=[0., 3]
   rangesDict["%sJett2t1"%label]=[0, 1]
-  rangesDict["%sPrunedJetCorrMass"%label]=[0,200]
+  rangesDict["%sPuppi_softdropJetCorrMass"%label]=[0,200]
   rangesDict["phJetDeltaR_%s"%label]=[0,6]
-  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
+  rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[0,4000]
   return rangesDict
 
 ## this is for making stackplots from the ddTrees
@@ -45,11 +45,11 @@ def getHiggsRangesDict():
 #  rangesDict["leadingPhAbsEta"]=[0.,2.5]
 #  rangesDict["leadingPhEta"]=[-2.8,2.8]
 #  rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-#  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
+#  rangesDict["%sJet_puppi_softdrop_abseta"%label]=[0., 3]
 #  rangesDict["%sJett2t1"%label]=[0, 1]
-#  rangesDict["%sPrunedJetCorrMass"%label]=[0, 4000]
+#  rangesDict["%sPuppi_softdropJetCorrMass"%label]=[0, 4000]
 #  rangesDict["phJetDeltaR_%s"%label]=[0,6]
-#  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
+#  rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[0,4000]
 #  return rangesDict
 
 def getRangesDict():
@@ -99,6 +99,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
         if not "csvValues" in branch.GetName() and not "subjetCut" in branch.GetName() and not "triggerFired" in branch.GetName():
           varNames.append(branch.GetName())
       for var in varNames:
+        print "working on variable with name:", var
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
         if var == "higgsJet_HbbTag":
           hist.Rebin(5)

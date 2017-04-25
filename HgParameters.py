@@ -7,7 +7,7 @@ def getSamplesDirs():
   response["HgammaFlatTuples"] = "~/physics/80Xsignals"
   response["small3sDir"]       = "~/physics/nov21_ntuples"
   response["ddDir"]            = "~/WZgammaMacros/80XDDs_Mar9/"
-  response["sigDDdir"]         = "~/WZgammaMacros/80XDDs_Mar9_sigs"
+  response["sigDDdir"]         = "~/WZgammaMacros/80XDDs_Apr17_puppiSoftdrop_sigs"
   response["dataDir"]          = "~/WZgammaMacros/80XDDs_Mar9/ddTree_SilverJson.root"
   return response
 
@@ -58,7 +58,7 @@ def getSigNevents():
 
 def getVariableDict():
   varDict = {}
-  varDict["higgsJet_pruned_abseta"]    = "#||{#eta_{J}}"
+  varDict["higgsJet_puppi_softdrop_abseta"]    = "#||{#eta_{J}}"
   varDict["leadingPhEta"]              = "#eta_{#gamma}"
   varDict["higgsJet_HbbTag"]           = "Hb#bar{b} tagger discriminant"
   varDict["phJetDeltaR_higgs"]         = "#DeltaR(#gamma, jet)"
@@ -68,8 +68,8 @@ def getVariableDict():
   varDict["phPtOverMgammaj"]           = "p_{T}^{#gamma}/m_{#gammaJ}  "
   varDict["leadingPhPhi"]              = "#phi_{#gamma}"
   varDict["cosThetaStar"]              = "#||{cos(#theta*)}"
-  varDict["phJetInvMass_pruned_higgs"] = "m_{#gammaJ} (GeV)"
-  varDict["higgsPrunedJetCorrMass"]    = "m_{J}^{pruned} (GeV)"
+  varDict["phJetInvMass_puppi_softdrop_higgs"] = "m_{#gammaJ} (GeV)"
+  varDict["higgsPuppi_softdropJetCorrMass"]    = "m_{J}^{puppi_softdrop} (GeV)"
   return varDict
 
 

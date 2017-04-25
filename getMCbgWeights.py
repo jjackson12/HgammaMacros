@@ -101,14 +101,14 @@ def getWeightsDict(small3Dir):
   lumi = 36420
 
   sampleWeights = {}
-  for key in sampleXsects:
-    expectedEvents = lumi*sampleXsects[key]
-    weight = expectedEvents/sampleEvents[key]
-    sampleWeights[key] = weight
+  ###for key in sampleXsects:
+  ###  expectedEvents = lumi*sampleXsects[key]
+  ###  weight = expectedEvents/sampleEvents[key]
+  ###  sampleWeights[key] = weight
   signalWeight = .5
   #for signalToInclude in getSignalsToInclude():
   #  sampleWeights[signalToInclude] = signalWeight
-  sampleWeights["SilverJson.root"] = 1
+  #####sampleWeights["SilverJson.root"] = 1
 #  sampleWeights[ "signal_m650.root"   ] = .8*10
   sampleWeights[ "signal_m750.root"   ] = .8*10
   sampleWeights[ "signal_m850.root"   ] = .8*10
@@ -128,7 +128,7 @@ def getWeightsDict(small3Dir):
 def getMCbgWeightsDict(small3Dir):
  weights = getWeightsDict(small3Dir) 
  nonMCbgs = getSignalsToInclude()
- nonMCbgs.append("SilverJson.root")
+ #nonMCbgs.append("SilverJson.root")
  for nonMCbg in nonMCbgs:
    weights.pop(nonMCbg)
  return weights
