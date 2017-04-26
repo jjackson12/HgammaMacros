@@ -10,7 +10,7 @@
 std::unordered_map<unsigned int, std::unordered_map<unsigned int, std::vector<unsigned long long> > >* eventMap;
 
 void testEventMap()  {
-  TFile* eventMapFile = TFile::Open("eventMap.root", "READ");
+  TFile* eventMapFile = TFile::Open("eventMap_HLT_Photon175.root", "READ");
   TTree* eventMapTree = (TTree*) eventMapFile->Get("eventMap");
   TBranch *b_eventMap = 0;
   eventMapTree->SetBranchAddress("eventMap", &eventMap, &b_eventMap);

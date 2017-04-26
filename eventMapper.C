@@ -3,7 +3,7 @@
 #include <TFile.h>
 #include <TTree.h>
 
-void eventMapper::Loop()
+void eventMapper::Loop(std::string triggerName)
 {
 //   In a ROOT session, you can do:
 //      root> .L eventMapper.C
@@ -28,32 +28,40 @@ void eventMapper::Loop()
     fChain->SetBranchStatus("EVENT_event",1);  // activate branchname
     fChain->SetBranchStatus("EVENT_lumiBlock",1);  // activate branchname
     fChain->SetBranchStatus("EVENT_run",1);  // activate branchname
+    fChain->SetBranchStatus( "HLT_isFired"              ,  1 );  // activate select branches
     cout << "done setting branch addresses" << endl;
 // METHOD2: replace line
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
 
-   Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nentries = fChain->GetEntries();
+   cout << "nentries is " << nentries << endl;
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      cout << "about to call LoadTree" << endl;
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
-      cout << "about to call GetEntry" << endl;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
-      cout << "about to call addEvent" << endl;
-      addEvent((unsigned int)EVENT_run, (unsigned int)EVENT_lumiBlock, (unsigned long long)EVENT_event);
-      cout << "done calling addEvent" << endl;
+      for(map<string,bool>::iterator it = HLT_isFired->begin(); it != HLT_isFired->end(); ++it) {
+        if (it->first.find(triggerName + "_") != std::string::npos )  {
+          if (1==it->second) addEvent((unsigned int)EVENT_run, (unsigned int)EVENT_lumiBlock, (unsigned long long)EVENT_event);
+        }
+      }
+      if (jentry%25000==0) {
+        cout.flush();
+        cout << fixed << setw(4) << setprecision(2) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << '\r';
+      }
    }
-   TFile* outFile = new TFile("eventMap.root", "RECREATE");
+   TFile* outFile = new TFile((std::string("eventMap_") +  triggerName + std::string(".root") ).c_str(), "RECREATE");
    TTree* mapTree = new TTree("eventMap", "eventMap");
    mapTree->Branch("eventMap", &eventMap);
    mapTree->Fill();
    mapTree->Write();
    outFile->Close();
+   cout.flush();
+   cout << "100% done: Scanned " << nentries << " events." << endl;
    
 }
 
