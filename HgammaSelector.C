@@ -46,8 +46,8 @@ void HgammaSelector::Loop(string outputFileName) {
   outputTreeHiggs->Branch("phJetDeltaR_higgs", &phJetDeltaR_higgs);
   outputTreeHiggs->Branch("higgsJet_pruned_abseta", &higgsJet_pruned_abseta);
   outputTreeHiggs->Branch("higgsPrunedJetCorrMass", &higgsPrunedJetCorrMass);
-  //outputTreeHiggs->Branch("triggerFired_165HE10", &triggerFired_165HE10);
-  //outputTreeHiggs->Branch("triggerFired_175", &triggerFired_175);
+  outputTreeHiggs->Branch("triggerFired_165HE10", &triggerFired_165HE10);
+  outputTreeHiggs->Branch("triggerFired_175", &triggerFired_175);
 
 
   // Branches from EXOVVNtuplizer tree
@@ -116,8 +116,8 @@ void HgammaSelector::Loop(string outputFileName) {
     higgsJet_HbbTag                  = -999. ;
     cosThetaStar                     =  -99. ; 
     phPtOverMgammaj                  =  -99. ; 
-    //triggerFired_175                 = false ; 
-    //triggerFired_165HE10             = false ; 
+    triggerFired_175                 = false ; 
+    triggerFired_165HE10             = false ; 
 
     leadingPhoton        .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     sumVector            .SetPtEtaPhiE( 0., 0., 0., 0.) ;
@@ -138,14 +138,14 @@ void HgammaSelector::Loop(string outputFileName) {
       if (checkTrigger && debugFlag) { 
         cout << "       " << it->first << " = " << it->second << endl;
       }
-      //if (it->first.find("HLT_Photon175_") != std::string::npos )  {
-      //  triggerFired_175 = (1==it->second);
-      //  if (triggerFired_175) ++eventsPassingTrigger_175;
-      //}
-      //if (  it->first.find("HLT_Photon165_HE10_") != std::string::npos)  {
-      //  triggerFired_165HE10 = (1==it->second);
-      //  if (triggerFired_165HE10) ++eventsPassingTrigger_165HE10;
-      //}
+      if (it->first.find("HLT_Photon175_") != std::string::npos )  {
+        triggerFired_175 = (1==it->second);
+        if (triggerFired_175) ++eventsPassingTrigger_175;
+      }
+      if (  it->first.find("HLT_Photon165_HE10_") != std::string::npos)  {
+        triggerFired_165HE10 = (1==it->second);
+        if (triggerFired_165HE10) ++eventsPassingTrigger_165HE10;
+      }
     }
     
     // Loop over photons
