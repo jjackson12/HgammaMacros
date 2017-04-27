@@ -11,10 +11,10 @@ using namespace std;
 void HgammaSelector::Loop(string outputFileName) {
   cout << "output filename is: " << outputFileName << endl;
   // Flags for running this macro
-  bool debugFlag                     =  true ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
-  bool checkTrigger                  =  true ;
+  bool debugFlag                     =  false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
+  bool checkTrigger                  =  false ;
+  bool dumpEventInfo                 =  false ;
   //bool ignoreAllCuts                 =  false ;
-  bool dumpEventInfo                 =  true ;
   bool noHLTinfo                     =  false  ;  // This is for the 2016 MC with no HLT info
   int  entriesToCheck                =  100000000 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
   int  reportEvery                   =  5000  ;
