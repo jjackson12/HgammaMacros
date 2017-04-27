@@ -1,5 +1,6 @@
 #define HgammaSelector_cxx
 #include "HgammaSelector.h"
+#include "LinkDef.h"
 
 using namespace std;
 
@@ -26,6 +27,23 @@ void HgammaSelector::Loop(string outputFileName) {
   float jetEtaMax                    =   2.4 ;
   //float jetT2T1Max                   =   0.5 ;
   float phoEtaRanges[5]              = {0, 0.75, 1.479, 2.4, 3.0};
+
+  // for looking at cached trigger firing results
+  //bool loadEventMap = true;
+  //TFile* eventMapFile = TFile::Open("eventMap_HLT_Photon175.root", "READ");
+  //cout << "eventMapFile " << eventMapFile << endl;
+  //TTree* eventMapTree = (TTree*) eventMapFile->Get("eventMap");
+  //cout << "eventMapTree " << eventMapTree << endl;
+  //TBranch *b_eventMap = 0;
+  //if (loadEventMap) {
+  //  cout << "About to set branch address" << endl;
+  //  eventMapTree->SetBranchAddress("eventMap", &eventMap, &b_eventMap);
+  //  cout << "About to LoadTree" << endl;
+  //  Long64_t tentry = eventMapTree->LoadTree(0);
+  //  cout << "About to GetEntry" << endl;
+  //  b_eventMap->GetEntry(tentry);
+  //  cout << "Finished GetEntry" << endl;
+  //}
 
   TFile* outputFile                 = new TFile(outputFileName.c_str(), "RECREATE");
   outputFile->cd();
@@ -245,6 +263,7 @@ void HgammaSelector::Loop(string outputFileName) {
           if (debugFlag && dumpEventInfo) cout << "this event failed the DR cut!" << endl;
           continue;
         }
+        //if (loadEventMap && FindEvent(EVENT_run, EVENT_lumiBlock, EVENT_event)!=0) cout << "found an event that passed selection but did not fire the trigger" << endl;
         outputTreeHiggs->Fill();
         //higgsJet_pruned.SetT(90);
         //sumVector = leadingPhoton + higgsJet_pruned;
@@ -310,4 +329,20 @@ HgammaSelector::leadingSubjets HgammaSelector::getLeadingSubjets(vector<float> p
 //  decisions.tight_tight    = leadingIsTight   &&  subleadingIsTight;
 //
 //  return decisions;
+//}
+
+//unsigned short HgammaSelector::FindEvent(unsigned int run, unsigned int lumiBlock, unsigned long long event) {
+//  std::unordered_map<unsigned int, std::unordered_map<unsigned int, std::vector<unsigned long long> > >::iterator runIt = eventMap->find(run);
+//  if (runIt != eventMap->end()) {
+//    std::unordered_map<unsigned int, std::vector<unsigned long long> >::iterator lumiIt = eventMap->at(run).find(lumiBlock);
+//    if (lumiIt != eventMap->at(run).end()) {
+//
+//      if (std::find(eventMap->at(run).at(lumiBlock).begin(), eventMap->at(run).at(lumiBlock).end(), event) != eventMap->at(run).at(lumiBlock).end()) {
+//        return 0;    // found the event
+//      }
+//      else return 1; // found the run and lumiblock, but the event wasn't there
+//    }
+//    else return 2;   // found the run, but lumiblock wasn't there
+//  }
+//  else return 3;     // didn't find the run
 //}
