@@ -29,8 +29,8 @@ public :
    Int_t           fCurrent; //!current Tree number in a TChain
 
   // Variables calculated using events
-  //bool  triggerFired_175                 = false ; 
-  //bool  triggerFired_165HE10             = false ; 
+  bool  triggerFired_175                 = false ; 
+  bool  triggerFired_165HE10             = false ; 
   bool  ignoreAllCuts                    = true  ; 
   bool  requireTrigger                   = false  ; 
   bool  phoIsTight                       = false ; 
@@ -756,7 +756,6 @@ void HgammaSelector::Init(TTree *tree)
    //genJetAK8_e = 0;
    //genJetAK8_prunedmass = 0;
    //genJetAK8_softdropmass = 0;
-   //HLT_isFired = 0;
    //METraw_et = 0;
    //METraw_phi = 0;
    //METraw_sumEt = 0;
