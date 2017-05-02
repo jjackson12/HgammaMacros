@@ -22,6 +22,7 @@
 // Header file for the classes stored in the TTree if any.
 #include "vector"
 #include "map"
+#include "unordered_map"
 
 class HgammaSelector {
 public :
@@ -536,6 +537,8 @@ public :
    //TBranch        *b_PV_rho;   //!
    //TBranch        *b_PV_z;   //!
 
+   //std::unordered_map<unsigned int, std::unordered_map<unsigned int, std::vector<unsigned long long> > >* eventMap;
+
    HgammaSelector(TTree *tree=0);
    virtual ~HgammaSelector();
    virtual Int_t    Cut(Long64_t entry);
@@ -545,6 +548,7 @@ public :
    virtual void     Loop(string outputFileName);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+   //virtual unsigned short     FindEvent(unsigned int run, unsigned int lumiBlock, unsigned long long event);
 
    leadingSubjets getLeadingSubjets(vector<float> prunedJet);
    passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);
