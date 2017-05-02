@@ -4,11 +4,11 @@ from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["HgammaFlatTuples"] = "~/physics/80Xsignals"
-  response["small3sDir"]       = "~/physics/nov21_ntuples"
-  response["ddDir"]            = "~/WZgammaMacros/80XDDs_Mar9/"
-  response["sigDDdir"]         = "~/WZgammaMacros/80XDDs_Mar9_sigs"
-  response["dataDir"]          = "~/WZgammaMacros/80XDDs_Mar9/ddTree_SilverJson.root"
+  response["HgammaFlatTuples"] = "/Users/johakala/HgammaMacros/organize_smallifications/signals"
+  response["small3sDir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/backgroundsAndData"
+  response["ddDir"]            = "/Users/johakala/HgammaMacros/80XDDs_May2/"
+  response["sigDDdir"]         = "/Users/johakala/HgammaMacros/80XDDs_May2_sigs"
+  response["dataDir"]          = "/Users/johakala/HgammaMacros/80XDDs_May2/ddTree_data2016SinglePhoton.root"
   return response
 
 def getNormalizations():
