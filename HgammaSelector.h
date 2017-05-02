@@ -107,12 +107,12 @@ public :
    passSubjetCuts sideLowFour_subjetCutDecisions;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
-   //const Int_t kMaxpassFilter_HBHE = 1;
-   //const Int_t kMaxpassFilter_HBHELoose = 1;
-   //const Int_t kMaxpassFilter_HBHETight = 1;
-   //const Int_t kMaxpassFilter_CSCHalo = 1;
-   //const Int_t kMaxpassFilter_HCALlaser = 1;
-   //const Int_t kMaxpassFilter_ECALDeadCell = 1;
+   const Int_t kMaxpassFilter_HBHE = 1;
+   const Int_t kMaxpassFilter_HBHEIso = 1;
+   const Int_t kMaxpassFilter_CSCTightHalo2015 = 1;
+   const Int_t kMaxpassFilter_GoodVtx = 1;
+   const Int_t kMaxpassFilter_EEBadSc = 1;
+   const Int_t kMaxpassFilter_muonBadTrack = 1;
    //const Int_t kMaxpassFilter_GoodVtx = 1;
    //const Int_t kMaxpassFilter_TrkFailure = 1;
    //const Int_t kMaxpassFilter_EEBadSc = 1;
@@ -156,8 +156,16 @@ public :
    vector<float>   *ph_mass;
    vector<float>   *ph_pt;
    vector<float>   *ph_et;
+   vector<float>   *ph_rho;
    vector<float>   *ph_superCluster_eta;
+   vector<float>   *ph_superCluster_phi;
+   vector<float>   *ph_sigmaIetaIeta;
+   vector<float>   *ph_hOverE;
+   vector<float>   *ph_isoGamma;
+   vector<float>   *ph_isoCh;
+   vector<int>     *ph_passLooseId;
    vector<int>     *ph_passMediumId;
+   vector<int>     *ph_passTightId;
    vector<float>   *ph_mvaVal;
    vector<float>   *ph_mvaCat;
    vector<bool>    *ph_passEleVeto;
@@ -206,6 +214,7 @@ public :
    vector<float>   *jetAK4_jec;
    vector<bool>    *jetAK4_IDLoose;
    vector<bool>    *jetAK4_IDTight;
+   vector<bool>    *jetAK4_IDTightLepVeto;
    vector<int>     *jetAK4_charge;
    //vector<float>   *jetAK4_cisv;
    vector<float>   *jetAK4_vtxMass;
@@ -224,6 +233,8 @@ public :
    vector<float>   *jetAK8_phi;
    vector<float>   *jetAK8_e;
    vector<float>   *jetAK8_jec;
+   vector<float>   *jetAK8_jecUp;
+   vector<float>   *jetAK8_jecDown;
    vector<bool>    *jetAK8_IDLoose;
    vector<bool>    *jetAK8_IDTight;
    vector<bool>    *jetAK8_IDTightLepVeto;
@@ -241,6 +252,8 @@ public :
    vector<float>   *jetAK8_pruned_mass;
    vector<float>   *jetAK8_pruned_massCorr;
    vector<float>   *jetAK8_pruned_jec;
+   vector<float>   *jetAK8_pruned_jecUp;
+   vector<float>   *jetAK8_pruned_jecDown;
    vector<float>   *jetAK8_softdrop_mass;
    vector<float>   *jetAK8_softdrop_massCorr;
    vector<float>   *jetAK8_softdrop_jec;
@@ -281,15 +294,15 @@ public :
    //vector<float>   *genJetAK8_prunedmass;
    //vector<float>   *genJetAK8_softdropmass;
    map<string,bool> *HLT_isFired;
-   //Bool_t          passFilter_HBHE;
-   //Bool_t          passFilter_HBHELoose;
-   //Bool_t          passFilter_HBHETight;
-   //Bool_t          passFilter_CSCHalo;
-   //Bool_t          passFilter_HCALlaser;
-   //Bool_t          passFilter_ECALDeadCell;
-   //Bool_t          passFilter_GoodVtx;
-   //Bool_t          passFilter_TrkFailure;
-   //Bool_t          passFilter_EEBadSc;
+   Bool_t          passFilter_HBHE;
+   Bool_t          passFilter_HBHEIso;
+   Bool_t          passFilter_CSCTightHalo2015;
+   Bool_t          passFilter_GoodVtx;
+   Bool_t          passFilter_EEBadSc;
+   Bool_t          passFilter_muonBadTrack;
+   Int_t           EVENT_event;
+   Int_t           EVENT_run;
+   Int_t           EVENT_lumiBlock;
    //Bool_t          passFilter_ECALlaser;
    //Bool_t          passFilter_TrkPOG;
    //Bool_t          passFilter_TrkPOG_manystrip;
@@ -304,9 +317,9 @@ public :
    //vector<float>   *MET_et;
    //vector<float>   *MET_phi;
    //vector<float>   *MET_sumEt;
-   Int_t           EVENT_event;
-   Int_t           EVENT_run;
-   Int_t           EVENT_lumiBlock;
+   //Int_t           EVENT_event;
+   //Int_t           EVENT_run;
+   //Int_t           EVENT_lumiBlock;
    //vector<int>     *nPuVtxTrue;
    //vector<int>     *nPuVtx;
    //vector<int>     *bX;
@@ -350,8 +363,16 @@ public :
    TBranch        *b_ph_mass;   //!
    TBranch        *b_ph_pt;   //!
    TBranch        *b_ph_et;   //!
+   TBranch        *b_ph_rho;   //!
    TBranch        *b_ph_superCluster_eta;   //!
+   TBranch        *b_ph_superCluster_phi;   //!
+   TBranch        *b_ph_sigmaIetaIeta;   //!
+   TBranch        *b_ph_hOverE;   //!
+   TBranch        *b_ph_isoGamma;   //!
+   TBranch        *b_ph_isoCh;   //!
+   TBranch        *b_ph_passLooseId;   //!
    TBranch        *b_ph_passMediumId;   //!
+   TBranch        *b_ph_passTightId;   //!
    TBranch        *b_ph_mvaVal;   //!
    TBranch        *b_ph_mvaCat;   //!
    TBranch        *b_ph_passEleVeto;   //!
@@ -400,6 +421,7 @@ public :
    TBranch        *b_jetAK4_jec;   //!
    TBranch        *b_jetAK4_IDLoose;   //!
    TBranch        *b_jetAK4_IDTight;   //!
+   TBranch        *b_jetAK4_IDTightLepVeto;   //!
    TBranch        *b_jetAK4_charge;   //!
    //TBranch        *b_jetAK4_cisv;   //!
    TBranch        *b_jetAK4_vtxMass;   //!
@@ -418,6 +440,8 @@ public :
    TBranch        *b_jetAK8_phi;   //!
    TBranch        *b_jetAK8_e;   //!
    TBranch        *b_jetAK8_jec;   //!
+   TBranch        *b_jetAK8_jecUp;   //!
+   TBranch        *b_jetAK8_jecDown;   //!
    TBranch        *b_jetAK8_IDLoose;   //!
    TBranch        *b_jetAK8_IDTight;   //!
    TBranch        *b_jetAK8_IDTightLepVeto;   //!
@@ -435,6 +459,8 @@ public :
    TBranch        *b_jetAK8_pruned_mass;   //!
    TBranch        *b_jetAK8_pruned_massCorr;   //!
    TBranch        *b_jetAK8_pruned_jec;   //!
+   TBranch        *b_jetAK8_pruned_jecUp;   //!
+   TBranch        *b_jetAK8_pruned_jecDown;   //!
    TBranch        *b_jetAK8_softdrop_mass;   //!
    TBranch        *b_jetAK8_softdrop_massCorr;   //!
    TBranch        *b_jetAK8_softdrop_jec;   //!
@@ -475,15 +501,15 @@ public :
    //TBranch        *b_genJetAK8_softdropmass;   //!
    //TBranch        *b_subjetAK8_pruned_csv;   //!
    TBranch        *b_HLT_isFired;   //!
-   //TBranch        *b_passFilter_HBHE_;   //!
-   //TBranch        *b_passFilter_HBHELoose_;   //!
-   //TBranch        *b_passFilter_HBHETight_;   //!
-   //TBranch        *b_passFilter_CSCHalo_;   //!
-   //TBranch        *b_passFilter_HCALlaser_;   //!
-   //TBranch        *b_passFilter_ECALDeadCell_;   //!
-   //TBranch        *b_passFilter_GoodVtx_;   //!
-   //TBranch        *b_passFilter_TrkFailure_;   //!
-   //TBranch        *b_passFilter_EEBadSc_;   //!
+   TBranch        *b_passFilter_HBHE_;   //!
+   TBranch        *b_passFilter_HBHEIso_;   //!
+   TBranch        *b_passFilter_CSCTightHalo2015_;   //!
+   TBranch        *b_passFilter_GoodVtx_;   //!
+   TBranch        *b_passFilter_EEBadSc_;   //!
+   TBranch        *b_passFilter_muonBadTrack_;   //!
+   TBranch        *b_EVENT_event;   //!
+   TBranch        *b_EVENT_run;   //!
+   TBranch        *b_EVENT_lumiBlock;   //!
    //TBranch        *b_passFilter_ECALlaser_;   //!
    //TBranch        *b_passFilter_TrkPOG_;   //!
    //TBranch        *b_passFilter_TrkPOG_manystrip_;   //!
@@ -498,9 +524,9 @@ public :
    //TBranch        *b_MET_et;   //!
    //TBranch        *b_MET_phi;   //!
    //TBranch        *b_MET_sumEt;   //!
-   TBranch        *b_EVENT_event;   //!
-   TBranch        *b_EVENT_run;   //!
-   TBranch        *b_EVENT_lumiBlock;   //!
+   //TBranch        *b_EVENT_event;   //!
+   //TBranch        *b_EVENT_run;   //!
+   //TBranch        *b_EVENT_lumiBlock;   //!
    //TBranch        *b_nPuVtxTrue;   //!
    //TBranch        *b_nPuVtx;   //!
    //TBranch        *b_bX;   //!
@@ -603,8 +629,16 @@ void HgammaSelector::Init(TTree *tree)
    ph_mass = 0;
    ph_pt = 0;
    ph_et = 0;
+   ph_rho = 0;
    ph_superCluster_eta = 0;
+   ph_superCluster_phi = 0;
+   ph_sigmaIetaIeta = 0;
+   ph_hOverE = 0;
+   ph_isoGamma = 0;
+   ph_isoCh = 0;
+   ph_passLooseId = 0;
    ph_passMediumId = 0;
+   ph_passTightId = 0;
    ph_mvaVal = 0;
    ph_mvaCat = 0;
    ph_passEleVeto = 0;
@@ -649,6 +683,7 @@ void HgammaSelector::Init(TTree *tree)
    jetAK4_jec = 0;
    jetAK4_IDLoose = 0;
    jetAK4_IDTight = 0;
+   jetAK4_IDTightLepVeto = 0;
    jetAK4_charge = 0;
    //jetAK4_cisv = 0;
    jetAK4_vtxMass = 0;
@@ -666,6 +701,8 @@ void HgammaSelector::Init(TTree *tree)
    jetAK8_phi = 0;
    jetAK8_e = 0;
    jetAK8_jec = 0;
+   jetAK8_jecUp = 0;
+   jetAK8_jecDown = 0;
    jetAK8_IDLoose = 0;
    jetAK8_IDTight = 0;
    jetAK8_IDTightLepVeto = 0;
@@ -683,9 +720,12 @@ void HgammaSelector::Init(TTree *tree)
    jetAK8_pruned_mass = 0;
    jetAK8_pruned_massCorr = 0;
    jetAK8_pruned_jec = 0;
+   jetAK8_pruned_jecUp = 0;
+   jetAK8_pruned_jecDown = 0;
    jetAK8_softdrop_mass = 0;
    jetAK8_softdrop_massCorr = 0;
    jetAK8_softdrop_jec = 0;
+   HLT_isFired = 0;
    //subjetAK8_softdrop_N = 0;
    //subjetAK8_softdrop_pt = 0;
    //subjetAK8_softdrop_eta = 0;
@@ -720,7 +760,6 @@ void HgammaSelector::Init(TTree *tree)
    //genJetAK8_e = 0;
    //genJetAK8_prunedmass = 0;
    //genJetAK8_softdropmass = 0;
-   //HLT_isFired = 0;
    //METraw_et = 0;
    //METraw_phi = 0;
    //METraw_sumEt = 0;
@@ -774,11 +813,19 @@ void HgammaSelector::Init(TTree *tree)
    fChain->SetBranchAddress("ph_mass", &ph_mass, &b_ph_mass);
    fChain->SetBranchAddress("ph_pt", &ph_pt, &b_ph_pt);
    fChain->SetBranchAddress("ph_et", &ph_et, &b_ph_et);
+   fChain->SetBranchAddress("ph_rho", &ph_rho, &b_ph_rho);
    fChain->SetBranchAddress("ph_superCluster_eta", &ph_superCluster_eta, &b_ph_superCluster_eta);
+   fChain->SetBranchAddress("ph_superCluster_phi", &ph_superCluster_phi, &b_ph_superCluster_phi);
+   fChain->SetBranchAddress("ph_sigmaIetaIeta", &ph_sigmaIetaIeta, &b_ph_sigmaIetaIeta);
+   fChain->SetBranchAddress("ph_hOverE", &ph_hOverE, &b_ph_hOverE);
+   fChain->SetBranchAddress("ph_isoGamma", &ph_isoGamma, &b_ph_isoGamma);
+   fChain->SetBranchAddress("ph_isoCh", &ph_isoCh, &b_ph_isoCh);
+   fChain->SetBranchAddress("ph_passEleVeto", &ph_passEleVeto, &b_ph_passEleVeto);
+   fChain->SetBranchAddress("ph_passLooseId", &ph_passLooseId, &b_ph_passLooseId);
    fChain->SetBranchAddress("ph_passMediumId", &ph_passMediumId, &b_ph_passMediumId);
+   fChain->SetBranchAddress("ph_passTightId", &ph_passTightId, &b_ph_passTightId);
    fChain->SetBranchAddress("ph_mvaVal", &ph_mvaVal, &b_ph_mvaVal);
    fChain->SetBranchAddress("ph_mvaCat", &ph_mvaCat, &b_ph_mvaCat);
-   fChain->SetBranchAddress("ph_passEleVeto", &ph_passEleVeto, &b_ph_passEleVeto);
    //fChain->SetBranchAddress("el_N", &el_N, &b_el_N);
    //fChain->SetBranchAddress("el_pdgId", &el_pdgId, &b_el_pdgId);
    //fChain->SetBranchAddress("el_charge", &el_charge, &b_el_charge);
@@ -824,6 +871,7 @@ void HgammaSelector::Init(TTree *tree)
    fChain->SetBranchAddress("jetAK4_jec", &jetAK4_jec, &b_jetAK4_jec);
    fChain->SetBranchAddress("jetAK4_IDLoose", &jetAK4_IDLoose, &b_jetAK4_IDLoose);
    fChain->SetBranchAddress("jetAK4_IDTight", &jetAK4_IDTight, &b_jetAK4_IDTight);
+   fChain->SetBranchAddress("jetAK4_IDTightLepVeto", &jetAK4_IDTightLepVeto, &b_jetAK4_IDTightLepVeto);
    fChain->SetBranchAddress("jetAK4_charge", &jetAK4_charge, &b_jetAK4_charge);
    //fChain->SetBranchAddress("jetAK4_cisv", &jetAK4_cisv, &b_jetAK4_cisv);
    fChain->SetBranchAddress("jetAK4_vtxMass", &jetAK4_vtxMass, &b_jetAK4_vtxMass);
@@ -842,6 +890,8 @@ void HgammaSelector::Init(TTree *tree)
    fChain->SetBranchAddress("jetAK8_phi", &jetAK8_phi, &b_jetAK8_phi);
    fChain->SetBranchAddress("jetAK8_e", &jetAK8_e, &b_jetAK8_e);
    fChain->SetBranchAddress("jetAK8_jec", &jetAK8_jec, &b_jetAK8_jec);
+   fChain->SetBranchAddress("jetAK8_jecUp", &jetAK8_jecUp, &b_jetAK8_jecUp);
+   fChain->SetBranchAddress("jetAK8_jecDown", &jetAK8_jecDown, &b_jetAK8_jecDown);
    fChain->SetBranchAddress("jetAK8_IDLoose", &jetAK8_IDLoose, &b_jetAK8_IDLoose);
    fChain->SetBranchAddress("jetAK8_IDTight", &jetAK8_IDTight, &b_jetAK8_IDTight);
    fChain->SetBranchAddress("jetAK8_IDTightLepVeto", &jetAK8_IDTightLepVeto, &b_jetAK8_IDTightLepVeto);
@@ -859,6 +909,8 @@ void HgammaSelector::Init(TTree *tree)
    fChain->SetBranchAddress("jetAK8_pruned_mass", &jetAK8_pruned_mass, &b_jetAK8_pruned_mass);
    fChain->SetBranchAddress("jetAK8_pruned_massCorr", &jetAK8_pruned_massCorr, &b_jetAK8_pruned_massCorr);
    fChain->SetBranchAddress("jetAK8_pruned_jec", &jetAK8_pruned_jec, &b_jetAK8_pruned_jec);
+   fChain->SetBranchAddress("jetAK8_pruned_jecUp", &jetAK8_pruned_jecUp, &b_jetAK8_pruned_jecUp);
+   fChain->SetBranchAddress("jetAK8_pruned_jecDown", &jetAK8_pruned_jecDown, &b_jetAK8_pruned_jecDown);
    fChain->SetBranchAddress("jetAK8_softdrop_mass", &jetAK8_softdrop_mass, &b_jetAK8_softdrop_mass);
    fChain->SetBranchAddress("jetAK8_softdrop_massCorr", &jetAK8_softdrop_massCorr, &b_jetAK8_softdrop_massCorr);
    fChain->SetBranchAddress("jetAK8_softdrop_jec", &jetAK8_softdrop_jec, &b_jetAK8_softdrop_jec);
@@ -899,15 +951,12 @@ void HgammaSelector::Init(TTree *tree)
    //fChain->SetBranchAddress("genJetAK8_prunedmass", &genJetAK8_prunedmass, &b_genJetAK8_prunedmass);
    //fChain->SetBranchAddress("genJetAK8_softdropmass", &genJetAK8_softdropmass, &b_genJetAK8_softdropmass);
    fChain->SetBranchAddress("HLT_isFired", &HLT_isFired, &b_HLT_isFired);
-   //fChain->SetBranchAddress("passFilter_HBHE", &passFilter_HBHE, &b_passFilter_HBHE_);
-   //fChain->SetBranchAddress("passFilter_HBHELoose", &passFilter_HBHELoose, &b_passFilter_HBHELoose_);
-   //fChain->SetBranchAddress("passFilter_HBHETight", &passFilter_HBHETight, &b_passFilter_HBHETight_);
-   //fChain->SetBranchAddress("passFilter_CSCHalo", &passFilter_CSCHalo, &b_passFilter_CSCHalo_);
-   //fChain->SetBranchAddress("passFilter_HCALlaser", &passFilter_HCALlaser, &b_passFilter_HCALlaser_);
-   //fChain->SetBranchAddress("passFilter_ECALDeadCell", &passFilter_ECALDeadCell, &b_passFilter_ECALDeadCell_);
-   //fChain->SetBranchAddress("passFilter_GoodVtx", &passFilter_GoodVtx, &b_passFilter_GoodVtx_);
-   //fChain->SetBranchAddress("passFilter_TrkFailure", &passFilter_TrkFailure, &b_passFilter_TrkFailure_);
-   //fChain->SetBranchAddress("passFilter_EEBadSc", &passFilter_EEBadSc, &b_passFilter_EEBadSc_);
+   fChain->SetBranchAddress("passFilter_HBHE", &passFilter_HBHE, &b_passFilter_HBHE_);
+   fChain->SetBranchAddress("passFilter_HBHEIso", &passFilter_HBHEIso, &b_passFilter_HBHEIso_);
+   fChain->SetBranchAddress("passFilter_CSCTightHalo2015", &passFilter_CSCTightHalo2015, &b_passFilter_CSCTightHalo2015_);
+   fChain->SetBranchAddress("passFilter_GoodVtx", &passFilter_GoodVtx, &b_passFilter_GoodVtx_);
+   fChain->SetBranchAddress("passFilter_EEBadSc", &passFilter_EEBadSc, &b_passFilter_EEBadSc_);
+   fChain->SetBranchAddress("passFilter_muonBadTrack", &passFilter_muonBadTrack, &b_passFilter_muonBadTrack_);
    //fChain->SetBranchAddress("passFilter_ECALlaser", &passFilter_ECALlaser, &b_passFilter_ECALlaser_);
    //fChain->SetBranchAddress("passFilter_TrkPOG", &passFilter_TrkPOG, &b_passFilter_TrkPOG_);
    //fChain->SetBranchAddress("passFilter_TrkPOG_manystrip", &passFilter_TrkPOG_manystrip, &b_passFilter_TrkPOG_manystrip_);
