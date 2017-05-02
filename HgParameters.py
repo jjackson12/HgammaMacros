@@ -5,10 +5,10 @@ from ROOT import *
 def getSamplesDirs():
   response = {}
   response["HgammaFlatTuples"] = "/Users/johakala/HgammaMacros/organize_smallifications/signals"
-  response["small3sDir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/backgroundsAndData"
-  response["ddDir"]            = "/Users/johakala/HgammaMacros/80XDDs_May2/"
-  response["sigDDdir"]         = "/Users/johakala/HgammaMacros/80XDDs_May2_sigs"
-  response["dataDir"]          = "/Users/johakala/HgammaMacros/80XDDs_May2/ddTree_data2016SinglePhoton.root"
+  response["small3sDir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/backgrounds"
+  response["ddDir"]            = "/Users/johakala/HgammaMacros/organize_DDs/backgrounds"
+  response["sigDDdir"]         = "/Users/johakala/HgammaMacros/organize_DDs/signals"
+  response["dataDir"]          = "/Users/johakala/HgammaMacros/organize_DDs/data/ddTree_data2016SinglePhoton.root"
   return response
 
 def getNormalizations():

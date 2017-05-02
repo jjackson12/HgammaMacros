@@ -91,7 +91,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
   for key in getWeightsDict(getSamplesDirs()["small3sDir"]).keys():
     print "making all histograms for: %s" % key
     for region in regions:
-      pre = getFilePrefix()
+      pre = getDDPrefix()
       tfile = TFile(sampleDirs["ddDir"]+pre+key)
       tree = tfile.Get(region)
       varNames = []

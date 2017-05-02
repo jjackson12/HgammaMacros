@@ -21,7 +21,7 @@ def deleteLibs(macroName):
   if os.path.exists(macroName+"_C.so"):
      os.remove(macroName+"_C.so")
 
-def processHg(inputFileName, outputFileName, load):
+def processHg(inputFileName, outputFileName, load, loopMode = False):
   if inputFileName is None:
     print "\nPlease specify the input file with the -i option."
     exit(1)
@@ -39,21 +39,22 @@ def processHg(inputFileName, outputFileName, load):
   print "\nAttempting to %s HgammaSelector.\n" % presentTense
   
   # call the compiling function to compile the HgammaSelector, then run its Loop() method
-  if presentTense=="compile":
+  if presentTense=="compile" and not loopMode:
      deleteLibs("HgammaSelector")
      # compile the macro using g++ and check compilation status
      exitCode = gSystem.CompileMacro("HgammaSelector.C", "gOck")
      success=(exitCode==1)
-  elif presentTense=="load":
+  elif presentTense=="load" and not loopMode:
      exitCode = gSystem.Load('HgammaSelector_C')
      success=(exitCode>=-1)
-  if not success:
-     print "\nError... HgammaSelector failed to %s. :-("%presentTense
-     print "Make sure you're using an up-to-date version of ROOT by running cmsenv in a 7_4_X>=16 CMSSW area."
-     exit(1)
+  if not loopMode:
+    if not success:
+       print "\nError... HgammaSelector failed to %s. :-("%presentTense
+       print "Make sure you're using an up-to-date version of ROOT by running cmsenv in a 7_4_X>=16 CMSSW area."
+       exit(1)
   
   print "\nHgammaSelector %s successfully."%pastTense
-  if presentTense=="compile":
+  if presentTense=="compile" and not loopMode:
      gSystem.Load('HgammaSelector_C')
   inputFile = TFile(inputFileName)
   
