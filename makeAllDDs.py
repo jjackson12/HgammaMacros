@@ -1,9 +1,9 @@
-from os import path, makedirs
+from os import path, makedirs, getcwd
 from glob import glob
 from runHgammaSelector import processHg
 from pprint import pprint
 
-baseDir = "/Users/johakala/HgammaMacros/organize_smallifications"
+baseDir = path.join(getcwd(), "organize_smallifications")
 categories = ["backgrounds", "signals", "data"]
 catDirs = {}
 for category in categories:
@@ -25,5 +25,6 @@ for catDir in catDirs:
   for inputFile in inputFiles:
     if first:
       processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), False)
+      first=False
     else:
-      processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), True)
+      processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), True, True)
