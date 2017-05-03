@@ -282,7 +282,7 @@ void HgammaSelector::Loop(string outputFileName) {
   outputFile->Close();
 
   cout.flush();
-  cout << "100% done: Scanned " << nentries << " events." << endl;
+  cout << "100% done: Scanned " << nentries << " events.     " << endl;
   cout << "HLT_Photon175 fired " << eventsPassingTrigger_175 << " times" << endl;
   cout << "The HLT_Photon175 efficiency was " << (float) eventsPassingTrigger_175/ (float)nentries << endl;
   cout << "HLT_Photon165_HE10 fired " << eventsPassingTrigger_165HE10 << " times" << endl;
