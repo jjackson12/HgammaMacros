@@ -1,4 +1,4 @@
-from os import path, makedirs
+from os import path, makedirs, getcwd
 from optparse import OptionParser
 from copy import deepcopy
 
@@ -19,10 +19,11 @@ parser.add_option("-l", action="store_false", dest="addLines"     , default=True
 parser.add_option("-b", action="store_true", dest="batch"     , default=False,
                   help = "turn on batch mode"                                          )
 (options, args) = parser.parse_args()
-print "options: ",
-print options
-print "args: ",
-print args
+
+validCutNames = ["preselection", "nobtag", "btag", "antibtag", "nMinus1"]
+if not options.cutName in validCutNames:
+  print "please select a cutName, options are: %s" % str(validCutNames )
+  exit(1)
 
 from ROOT import *
 if options.batch:
@@ -69,17 +70,17 @@ for withBtag in [options.withBtag]:
   print ""
   print ""
   print "getMCbgWeights(): "
-  mcBgWeights = getMCbgWeightsDict(sampleDirs["small3sDir"])
+  mcBgWeights = getMCbgWeightsDict(sampleDirs["bkgSmall3sDir"])
   print mcBgWeights
   treekey="higgs"
   for cutName in [options.cutName]:
     if cutName in [ "nMinus1" ]:
       if withBtag:
-        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_withBtag"%cutName 
+        histsDir = "%s/weightedMCbgHists_%s_withBtag"%(getcwd(), cutName )
       if not withBtag:
-        histsDir = "~/WZgammaMacros/weightedMCbgHists_%s_noBtag"%cutName 
+        histsDir = "%s/weightedMCbgHists_%s_noBtag"%(getcwd(), cutName )
     else:
-      histsDir = "~/WZgammaMacros/weightedMCbgHists_%s"%cutName
+      histsDir = "%s/weightedMCbgHists_%s"%(getcwd(), cutName)
     if sideband:
       histsDir += "_sideband"
     nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
@@ -161,6 +162,7 @@ for withBtag in [options.withBtag]:
       outfile=TFile(outfileName, "RECREATE")
       cans[-1].cd()
       pads[-1].Draw()
+      pads[-1].SetLogy()
       pads[-1].cd()
       thstacks[-1].Draw()
       thstacks[-1].SetMinimum(0.08)
@@ -174,7 +176,7 @@ for withBtag in [options.withBtag]:
       thstacks[-1].GetYaxis().SetTitleSize(0.04)
       thstacks[-1].GetYaxis().SetTitleOffset(1.2)
 
-      dataFileName = varkey+"_"+treekey+"_SilverJson.root"
+      dataFileName = varkey+"_"+treekey+"_data2016SinglePhoton.root"
       dName = "weightedMCbgHists_%s" % cutName
       if cutName in "nMinus1":
         if withBtag:
@@ -199,7 +201,7 @@ for withBtag in [options.withBtag]:
         colors[2050]=kMagenta
         colors[3250]=kRed
         for sigMass in [750, 1000, 2050, 3250]:
-          sigFileName = varkey+"_"+treekey+"_signal_m%i.root"%sigMass
+          sigFileName = varkey+"_"+treekey+"_sig_m%i.root"%sigMass
           rName = "weightedMCbgHists_%s" % cutName
           if cutName in "nMinus1":
             if withBtag:
@@ -223,7 +225,7 @@ for withBtag in [options.withBtag]:
       cans[-1].cd()
       pads[-1].Draw()
 
-      TDRify(pads[-1])
+      TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
       for prim in pads[-1].GetListOfPrimitives():
         if "TLegend" in prim.IsA().GetName():
           prim.SetX1NDC(0.753)
@@ -281,7 +283,7 @@ for withBtag in [options.withBtag]:
       datahistsCopies[-1].GetYaxis().SetTitleSize(0.13)
       datahistsCopies[-1].GetYaxis().SetTitleOffset(0.24)
       datahistsCopies[-1].GetYaxis().SetLabelSize(0.08)
-      TDRify(pads[-1], True)
+      TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
       outfile.cd()
       cans[-1].Write()
       outfile.Close()

@@ -3,6 +3,7 @@ from pyrootTools import *
 from getMCbgWeights import *
 from HgParameters import *
 from HgCuts import *
+from os import path
 
 # John Hakala, 12/1/2016
 # A poorly-named collection of functions that churns out all the possible histograms from DDtrees
@@ -83,16 +84,17 @@ def getRangesDict():
 
 def makeAllHists(cutName, withBtag=True, sideband=False):
   sampleDirs = getSamplesDirs()
-  weightsDict = getWeightsDict(sampleDirs["small3sDir"])
+  weightsDict = getWeightsDict(sampleDirs["bkgSmall3sDir"])
   #regions = ["higgs", "side100110", "side5070"]
   regions = ["higgs"]
   rangesDict = getRangesDict()
   nonEmptyFilesDict={}
-  for key in getWeightsDict(getSamplesDirs()["small3sDir"]).keys():
+  for key in getWeightsDict(getSamplesDirs()["bkgSmall3sDir"]).keys():
+    sampleType = getWeightsDict(getSamplesDirs()["bkgSmall3sDir"])[key][1]
     print "making all histograms for: %s" % key
     for region in regions:
-      pre = getFilePrefix()
-      tfile = TFile(sampleDirs["ddDir"]+pre+key)
+      pre = getDDPrefix()
+      tfile = TFile(path.join(sampleDirs["%sDDdir" % sampleType], pre+key))
       tree = tfile.Get(region)
       varNames = []
       for branch in tree.GetListOfBranches():
@@ -143,11 +145,11 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
         if not nEntries == 0:
           outFile = TFile(filename, "RECREATE")
           outFile.cd()
-          print "applying weight %s to sample %s" % (weightsDict[key], filename )
+          print "applying weight %s to sample %s" % (weightsDict[key][0], filename )
           print " weightsDict has keys: " 
           print weightsDict.keys()
           for histBin in range(0,hist.GetXaxis().GetNbins()):
-            hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key])  
+            hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key][0])  
           hist.Write()
           outFile.Close()
           nonEmptyFilesDict[filename]="nonempty"

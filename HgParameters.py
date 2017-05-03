@@ -4,11 +4,15 @@ from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["HgammaFlatTuples"] = "/Users/johakala/HgammaMacros/organize_smallifications/signals"
-  response["small3sDir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/backgroundsAndData"
-  response["ddDir"]            = "/Users/johakala/HgammaMacros/80XDDs_May2/"
-  response["sigDDdir"]         = "/Users/johakala/HgammaMacros/80XDDs_May2_sigs"
-  response["dataDir"]          = "/Users/johakala/HgammaMacros/80XDDs_May2/ddTree_data2016SinglePhoton.root"
+  response["sigalsSmall3sDir"] = "/Users/johakala/HgammaMacros/organize_smallifications/signals"
+  response["bkgSmall3sDir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/backgrounds"
+  response["dataSmall3Dir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/data"
+  response["dataSmall3File"]       = "/Users/johakala/HgammaMacros/organize_smallifications/smallification_data2016SinglePhoton.root"
+
+  response["bkgDDdir"]            = "/Users/johakala/HgammaMacros/organize_DDs/backgrounds"
+  response["sigDDdir"]         = "/Users/johakala/HgammaMacros/organize_DDs/signals"
+  response["dataDDdir"]          = "/Users/johakala/HgammaMacros/organize_DDs/data/"
+  response["dataDDFile"]          = "/Users/johakala/HgammaMacros/organize_DDs/data/ddTree_data2016SinglePhoton.root"
   return response
 
 def getNormalizations():
