@@ -91,6 +91,10 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
   nonEmptyFilesDict={}
   for key in getWeightsDict(getSamplesDirs()["bkgSmall3sDir"]).keys():
     sampleType = getWeightsDict(getSamplesDirs()["bkgSmall3sDir"])[key][1]
+    useTrigger = True
+    if sampleType == "sig":
+      useTrigger = False;
+    print "useTrigger is %r since sampleType is %s" % (useTrigger, sampleType)
     print "making all histograms for: %s" % key
     for region in regions:
       pre = getDDPrefix()
@@ -104,23 +108,23 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
         if var == "higgsJet_HbbTag":
           hist.Rebin(5)
+        print "cutName is:", cutName
         if   cutName in "btag":
-          cut = getBtagComboCut(region, sideband)
+          cut = getBtagComboCut(region, useTrigger, sideband)
         elif cutName in "antibtag":
-          cut = getAntiBtagComboCut(region, sideband)
+          cut = getAntiBtagComboCut(region, useTrigger, sideband)
         elif cutName in "nobtag":
-          cut = getNoBtagComboCut(region, sideband)
+          cut = getNoBtagComboCut(region, useTrigger, sideband)
         elif cutName in "nMinus1":
-          cut = getNminus1ComboCut(region, var, withBtag, sideband)
-          print "The cut is:"
-          print cut
-        elif cutName == "preselection":
+          cut = getNminus1ComboCut(region, var, withBtag, useTrigger, sideband)
+        elif cutName in "preselection":
           cut = TCut()
+          if useTrigger:
+            print "makeTrigger: ", makeTrigger()
+            cut += makeTrigger()
+            print "cut is now", cut
         else:
           print "Invalid category! Must be btag, antibtag, nMinus1, or preselection."
-        if printCuts:
-          print "got cutName %s, the cuts are:" % cutName
-          print cut
         #if cutName is "preselection":
         #  nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)
         #  filename = "weightedMCbgHists_%s/%s_%s_%s"%("preselection", var, region, key)

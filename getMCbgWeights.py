@@ -11,19 +11,19 @@ def getSmallPrefix():
 
 def getMCbgSampleXsects():
   sampleXsects = {}
-  sampleXsects[   "gJets100To200.root"   ]   = 9238*1.8*0.8   
-  sampleXsects[   "gJets200To400.root"   ]   = 2305*1.8*0.8   
-  sampleXsects[   "gJets400To600.root"   ]   = 274.4*1.4*0.8  
-  sampleXsects[   "gJets600ToInf.root"   ]   = 93.46*0.8      
-  sampleXsects[   "qcd200to300.root"     ]   = 1712000*0.8    
-  sampleXsects[   "qcd300to500.root"     ]   = 347700*0.8     
-  sampleXsects[   "qcd500to700.root"     ]   = 32100*0.8      
-  sampleXsects[   "qcd700to1000.root"    ]    = 6831*0.8       
-  sampleXsects[   "qcd1000to1500.root"   ]    = 1207*0.8       
-  sampleXsects[   "qcd1500to2000.root"   ]    = 119.9*0.8      
-  sampleXsects[   "qcd2000toInf.root"    ]    = 25.24*0.8      
-  sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187*1.23*0.8  
-  sampleXsects[   "wJetsQQ-180.root"     ]    = 95.14*1.21*0.8 
+  sampleXsects[   "gJets100To200.root"   ]   = 9238*1.8*0.8*0.9
+  sampleXsects[   "gJets200To400.root"   ]   = 2305*1.8*0.8*0.9
+  sampleXsects[   "gJets400To600.root"   ]   = 274.4*1.4   *0.9
+  sampleXsects[   "gJets600ToInf.root"   ]   = 93.46 *1.2  *0.9
+  sampleXsects[   "qcd200to300.root"     ]   = 1712000    
+  sampleXsects[   "qcd300to500.root"     ]   = 347700     
+  sampleXsects[   "qcd500to700.root"     ]   = 32100      
+  sampleXsects[   "qcd700to1000.root"    ]    = 6831       
+  sampleXsects[   "qcd1000to1500.root"   ]    = 1207       
+  sampleXsects[   "qcd1500to2000.root"   ]    = 119.9      
+  sampleXsects[   "qcd2000toInf.root"    ]    = 25.24      
+  sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187*1.23  
+  sampleXsects[ "wJetsQQ-180.root" ] = 95.14*1.21*0.8 
   return sampleXsects
 
 def getMCbgSampleEvents(small3Dir):

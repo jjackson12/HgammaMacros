@@ -5,14 +5,15 @@ from ROOT import TCut
 
 def getCutValues():
   cutValues = {}
-  cutValues["minInvMass"]  = 600.0
-  cutValues["phEta"]       = 1.4442
-  cutValues["jetEta"]      = 2.2
-  cutValues["deltaR"]      = 1.1
-  cutValues["ptOverM"]     = 0.35
-  cutValues["Hbb"]         = 0.9
-  cutValues["higgsWindow"] = [110.0, 140.0]
+  cutValues["minInvMass"]     = 600.0
+  cutValues["phEta"]          = 1.4442
+  cutValues["jetEta"]         = 2.2
+  cutValues["deltaR"]         = 1.1
+  cutValues["ptOverM"]        = 0.35
+  cutValues["Hbb"]            = 0.9
+  cutValues["higgsWindow"]    = [110.0, 140.0]
   cutValues["sidebandWindow"] = [100.0, 110.0]
+  cutValues["trigger"]        = 0.5
   return cutValues
 
 
@@ -48,7 +49,15 @@ def makeHiggsWindow(sideband=False):
     cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues[window][1] )
     return combineCuts(cuts)
 
-def getDefaultCuts(region, sideband=False):
+def makeTrigger(which = "OR"):
+  cutValues = getCutValues()
+  cuts = {}
+  if which == "OR":
+    cuts["trigger"] = TCut( "triggerFired_175 > 0.5 || triggerFired_165HE10 > 0.5" )
+  return combineCuts(cuts)
+    
+
+def getDefaultCuts(region, useTrigger, sideband=False):
     cutValues = getCutValues()
 
     cuts = {} 
@@ -59,6 +68,8 @@ def getDefaultCuts(region, sideband=False):
     cuts ["btagHolder"]     = TCut()
     cuts ["cosThetaStar"]   = TCut()
     cuts ["phPt"]           = TCut()
+    if useTrigger: 
+      cuts["trigger"]         = makeTrigger()
     if region is "higgs":
       cuts["turnon"]   = TCut( "phJetInvMass_pruned_higgs>%f"      % cutValues["minInvMass"]     )
       cuts["deltaR"]   = TCut( "phJetDeltaR_higgs>%f"              % cutValues["deltaR"]         )
@@ -83,23 +94,23 @@ def getDefaultCuts(region, sideband=False):
       quit()
     return cuts
     
-def getBtagComboCut(region, sideband=False):
+def getBtagComboCut(region, useTrigger, sideband=False):
     btagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     btagCuts.pop("antibtag")
     return combineCuts(btagCuts)
 
-def getAntiBtagComboCut(region, sideband=False):
+def getAntiBtagComboCut(region, useTrigger, sideband=False):
     antibtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     antibtagCuts.pop("btag")
     return combineCuts(antibtagCuts)
 
-def getNoBtagComboCut(region, sideband=False):
+def getNoBtagComboCut(region, useTrigger, sideband=False):
     nobtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     nobtagCuts.pop("btag")
     nobtagCuts.pop("antibtag")
     return combineCuts(nobtagCuts)
 
-def getNminus1ComboCut(region, popVar, withBtag, sideband=False):
+def getNminus1ComboCut(region, popVar, withBtag, useTrigger, sideband=False):
     nobtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
     nobtagCuts.pop("antibtag")
     if not withBtag:
