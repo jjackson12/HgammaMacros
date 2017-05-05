@@ -16,17 +16,17 @@ parser.add_option("-s", action="store_true", dest="sideband"  , default=False,
                   help="if -s is used, then look in sideband, not Higgs window."       )
 parser.add_option("-l", action="store_false", dest="addLines"     , default=True,
                   help = "if -l is used, then do not draw a line at 1 in the ratios"   )
-parser.add_option("-b", action="store_true", dest="batch"     , default=False,
-                  help = "turn on batch mode"                                          )
+parser.add_option("-g", action="store_true", dest="graphics"     , default=False,
+                  help = "turn off batch mode"                                          )
 (options, args) = parser.parse_args()
 
 validCutNames = ["preselection", "nobtag", "btag", "antibtag", "nMinus1"]
 if not options.cutName in validCutNames:
-  print "please select a cutName, options are: %s" % str(validCutNames )
+  print "please select a cutName with the -c option, options are: %s" % str(validCutNames )
   exit(1)
 
 from ROOT import *
-if options.batch:
+if not options.graphics:
   gROOT.SetBatch()
 
 from pyrootTools import getSortedDictKeys, drawInNewCanvas

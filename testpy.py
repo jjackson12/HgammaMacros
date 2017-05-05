@@ -93,12 +93,13 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
     sampleType = getWeightsDict(getSamplesDirs()["bkgSmall3sDir"])[key][1]
     useTrigger = True
     if sampleType == "sig":
-      useTrigger = False;
-    print "useTrigger is %r since sampleType is %s" % (useTrigger, sampleType)
+      useTrigger = False
     print "making all histograms for: %s" % key
+    print "useTrigger is %r since sampleType is %s" % (useTrigger, sampleType)
     for region in regions:
       pre = getDDPrefix()
       tfile = TFile(path.join(sampleDirs["%sDDdir" % sampleType], pre+key))
+      print "tfile is: ", tfile.GetName(), tfile
       tree = tfile.Get(region)
       varNames = []
       for branch in tree.GetListOfBranches():
@@ -108,7 +109,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
         hist = TH1F("hist_%s_%s_%s"%(var, region, key),"hist_%s_%s_%s"%(var, region, key),100,rangesDict[var][0],rangesDict[var][1])
         if var == "higgsJet_HbbTag":
           hist.Rebin(5)
-        print "cutName is:", cutName
+        #print "cutName is:", cutName
         if   cutName in "btag":
           cut = getBtagComboCut(region, useTrigger, sideband)
         elif cutName in "antibtag":
@@ -119,19 +120,21 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
           cut = getNminus1ComboCut(region, var, withBtag, useTrigger, sideband)
         elif cutName in "preselection":
           cut = TCut()
-          if useTrigger:
-            print "makeTrigger: ", makeTrigger()
-            cut += makeTrigger()
-            print "cut is now", cut
         else:
-          print "Invalid category! Must be btag, antibtag, nMinus1, or preselection."
+          print "Invalid category: %s" % cutName
+          print "Must be btag, antibtag, nMinus1, or preselection."
+          exit(1)
+        if useTrigger:
+          cut += makeTrigger()
+        print "cut is now", cut
+          
         #if cutName is "preselection":
         #  nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)
         #  filename = "weightedMCbgHists_%s/%s_%s_%s"%("preselection", var, region, key)
         #elif not preselection:
         histName = "hist_%s_%s_%s"%(var, region, key)
-        print "cut is: " 
-        print cut
+        #print "cut is: " 
+        #print cut
         nEntries = tree.Draw("%s>> %s"%(var, histName), cut)
         directory = ""
         if cutName in "nMinus1":
@@ -150,13 +153,15 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
           outFile = TFile(filename, "RECREATE")
           outFile.cd()
           print "applying weight %s to sample %s" % (weightsDict[key][0], filename )
-          print " weightsDict has keys: " 
-          print weightsDict.keys()
+          #print " weightsDict has keys: " 
+          #print weightsDict.keys()
           for histBin in range(0,hist.GetXaxis().GetNbins()):
             hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key][0])  
           hist.Write()
           outFile.Close()
+          print "closed outFile" , outFile.GetName()
           nonEmptyFilesDict[filename]="nonempty"
         else:
           nonEmptyFilesDict[filename]="empty"
+          print "the histogram %s was empty for" % histName, filename
   return nonEmptyFilesDict

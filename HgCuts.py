@@ -13,7 +13,6 @@ def getCutValues():
   cutValues["Hbb"]            = 0.9
   cutValues["higgsWindow"]    = [110.0, 140.0]
   cutValues["sidebandWindow"] = [100.0, 110.0]
-  cutValues["trigger"]        = 0.5
   return cutValues
 
 
@@ -95,12 +94,12 @@ def getDefaultCuts(region, useTrigger, sideband=False):
     return cuts
     
 def getBtagComboCut(region, useTrigger, sideband=False):
-    btagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
+    btagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband))
     btagCuts.pop("antibtag")
     return combineCuts(btagCuts)
 
 def getAntiBtagComboCut(region, useTrigger, sideband=False):
-    antibtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
+    antibtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband))
     antibtagCuts.pop("btag")
     return combineCuts(antibtagCuts)
 
@@ -111,7 +110,7 @@ def getNoBtagComboCut(region, useTrigger, sideband=False):
     return combineCuts(nobtagCuts)
 
 def getNminus1ComboCut(region, popVar, withBtag, useTrigger, sideband=False):
-    nobtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
+    nobtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband))
     nobtagCuts.pop("antibtag")
     if not withBtag:
       nobtagCuts.pop("btag")

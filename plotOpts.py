@@ -2,9 +2,12 @@ from math import sqrt
 from ROOT import *
 from testpy import getRangesDict, getHiggsRangesDict
 from getMCbgWeights import getMCbgLabels
+from os import path, makedirs
 
 # John Hakala, 12/1/2016
 # Makes optimization plots by sliding cuts over N-1 stackplots from makeStacks.py
+
+gROOT.SetBatch()
 
 def whichVarAmI(inFileName):
   for key in getRangesDict().keys():
@@ -222,9 +225,13 @@ def makeOpt(inFileName, upDown, withBtag):
 
   
   if withBtag:
-    outFileName="optplots_nMinus1_withBtag/%s"%inFileName.split("/")[1]
+    outDirName = "optplots_nMinus1_withBtag_sideband"
+    outFileName="%s/%s"%(outDirName, inFileName.split("/")[1])
   else:
-    outFileName="optplots_nMinus1_noBtag/%s"%inFileName.split("/")[1]
+    outDirName = "optplots_nMinus1_noBtag_sideband"
+    outFileName="%s/%s"%(outDirName, inFileName.split("/")[1])
+  if not path.exists(outDirName):
+    makedirs(outDirName)
   outFileName=outFileName.split(".")[0]
   outFile = TFile("%s_%r.root"%(outFileName, upDown), "RECREATE")
   outFile.cd()
@@ -234,9 +241,9 @@ def makeOpt(inFileName, upDown, withBtag):
 
 for direction in ["up", "down"]:
   for key in getHiggsRangesDict().keys():
-    varName = "stackplots_nMinus1_withBtag/nMinus1_stack_%s.root"%key
+    varName = "stackplots_nMinus1_withBtag_sideband/nMinus1_stack_%s.root"%key
     makeOpt(varName, direction, True)
 for direction in ["up", "down"]:
   for key in getHiggsRangesDict().keys():
-    varName = "stackplots_nMinus1_noBtag/nMinus1_stack_%s.root"%key
+    varName = "stackplots_nMinus1_noBtag_sideband/nMinus1_stack_%s.root"%key
     makeOpt(varName, direction, False)
