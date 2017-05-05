@@ -22,6 +22,10 @@ parser.add_option("-c", "--category", dest="category", default="antibtag",
 
 (options, args) = parser.parse_args()
 
+if options.inDir is None:
+  print "please pick an input directory with the -i option"
+  exit(1)
+
 argv=[]
 
 from ROOT import * 
