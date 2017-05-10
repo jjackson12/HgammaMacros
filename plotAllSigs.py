@@ -44,6 +44,7 @@ framesList=[]
 for inFile in inFiles:
   for key in inFile.GetListOfKeys():
     print " found key %s in file %s" % (key.GetName(), inFile.GetName())
+    print "key.GetName(): ", key.GetName()
     if ("distribs_5_10_0__x" == key.GetName() and options.form == "tuple" and options.kind == "interpolated"):
       if first:
         inFile.Get(key.GetName()).Draw()
@@ -73,13 +74,10 @@ for inFile in inFiles:
         pdf = it.Next()
         
       
-if options.form == "tuple":
-  can.Print(options.outFile)  
+outFile = TFile(options.outFile, "RECREATE")
+outFile.cd()
+can.Write()  
+outFile.Close()
 
-if options.form == "workspace":
-  outF = TFile(options.outFile, "RECREATE")
-  for canInList in canvases:
-    canInList.Write()  
-  outF.Close()
 
 print "--> plot of signals is: %s" % options.outFile
