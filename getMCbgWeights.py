@@ -11,19 +11,19 @@ def getSmallPrefix():
 
 def getMCbgSampleXsects():
   sampleXsects = {}
-  sampleXsects[   "gJets100To200.root"   ]   = 9238*1.8*0.8   
-  sampleXsects[   "gJets200To400.root"   ]   = 2305*1.8*0.8   
-  sampleXsects[   "gJets400To600.root"   ]   = 274.4*1.4*0.8  
-  sampleXsects[   "gJets600ToInf.root"   ]   = 93.46*0.8      
-  sampleXsects[   "qcd200to300.root"     ]   = 1712000*0.8    
-  sampleXsects[   "qcd300to500.root"     ]   = 347700*0.8     
-  sampleXsects[   "qcd500to700.root"     ]   = 32100*0.8      
-  sampleXsects[   "qcd700to1000.root"    ]    = 6831*0.8       
-  sampleXsects[   "qcd1000to1500.root"   ]    = 1207*0.8       
-  sampleXsects[   "qcd1500to2000.root"   ]    = 119.9*0.8      
-  sampleXsects[   "qcd2000toInf.root"    ]    = 25.24*0.8      
-  sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187*1.23*0.8  
-  sampleXsects[   "wJetsQQ-180.root"     ]    = 95.14*1.21*0.8 
+  sampleXsects[   "gJets100To200.root"   ]   = 9238*1.8*0.8*0.9
+  sampleXsects[   "gJets200To400.root"   ]   = 2305*1.8*0.8*0.9
+  sampleXsects[   "gJets400To600.root"   ]   = 274.4*1.4   *0.9
+  sampleXsects[   "gJets600ToInf.root"   ]   = 93.46 *1.2  *0.9
+  sampleXsects[   "qcd200to300.root"     ]   = 1712000    
+  sampleXsects[   "qcd300to500.root"     ]   = 347700     
+  sampleXsects[   "qcd500to700.root"     ]   = 32100      
+  sampleXsects[   "qcd700to1000.root"    ]    = 6831       
+  sampleXsects[   "qcd1000to1500.root"   ]    = 1207       
+  sampleXsects[   "qcd1500to2000.root"   ]    = 119.9      
+  sampleXsects[   "qcd2000toInf.root"    ]    = 25.24      
+  sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187*1.23  
+  sampleXsects[ "wJetsQQ-180.root" ] = 95.14*1.21*0.8 
   return sampleXsects
 
 def getMCbgSampleEvents(small3Dir):
@@ -31,7 +31,7 @@ def getMCbgSampleEvents(small3Dir):
   sampleEvents = {}
   for key in sampleXsects:
     mcBGfileName = "%s/%s%s" % (small3Dir, getSmallPrefix(), key)
-    print "the small3 input filename is: %s" % mcBGfileName
+    #print "the small3 input filename is: %s" % mcBGfileName
     mcBGfile = TFile( mcBGfileName )
     #print mcBGfile
     hCounter = mcBGfile.Get("ntuplizer/hCounter")
@@ -70,19 +70,19 @@ def getWeightsDict(bkgSmall3Dir):
   #for signalToInclude in getSignalsToInclude():
   #  sampleWeights[signalToInclude] = signalWeight
   sampleWeights["data2016SinglePhoton.root"] = (1 , "data")
-  sampleWeights[ "sig_m750.root"   ] = (.8*10, "sig")
-  sampleWeights[ "sig_m850.root"   ] = (.8*10, "sig")
-  sampleWeights[ "sig_m1000.root"  ] = (.7*10, "sig")
-  sampleWeights[ "sig_m1150.root"  ] = (.7*10, "sig")
-  sampleWeights[ "sig_m1300.root"  ] = (.7*10, "sig")
-  sampleWeights[ "sig_m1450.root"  ] = (.6*10, "sig")
-  sampleWeights[ "sig_m1600.root"  ] = (.6*10, "sig")
-  sampleWeights[ "sig_m1750.root"  ] = (.6*10, "sig")
-  sampleWeights[ "sig_m1900.root"  ] = (.5*10, "sig")
-  sampleWeights[ "sig_m2050.root"  ] = (.5*10, "sig")
-  sampleWeights[ "sig_m2450.root"  ] = (.5*10, "sig")
-  sampleWeights[ "sig_m2850.root"  ] = (.4*10, "sig")
-  sampleWeights[ "sig_m3250.root"  ] = (.4*10, "sig")
+  sampleWeights[ "sig_m750.root"   ] = (.8*0.4, "sig")
+  sampleWeights[ "sig_m850.root"   ] = (.8*0.4, "sig")
+  sampleWeights[ "sig_m1000.root"  ] = (.7*0.4, "sig")
+  sampleWeights[ "sig_m1150.root"  ] = (.7*0.4, "sig")
+  sampleWeights[ "sig_m1300.root"  ] = (.7*0.4, "sig")
+  sampleWeights[ "sig_m1450.root"  ] = (.6*0.4, "sig")
+  sampleWeights[ "sig_m1600.root"  ] = (.6*0.4, "sig")
+  sampleWeights[ "sig_m1750.root"  ] = (.6*0.4, "sig")
+  sampleWeights[ "sig_m1900.root"  ] = (.5*0.4, "sig")
+  sampleWeights[ "sig_m2050.root"  ] = (.5*0.4, "sig")
+  sampleWeights[ "sig_m2450.root"  ] = (.5*0.4, "sig")
+  sampleWeights[ "sig_m2850.root"  ] = (.4*0.4, "sig")
+  sampleWeights[ "sig_m3250.root"  ] = (.4*0.4, "sig")
   return sampleWeights
 
 def getMCbgWeightsDict(bkgSmall3Dir):

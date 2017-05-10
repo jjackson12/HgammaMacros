@@ -199,7 +199,7 @@ void HgammaSelector::Loop(string outputFileName) {
     for (uint iJet = 0; iJet<jetAK8_pt->size() ; ++iJet) { 
       if (debugFlag && dumpEventInfo) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_pt->at(iJet) << endl;
  
-      if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_pt->at(iJet)>250) { 
+      if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_pt->at(iJet)>200) { 
       // Get leading jet variables, requiring tight jet ID
         tmpLeadingJet.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
 
@@ -241,7 +241,7 @@ void HgammaSelector::Loop(string outputFileName) {
     // Fill histograms with events that have a photon passing ID and a loose jet
     // TODO: photon pT cut applied here. unhardcode
     if ( (eventHasTightPho  && leadingPhoton.Pt()>180 && abs(leadingPhoton.Eta()) < 2.6)) {
-      if( (eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 250 && abs(higgsJet_pruned.Eta()) < 2.6 )) {
+      if( (eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 200 && abs(higgsJet_pruned.Eta()) < 2.6 )) {
         sumVector = leadingPhoton + higgsJet_pruned;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;

@@ -2,9 +2,12 @@ from math import sqrt
 from ROOT import *
 from testpy import getRangesDict, getHiggsRangesDict
 from getMCbgWeights import getMCbgLabels
+from os import path, makedirs
 
 # John Hakala, 12/1/2016
 # Makes optimization plots by sliding cuts over N-1 stackplots from makeStacks.py
+
+gROOT.SetBatch()
 
 def whichVarAmI(inFileName):
   for key in getRangesDict().keys():
@@ -63,7 +66,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
     if "stack" in prim.GetName():
       pad_higgswindow = prim
       for primitive in pad_higgswindow.GetListOfPrimitives():
-        if not "TFrame" in primitive.IsA().GetName():
+        if not ("TLine" in primitive.IsA().GetName() or "TFrame" in primitive.IsA().GetName()):
           primitive.SetName("%s_%s_higgswindow" % (inFileName_higgswindow, primitive.GetName()))
       print "pad_higgswindow: ",
       print  pad_higgswindow
@@ -72,7 +75,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
     if "ratio" in prim.GetName():
       bottomPad_higgswindow = prim
       for primitive in bottomPad_higgswindow.GetListOfPrimitives():
-        if not "TFrame" in primitive.IsA().GetName():
+        if not ("TLine" in primitive.IsA().GetName() or "TFrame" in primitive.IsA().GetName()):
           primitive.SetName("%s_%s_higgswindow" % (inFileName_higgswindow, primitive.GetName()))
       srPads.append(bottomPad_higgswindow)
       
@@ -93,19 +96,19 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
     if "stack" in prim.GetName():
       pad_sideband = prim
       for primitive in pad_sideband.GetListOfPrimitives():
-        if not "TFrame" in primitive.IsA().GetName():
+        if not ("TLine" in primitive.IsA().GetName() or "TFrame" in primitive.IsA().GetName()):
           primitive.SetName("%s_%s_sideband" % (inFileName_sideband, primitive.GetName()))
       sbPads.append(pad_sideband)
     if "ratio" in prim.GetName():
       bottomPad_sideband = prim
       for primitive in bottomPad_sideband.GetListOfPrimitives():
-        if not "TFrame" in primitive.IsA().GetName():
+        if not ("TLine" in primitive.IsA().GetName() or "TFrame" in primitive.IsA().GetName()):
           primitive.SetName("%s_%s_sideband" % (inFileName_sideband, primitive.GetName()))
       sbPads.append(bottomPad_sideband)
 
 
   for subprim in pad_higgswindow.GetListOfPrimitives():
-    #print "pad_higgswindow has primitive: %s" % subprim.GetName()
+    print "pad_higgswindow has primitive: %s" % subprim.GetName()
     if "m750" in subprim.GetName():
       name750 = subprim.GetName()
     if "m1000" in subprim.GetName():
@@ -125,7 +128,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
       subprim.Delete()
 
   for subprim in pad_sideband.GetListOfPrimitives():
-    if "SilverJson" in subprim.GetName():
+    if "SinglePhoton" in subprim.GetName():
       subprim.SetName("%i_theSideband_%s" % (i, inFileName_sideband))
       sideband = subprim
       sidebands.append(sideband)
@@ -310,15 +313,26 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
 
   
   if withBtag:
-    outFileName="optplots_nMinus1_withBtag_dd/%s"%inFileName_higgswindow.split("/")[1]
+    outDirName = "optplots_nMinus1_withBtag_dd"
+    outFileName="%s/%s"%(outDirName, inFileName_higgswindow.split("/")[1])
   else:
-    outFileName="optplots_nMinus1_noBtag_dd/%s"%inFileName_higgswindow.split("/")[1]
+    outDirName =  "optplots_nMinus1_noBtag_dd"
+    outFileName="%s/%s"%(outDirName, inFileName_higgswindow.split("/")[1])
+  if not path.exists(outDirName):
+    makedirs(outDirName)
   outFileName=outFileName.split(".")[0]
   outFile = TFile("%s_%r.root"%(outFileName, upDown), "RECREATE")
   outFile.cd()
   can_higgswindow.Write()
   can_higgswindow.Print("%s_%r.pdf"%(outFileName, upDown))
   outFile.Close()
+
+
+from sys import argv
+withBtag = argv[1]
+if not withBtag in ["withBtag", "noBtag"]:
+  print "please supply an argument: either 'withBtag' or 'noBtag'"
+  exit(1)
 
 for direction in ["up", "down"]:
   srCans =  []
@@ -330,9 +344,9 @@ for direction in ["up", "down"]:
   i=0
   for key in getHiggsRangesDict().keys():
     # for withBtag / noBtag you need to change the next THREE lines
-    sideband_varName    = "stackplots_nMinus1_withBtag_sideband/nMinus1_stack_%s.root"%key
-    higgswindow_varName = "stackplots_nMinus1_withBtag/nMinus1_stack_%s.root"%key
-    makeOpt(sideband_varName, higgswindow_varName, direction, True, srCans, srPads, sbCans, sbPads, stacks, sidebands, i)
+    sideband_varName    = "stackplots_nMinus1_%s_sideband/nMinus1_stack_%s.root"%(withBtag, key)
+    higgswindow_varName = "stackplots_nMinus1_%s/nMinus1_stack_%s.root"%(withBtag, key)
+    makeOpt(sideband_varName, higgswindow_varName, direction, withBtag == "withBtag", srCans, srPads, sbCans, sbPads, stacks, sidebands, i)
     i+=1
   if direction is direction[-1]:
     exit(0)
