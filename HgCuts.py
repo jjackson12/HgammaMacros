@@ -13,6 +13,8 @@ def getCutValues():
   cutValues["Hbb"]            = 0.9
   cutValues["higgsWindow"]    = [110.0, 140.0]
   cutValues["sidebandWindow"] = [100.0, 110.0]
+  cutValues["sideband5070Window"] = [50.0, 70.0]
+  cutValues["sideband80100Window"] = [80.0, 100.0]
   return cutValues
 
 
@@ -43,7 +45,8 @@ def makeHiggsWindow(sideband=False):
     cuts = {}
     window = "higgsWindow"
     if sideband:
-      window = "sidebandWindow"
+      # HERE: this needs to be hacked for alternate sidebands
+      window = "sideband5070Window"
     cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues[window][0] )
     cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues[window][1] )
     return combineCuts(cuts)

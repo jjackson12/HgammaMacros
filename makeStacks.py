@@ -233,11 +233,14 @@ for withBtag in [options.withBtag]:
           prim.SetX2NDC(0.946)
           prim.SetY2NDC(0.911)
           for subprim in prim.GetListOfPrimitives():
+            print "subprim has label:", subprim.GetLabel()
             for key in legendLabels:
               if key in subprim.GetLabel():
                 subprim.SetLabel(legendLabels[key])
                 subprim.SetOption("lf")
               elif "SilverJson" in subprim.GetLabel():
+                print "found something named SilverJson"
+                exit(1)
                 subprim.SetLabel("data")
                 subprim.SetOption("pe")
 

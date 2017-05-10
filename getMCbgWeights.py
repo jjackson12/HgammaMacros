@@ -70,19 +70,19 @@ def getWeightsDict(bkgSmall3Dir):
   #for signalToInclude in getSignalsToInclude():
   #  sampleWeights[signalToInclude] = signalWeight
   sampleWeights["data2016SinglePhoton.root"] = (1 , "data")
-  sampleWeights[ "sig_m750.root"   ] = (.8*10, "sig")
-  sampleWeights[ "sig_m850.root"   ] = (.8*10, "sig")
-  sampleWeights[ "sig_m1000.root"  ] = (.7*10, "sig")
-  sampleWeights[ "sig_m1150.root"  ] = (.7*10, "sig")
-  sampleWeights[ "sig_m1300.root"  ] = (.7*10, "sig")
-  sampleWeights[ "sig_m1450.root"  ] = (.6*10, "sig")
-  sampleWeights[ "sig_m1600.root"  ] = (.6*10, "sig")
-  sampleWeights[ "sig_m1750.root"  ] = (.6*10, "sig")
-  sampleWeights[ "sig_m1900.root"  ] = (.5*10, "sig")
-  sampleWeights[ "sig_m2050.root"  ] = (.5*10, "sig")
-  sampleWeights[ "sig_m2450.root"  ] = (.5*10, "sig")
-  sampleWeights[ "sig_m2850.root"  ] = (.4*10, "sig")
-  sampleWeights[ "sig_m3250.root"  ] = (.4*10, "sig")
+  sampleWeights[ "sig_m750.root"   ] = (.8*0.4, "sig")
+  sampleWeights[ "sig_m850.root"   ] = (.8*0.4, "sig")
+  sampleWeights[ "sig_m1000.root"  ] = (.7*0.4, "sig")
+  sampleWeights[ "sig_m1150.root"  ] = (.7*0.4, "sig")
+  sampleWeights[ "sig_m1300.root"  ] = (.7*0.4, "sig")
+  sampleWeights[ "sig_m1450.root"  ] = (.6*0.4, "sig")
+  sampleWeights[ "sig_m1600.root"  ] = (.6*0.4, "sig")
+  sampleWeights[ "sig_m1750.root"  ] = (.6*0.4, "sig")
+  sampleWeights[ "sig_m1900.root"  ] = (.5*0.4, "sig")
+  sampleWeights[ "sig_m2050.root"  ] = (.5*0.4, "sig")
+  sampleWeights[ "sig_m2450.root"  ] = (.5*0.4, "sig")
+  sampleWeights[ "sig_m2850.root"  ] = (.4*0.4, "sig")
+  sampleWeights[ "sig_m3250.root"  ] = (.4*0.4, "sig")
   return sampleWeights
 
 def getMCbgWeightsDict(bkgSmall3Dir):

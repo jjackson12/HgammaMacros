@@ -108,7 +108,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
 
 
   for subprim in pad_higgswindow.GetListOfPrimitives():
-    #print "pad_higgswindow has primitive: %s" % subprim.GetName()
+    print "pad_higgswindow has primitive: %s" % subprim.GetName()
     if "m750" in subprim.GetName():
       name750 = subprim.GetName()
     if "m1000" in subprim.GetName():
@@ -327,6 +327,13 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
   can_higgswindow.Print("%s_%r.pdf"%(outFileName, upDown))
   outFile.Close()
 
+
+from sys import argv
+withBtag = argv[1]
+if not withBtag in ["withBtag", "noBtag"]:
+  print "please supply an argument: either 'withBtag' or 'noBtag'"
+  exit(1)
+
 for direction in ["up", "down"]:
   srCans =  []
   srPads =  []
@@ -337,9 +344,9 @@ for direction in ["up", "down"]:
   i=0
   for key in getHiggsRangesDict().keys():
     # for withBtag / noBtag you need to change the next THREE lines
-    sideband_varName    = "stackplots_nMinus1_withBtag_sideband/nMinus1_stack_%s.root"%key
-    higgswindow_varName = "stackplots_nMinus1_withBtag/nMinus1_stack_%s.root"%key
-    makeOpt(sideband_varName, higgswindow_varName, direction, True, srCans, srPads, sbCans, sbPads, stacks, sidebands, i)
+    sideband_varName    = "stackplots_nMinus1_%s_sideband/nMinus1_stack_%s.root"%(withBtag, key)
+    higgswindow_varName = "stackplots_nMinus1_%s/nMinus1_stack_%s.root"%(withBtag, key)
+    makeOpt(sideband_varName, higgswindow_varName, direction, withBtag == "withBtag", srCans, srPads, sbCans, sbPads, stacks, sidebands, i)
     i+=1
   if direction is direction[-1]:
     exit(0)

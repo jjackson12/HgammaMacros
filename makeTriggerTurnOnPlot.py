@@ -26,8 +26,8 @@ for mass in masses:
 
   #noTrigFile = TFile("%s/ddTree_Hgamma_noTrigger_m%i.root"%(samplesDirs["ddDir"], mass),"r")
   #print noTrigFile
-  trigFile = TFile("%s/ddTree_Hgamma_triggerFired_m%i.root"%(samplesDirs["ddDir"], mass),"r")
-  noTrigFile = TFile("%s/ddTree_Hgamma_triggerFired_m%i.root"%(samplesDirs["ddDir"], mass),"r")
+  trigFile = TFile("%s/ddTree_Hgamma_triggerFired_m%i.root"%(samplesDirs["dataDDdir"], mass),"r")
+  noTrigFile = TFile("%s/ddTree_Hgamma_triggerFired_m%i.root"%(samplesDirs["dataDDdir"], mass),"r")
   print trigFile
 
   #noTrigTree = noTrigFile.Get("higgs")
