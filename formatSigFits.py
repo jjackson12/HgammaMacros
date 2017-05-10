@@ -56,7 +56,7 @@ for fullsimMC in fullsimMCs:
   topPad       = TPad("rebinned_sigfit_%i" % fullsimMC, "Signal fit, m_{X}=%i GeV" % fullsimMC, 0, 0.3, 1, 1.0)
   bottomPad       = TPad("rebinned_sigpull_%i" % fullsimMC, "Fit Pull, m_{X}=%i GeV"  % fullsimMC, 0, 0.05, 1, 0.29)
   topPad.SetName("rebinned_%i" % fullsimMC)
-  fullsimFileName = "signalFits_%s/c_mX_SR_%i.root" % (options.category, fullsimMC)
+  fullsimFileName = "../Vg/signalFits_%s_fullsim/c_mX_SR_%i.root" % (options.category, fullsimMC)
   fullsimFile = TFile(fullsimFileName)
   fullsimCanvas = fullsimFile.Get("c_mX_SR_%i" % fullsimMC)
   fullsimPad = fullsimCanvas.GetPrimitive("p_1")
