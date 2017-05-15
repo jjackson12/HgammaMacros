@@ -51,14 +51,14 @@ for withBtag in [options.withBtag]:
   sampleDirs = getSamplesDirs()
 
   rangesDict = getRangesDict()
-  print ""
-  print "getRangesDict:"
-  print rangesDict
+  #print ""
+  #print "getRangesDict:"
+  #print rangesDict
 
   higgsRangesDict = getHiggsRangesDict()
-  print ""
-  print "getHiggsRangesDict:"
-  print higgsRangesDict
+  #print ""
+  #print "getHiggsRangesDict:"
+  #print higgsRangesDict
 
   #for sideband in ['100110','5070']:
   #  SidebandRangesDict = getSidebandRangesDict(sideband)
@@ -67,11 +67,11 @@ for withBtag in [options.withBtag]:
   #  print SidebandRangesDict
 
 
-  print ""
-  print ""
-  print "getMCbgWeights(): "
+  #print ""
+  #print ""
+  #print "getMCbgWeights(): "
   mcBgWeights = getMCbgWeightsDict(sampleDirs["bkgSmall3sDir"])
-  print mcBgWeights
+  #print mcBgWeights
   treekey="higgs"
   for cutName in [options.cutName]:
     if cutName in [ "nMinus1" ]:
@@ -240,7 +240,6 @@ for withBtag in [options.withBtag]:
                 subprim.SetOption("lf")
               elif "SinglePhoton" in subprim.GetLabel():
                 print "found something named SinglePhoton"
-                exit(1)
                 subprim.SetLabel("data")
                 subprim.SetOption("pe")
 
