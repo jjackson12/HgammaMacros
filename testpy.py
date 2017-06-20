@@ -19,6 +19,8 @@ def getHiggsRangesDict():
   rangesDict["leadingPhPt"]=[0., 2000.]
   rangesDict["leadingPhAbsEta"]=[0.,2.5]
   rangesDict["leadingPhEta"]=[-2.8,2.8]
+  rangesDict["antibtagSF"]=[0.0, 1.0]
+  rangesDict["btagSF"]=[0.0, 1.0]
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
   rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
@@ -82,7 +84,7 @@ def getRangesDict():
 #    outFile.Close()
 #    return True
 
-def makeAllHists(cutName, withBtag=True, sideband=False):
+def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False):
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["bkgSmall3sDir"])
   #regions = ["higgs", "side100110", "side5070"]
@@ -111,9 +113,9 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
           hist.Rebin(5)
         #print "cutName is:", cutName
         if   cutName in "btag":
-          cut = getBtagComboCut(region, useTrigger, sideband)
+          cut = getBtagComboCut(region, useTrigger, sideband, useScaleFactors)
         elif cutName in "antibtag":
-          cut = getAntiBtagComboCut(region, useTrigger, sideband)
+          cut = getAntiBtagComboCut(region, useTrigger, sideband, useScaleFactors)
         elif cutName in "nobtag":
           cut = getNoBtagComboCut(region, useTrigger, sideband)
         elif cutName in "nMinus1":
@@ -135,7 +137,12 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
         histName = "hist_%s_%s_%s"%(var, region, key)
         #print "cut is: " 
         #print cut
-        nEntries = tree.Draw("%s>> %s"%(var, histName), cut)
+        if useScaleFactors:
+          cutString = "%sSF*(%s)" % (cutName, cut)
+        else:
+          cutString = "1*(%s)" % (cut)
+        print cutString
+        nEntries = tree.Draw("%s>> %s"%(var, histName), cutString, "HIST")
         directory = ""
         if cutName in "nMinus1":
           if withBtag:
@@ -143,9 +150,14 @@ def makeAllHists(cutName, withBtag=True, sideband=False):
           else:
               directory = "weightedMCbgHists_%s_noBtag"%cutName
         else:
-          directory = "weightedMCbgHists_%s"%cutName
+          if useScaleFactors:
+            directory = "weightedMCbgHists_%s"%cutName
+          else:
+            directory = "weightedMCbgHists_%s"%cutName
         if sideband:
           directory += "_sideband"
+        if useScaleFactors:
+          directory += "_SF"
         filename = "%s/%s_%s_%s"%(directory, var, region, key)
         if not os.path.exists(directory):
           os.makedirs(directory)
