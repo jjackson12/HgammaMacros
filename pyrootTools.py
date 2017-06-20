@@ -43,10 +43,10 @@ def instance(macroName, opt):
      if opt=="compile":
         gSystem.Load('%s_C'%macroName)
 
-def drawInNewCanvas(hist):
+def drawInNewCanvas(hist, opt=""):
   newCan = TCanvas()
   newCan.cd()
-  hist.Draw()
+  hist.Draw(opt)
 
 def drawWithCutInNewCanvas(tree, var, comboCut, label):
   newCan = TCanvas()

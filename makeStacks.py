@@ -14,10 +14,12 @@ parser.add_option("-r", action="store_false", dest="showSigs" , default=True,
                   help="if -r is used, then do not show signals overlaid."             )
 parser.add_option("-s", action="store_true", dest="sideband"  , default=False,
                   help="if -s is used, then look in sideband, not Higgs window."       )
+parser.add_option("-f", action="store_true", dest="useScaleFactors" , default=False,
+                  help = "use Btagging scalefactors"                                   )
 parser.add_option("-l", action="store_false", dest="addLines"     , default=True,
                   help = "if -l is used, then do not draw a line at 1 in the ratios"   )
 parser.add_option("-g", action="store_true", dest="graphics"     , default=False,
-                  help = "turn off batch mode"                                          )
+                  help = "turn off batch mode"                                         )
 (options, args) = parser.parse_args()
 
 validCutNames = ["preselection", "nobtag", "btag", "antibtag", "nMinus1"]
@@ -38,6 +40,7 @@ from tcanvasTDR import TDRify
 sideband = options.sideband
 showSigs = options.showSigs
 addLines = options.addLines
+useScaleFactors = options.useScaleFactors
 for withBtag in [options.withBtag]:
   print "withBtag is %r" % withBtag
   printNonempties = False
@@ -83,8 +86,10 @@ for withBtag in [options.withBtag]:
       histsDir = "%s/weightedMCbgHists_%s"%(getcwd(), cutName)
     if sideband:
       histsDir += "_sideband"
-    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband)
-    print "done making all histograms."
+    if useScaleFactors:
+      histsDir += "_SF"
+    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors)
+    #print "done making all histograms."
     thstacks=[]
     thstackCopies=[]
     cans=[]
@@ -126,15 +131,17 @@ for withBtag in [options.withBtag]:
             dirName += "_noBtag"
         if sideband:
           dirName += "_sideband"
+        if useScaleFactors:
+          dirName += "_SF"
         thisFileName = "%s/%s" % (dirName, filename)
-        print "going to use the hist from file %s in building THStack " % thisFileName
+        #print "going to use the hist from file %s in building THStack " % thisFileName
         if nonEmptyFilesDict[thisFileName] == "nonempty":
           #if printFileNames:
           #  print thisFileName
           tfiles.append(TFile(path.join(histsDir , filename)))
           hists.append(tfiles[-1].Get("hist_%s" % filename))
           hists[-1].SetFillColor(getMCbgColors()[filekey])
-          drawInNewCanvas(hists[-1])
+          drawInNewCanvas(hists[-1], "HIST")
           integralsDict[hists[-1].Integral()] = hists[-1] 
           namesDict[hists[-1].GetName()] = hists[-1]
       for mcBG in getMCbgOrderedList():
@@ -156,20 +163,23 @@ for withBtag in [options.withBtag]:
         outDirName = "stackplots_%s" % cutName
       if sideband:
         outDirName +="_sideband"
+      if useScaleFactors:
+        outDirName += "_SF"
       if not path.exists(outDirName):
         makedirs(outDirName)
       outfileName = "%s/%s_stack_%s.root"%(outDirName, cutName, varkey)
       outfile=TFile(outfileName, "RECREATE")
       cans[-1].cd()
       pads[-1].Draw()
-      pads[-1].SetLogy()
+      if not "SF" in varkey:
+        pads[-1].SetLogy()
       pads[-1].cd()
-      thstacks[-1].Draw()
+      thstacks[-1].Draw("hist")
       thstacks[-1].SetMinimum(0.08)
       thstacks[-1].SetMaximum(thstacks[-1].GetMaximum()*45)
-      print thstacks[-1]
+      #print thstacks[-1]
       if varkey in varDict.keys():
-        print "going to set title for thstacks[-1] to %s " % varkey
+        #print "going to set title for thstacks[-1] to %s " % varkey
         thstacks[-1].GetXaxis().SetTitle(varDict[varkey])
       thstacks[-1].GetYaxis().SetTitle("Events/%g"%thstacks[-1].GetXaxis().GetBinWidth(1))
       thstacks[-1].GetYaxis().SetLabelSize(0.04)
@@ -186,9 +196,9 @@ for withBtag in [options.withBtag]:
       if sideband:
         dName += "_sideband"
       datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
-      print datafiles[-1]
+      #print datafiles[-1]
       datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
-      print datahists[-1]
+      #print datahists[-1]
       if not blindData:
         datahists[-1].Draw("PE SAME")
       datahists[-1].SetMarkerStyle(20)
@@ -210,6 +220,8 @@ for withBtag in [options.withBtag]:
               rName += "_noBtag"
           if sideband:
             rName += "_sideband"
+          if useScaleFactors:
+            rName += "_SF"
           outDirName = "stackplots_%s" % rName
           sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
           sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
@@ -233,13 +245,13 @@ for withBtag in [options.withBtag]:
           prim.SetX2NDC(0.946)
           prim.SetY2NDC(0.911)
           for subprim in prim.GetListOfPrimitives():
-            print "subprim has label:", subprim.GetLabel()
+            #print "subprim has label:", subprim.GetLabel()
             for key in legendLabels:
               if key in subprim.GetLabel():
                 subprim.SetLabel(legendLabels[key])
                 subprim.SetOption("lf")
               elif "SinglePhoton" in subprim.GetLabel():
-                print "found something named SinglePhoton"
+                #print "found something named SinglePhoton"
                 subprim.SetLabel("data")
                 subprim.SetOption("pe")
 

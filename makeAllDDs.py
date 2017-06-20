@@ -3,6 +3,8 @@ from glob import glob
 from runHgammaSelector import processHg
 from pprint import pprint
 
+debug = False
+
 baseDir = path.join(getcwd(), "organize_smallifications")
 categories = ["backgrounds", "signals", "data"]
 catDirs = {}
@@ -24,7 +26,8 @@ for catDir in catDirs:
     makedirs(catOutDir)
   for inputFile in inputFiles:
     if first:
+      print "about to call the first processHg" 
       processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), False)
       first=False
-    else:
+    elif not debug:
       processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), True, True)
