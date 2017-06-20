@@ -41,7 +41,7 @@ parser.add_option("-b", action="store_true", dest="batch",
                   help = "turn on batch mode")
 (options, args) = parser.parse_args()
 if not options.category in ["btag", "antibtag"]:
-  #print "you must pick either 'btag' or 'antibtag' as the -c option"
+  print "you must pick either 'btag' or 'antibtag' as the -c option"
   exit(1)
 from ROOT import *
 if options.batch:
@@ -56,7 +56,7 @@ def makeCrystalBall(mass, category):
   relN  = fitParams[key][6]
   formula = "%f*ROOT::Math::crystalball_pdf(x, %f, %f, %f, %f)" % (relN, alpha, n, sigma, mu)
   #formula = "ROOT::Math::crystalball_function(x, 2, 1, 1, 0)"
-  print formula
+  #print formula
   return formula
 def makeGauss(mass, category):
   key="%i_%s"%(mass, category)
@@ -65,7 +65,7 @@ def makeGauss(mass, category):
   relN  = (1-fitParams[key][6])
   formula = "%f*ROOT::Math::gaussian_pdf(x, %f, %f)" % (relN, sigma, mu)
   #formula = "ROOT::Math::crystalball_function(x, 2, 1, 1, 0)"
-  print formula
+  #print formula
   return formula
 
 gStyle.SetOptStat(0)
@@ -114,7 +114,7 @@ for fullsimMC in fullsimMCs:
   fullsimCanvas = fullsimFile.Get("c_mX_SR_%i" % fullsimMC)
   fullsimPad = fullsimCanvas.GetPrimitive("p_1")
   for primitive in fullsimPad.GetListOfPrimitives():
-    print "fullsimPad has primitive:", primitive
+    #print "fullsimPad has primitive:", primitive
     if "RooHist" in primitive.IsA().GetName():
       fullsimHist = primitive
       fullsimHist.SetName("hist_%i" % fullsimMC)
@@ -131,17 +131,17 @@ for fullsimMC in fullsimMCs:
     fullsimHist.GetPoint(iPoint, x, y)
     sumY += y
     e= fullsimHist.GetErrorYhigh(iPoint)
-    if (y >= 0):
-      print "checking point %i: (%f, %f)" % (iPoint, x, y)
+    #if (y >= 0):
+    #  print "checking point %i: (%f, %f)" % (iPoint, x, y)
     histBin = hist.GetXaxis().FindBin(x)
-    print "histBin is:", histBin
+    #print "histBin is:", histBin
     hist.SetBinContent(histBin, y)
     hist.SetBinError(histBin, e)
 
-  print "fullsimHist has number of entries:", sumY
-  print "hist has number of entries:", hist.GetSumOfWeights()
+  #print "fullsimHist has number of entries:", sumY
+  #print "hist has number of entries:", hist.GetSumOfWeights()
   hist.Rebin(options.binWidth*10)
-  print "after rebin, hist has number of entries:", hist.GetEntries()
+  #print "after rebin, hist has number of entries:", hist.GetEntries()
   hist.SetMarkerStyle(20)
 
   topPad.cd()
@@ -167,16 +167,30 @@ for fullsimMC in fullsimMCs:
   outCan.cd()
   topPad.Draw()
   outCan.Draw()
+  cloneHist = hist.Clone()
+  ksHist = hist.Clone() 
   pullHist = hist.Clone() 
   pullHist.SetName("ratio_%i" % fullsimMC)
   for iBin in range(1,hist.GetXaxis().GetNbins()):
     integral = getIntegral(fullsimCurve, hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin))
     #print "bin content from %f to %f is: %f" % (hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), hist.GetBinContent(iBin))
     #print "adjusted from x=%f to %f is: %f" % (hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), integral/hist.GetXaxis().GetBinWidth(iBin))
-    if not hist.GetBinError(iBin) == 0 and not hist.GetBinContent(iBin) <=0.1 :
-      pullHist.SetBinContent(iBin, (hist.GetBinContent(iBin) - integral/hist.GetXaxis().GetBinWidth(iBin) )/hist.GetBinError(iBin))
-      pullHist.SetBinError(iBin, 0)
+    if not hist.GetBinError(iBin) == 0 :
+      binnedCurveVal = integral/hist.GetXaxis().GetBinWidth(iBin) 
+      if hist.GetXaxis().GetBinUpEdge(iBin) > 700:
+        cloneHist.SetBinContent(iBin, hist.GetBinContent(iBin))
+        ksHist.SetBinContent(iBin, binnedCurveVal)
+      else: 
+        cloneHist.SetBinContent(iBin, hist.GetBinContent(iBin))
+        ksHist.SetBinContent(iBin, 0)
+      if not hist.GetBinContent(iBin) <=0.1 :
+        pullHist.SetBinContent(iBin, (binnedCurveVal - hist.GetBinContent(iBin))/hist.GetBinError(iBin))
+        pullHist.SetBinError(iBin, 0)
+      else:
+        pullHist.SetBinContent(iBin, -999)
     else:
+      ksHist.SetBinContent(iBin, 0)
+      cloneHist.SetBinContent(iBin, 0)
       pullHist.SetBinContent(iBin, -999)
   #cloneHist = hist.Clone()
   #cloneHist.Divide(pullHist)
@@ -203,5 +217,20 @@ for fullsimMC in fullsimMCs:
   outFile.cd()
   outCan.Write()
   outCan.SaveAs("%s_%i.pdf" % (options.category, fullsimMC))
+  newCan = TCanvas()
+  newCan.cd()
+  hist.Draw()
+  hist.SetLineColor(kGreen)
+  hist.SetMarkerColor(kGreen)
+  ksHist.Draw("SAME")
+  ksHist.SetLineColor(kRed)
+  ksHist.SetMarkerColor(kRed)
+  cloneHist.Draw("SAME")
+  cloneHist.SetMarkerColor(kBlue)
+  cloneHist.SetLineColor(kBlue)
+  fullsimCurve.Draw("SAME")
+  fullsimCurve.SetLineColor(kBlack)
+  newCan.Write()
+  print "KS test result for %i:" % fullsimMC , cloneHist.KolmogorovTest(ksHist, "MX")
 outFile.Close()
   
