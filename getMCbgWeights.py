@@ -15,7 +15,7 @@ def getMCbgSampleXsects():
   sampleXsects[   "gJets200To400.root"   ]   = 2305*1.8*0.8*0.9
   sampleXsects[   "gJets400To600.root"   ]   = 274.4*1.4   *0.9
   sampleXsects[   "gJets600ToInf.root"   ]   = 93.46 *1.2  *0.9
-  sampleXsects[   "qcd200to300.root"     ]   = 1712000    
+  #sampleXsects[   "qcd200to300.root"     ]   = 1712000    
   sampleXsects[   "qcd300to500.root"     ]   = 347700     
   sampleXsects[   "qcd500to700.root"     ]   = 32100      
   sampleXsects[   "qcd700to1000.root"    ]    = 6831       
@@ -103,7 +103,7 @@ def getMCbgOrderedList():
     "qcd700to1000.root"     ,
     "qcd500to700.root"      ,
     "qcd300to500.root"      ,
-    "qcd200to300.root"      ,
+    #"qcd200to300.root"      ,
     "gJets600ToInf.root"    ,
     "gJets400To600.root"    ,
     "gJets200To400.root"    ,
@@ -118,7 +118,7 @@ def getMCbgColors():
   sampleColors["gJets200To400.root" ] = color.GetColor(.475, .6, 1.0)
   sampleColors["gJets400To600.root" ] = color.GetColor(.35, .5, 0.85)
   sampleColors["gJets600ToInf.root" ] = color.GetColor(.225, .3, 0.7) 
-  sampleColors["qcd200to300.root"   ] = color.GetColor(.31*1.2, 1.0, 0.425*1.2)
+  #sampleColors["qcd200to300.root"   ] = color.GetColor(.31*1.2, 1.0, 0.425*1.2)
   sampleColors["qcd300to500.root"   ] = color.GetColor(.31, .95, 0.425)
   sampleColors["qcd500to700.root"   ] = color.GetColor(.28, .9, 0.4)
   sampleColors["qcd700to1000.root"  ] = color.GetColor(.25, .8, 0.375)
@@ -136,7 +136,7 @@ def getMCbgLabels():
   legendLabels["gJets200To400.root" ] = "#gamma#plusjets[200,400]"
   legendLabels["gJets400To600.root" ] = "#gamma#plusjets[400,600]"
   legendLabels["gJets600ToInf.root" ] = "#gamma#plusjets[600,#infty]"
-  legendLabels["qcd200to300.root"   ] = "QCD[200,300]"
+  #legendLabels["qcd200to300.root"   ] = "QCD[200,300]"
   legendLabels["qcd300to500.root"   ] = "QCD[300,500]"
   legendLabels["qcd500to700.root"   ] = "QCD[500,700]"
   legendLabels["qcd700to1000.root"  ] = "QCD[700,1000]"
@@ -156,7 +156,7 @@ def getSmall3ddTreeDict(ddDir):
   s3dd["gJets200To400.root" ] = "%s/ddTree_gJets200To400"  % ddDir
   s3dd["gJets400To600.root" ] = "%s/ddTree_gJets400To600"  % ddDir
   s3dd["gJets600ToInf.root" ] = "%s/ddTree_gJets600ToInf"  % ddDir
-  s3dd["qcd200to300.root"   ] = "%s/ddTree_qcd200to300"    % ddDir
+  #s3dd["qcd200to300.root"   ] = "%s/ddTree_qcd200to300"    % ddDir
   s3dd["qcd300to500.root"   ] = "%s/ddTree_qcd300to500"    % ddDir
   s3dd["qcd500to700.root"   ] = "%s/ddTree_qcd500to700"    % ddDir
   s3dd["qcd700to1000.root"  ] = "%s/ddTree_qcd700to1000"   % ddDir
