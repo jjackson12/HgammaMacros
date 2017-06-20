@@ -96,14 +96,18 @@ def getDefaultCuts(region, useTrigger, sideband=False):
       quit()
     return cuts
     
-def getBtagComboCut(region, useTrigger, sideband=False):
+def getBtagComboCut(region, useTrigger, sideband=False, scaleFactors=False):
     btagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband))
     btagCuts.pop("antibtag")
+    if scaleFactors:
+      btagCuts.pop("btag")
     return combineCuts(btagCuts)
 
-def getAntiBtagComboCut(region, useTrigger, sideband=False):
+def getAntiBtagComboCut(region, useTrigger, sideband=False, scaleFactors=False):
     antibtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband))
     antibtagCuts.pop("btag")
+    if scaleFactors:
+      antibtagCuts.pop("antibtag")
     return combineCuts(antibtagCuts)
 
 def getNoBtagComboCut(region, useTrigger, sideband=False):
