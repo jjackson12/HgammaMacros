@@ -3,6 +3,7 @@ from ROOT import *
 from pyrootTools import *
 from HgParameters import *
 from HgCuts import getDefaultCuts, combineCuts
+from os import path
 
 # macro for plotting post-selection for H(bb)gamma
 # John Hakala 7/13/16
@@ -10,10 +11,10 @@ from HgCuts import getDefaultCuts, combineCuts
 samplesDirs = getSamplesDirs()
 #dataFileName = samplesDirs["dataDir"]
 #mass = "1000"
-sampleFileName="%s/ddTree_SilverJson.root" % (samplesDirs["ddDir"])
+sampleFileName=path.join(samplesDirs["dataDDdir"], "ddTree_data2016SinglePhoton.root")
 #sampleFileName="testSilver.root"
 
-cuts = getDefaultCuts("higgs")
+cuts = getDefaultCuts("higgs", True)
 
 btagCuts = copy.deepcopy(cuts)
 btagCuts.pop("antibtag")

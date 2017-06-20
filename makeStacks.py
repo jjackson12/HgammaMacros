@@ -51,14 +51,14 @@ for withBtag in [options.withBtag]:
   sampleDirs = getSamplesDirs()
 
   rangesDict = getRangesDict()
-  print ""
-  print "getRangesDict:"
-  print rangesDict
+  #print ""
+  #print "getRangesDict:"
+  #print rangesDict
 
   higgsRangesDict = getHiggsRangesDict()
-  print ""
-  print "getHiggsRangesDict:"
-  print higgsRangesDict
+  #print ""
+  #print "getHiggsRangesDict:"
+  #print higgsRangesDict
 
   #for sideband in ['100110','5070']:
   #  SidebandRangesDict = getSidebandRangesDict(sideband)
@@ -67,11 +67,11 @@ for withBtag in [options.withBtag]:
   #  print SidebandRangesDict
 
 
-  print ""
-  print ""
-  print "getMCbgWeights(): "
+  #print ""
+  #print ""
+  #print "getMCbgWeights(): "
   mcBgWeights = getMCbgWeightsDict(sampleDirs["bkgSmall3sDir"])
-  print mcBgWeights
+  #print mcBgWeights
   treekey="higgs"
   for cutName in [options.cutName]:
     if cutName in [ "nMinus1" ]:
@@ -225,7 +225,7 @@ for withBtag in [options.withBtag]:
       cans[-1].cd()
       pads[-1].Draw()
 
-      TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
+      TDRify(pads[-1], False, "cpad_%s_%s"%(rName, sigFileName))
       for prim in pads[-1].GetListOfPrimitives():
         if "TLegend" in prim.IsA().GetName():
           prim.SetX1NDC(0.753)
@@ -238,9 +238,8 @@ for withBtag in [options.withBtag]:
               if key in subprim.GetLabel():
                 subprim.SetLabel(legendLabels[key])
                 subprim.SetOption("lf")
-              elif "SilverJson" in subprim.GetLabel():
-                print "found something named SilverJson"
-                exit(1)
+              elif "SinglePhoton" in subprim.GetLabel():
+                print "found something named SinglePhoton"
                 subprim.SetLabel("data")
                 subprim.SetOption("pe")
 
@@ -286,7 +285,7 @@ for withBtag in [options.withBtag]:
       datahistsCopies[-1].GetYaxis().SetTitleSize(0.13)
       datahistsCopies[-1].GetYaxis().SetTitleOffset(0.24)
       datahistsCopies[-1].GetYaxis().SetLabelSize(0.08)
-      TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
+      #TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
       outfile.cd()
       cans[-1].Write()
       outfile.Close()
