@@ -20,7 +20,17 @@ parser.add_option("-l", action="store_false", dest="addLines"     , default=True
                   help = "if -l is used, then do not draw a line at 1 in the ratios"   )
 parser.add_option("-g", action="store_true", dest="graphics"     , default=False,
                   help = "turn off batch mode"                                         )
+parser.add_option("-e", dest="edges"     , default="100110",
+                  help = "the higgs mass window edges: either 100110, 5070, or 80100"  )
 (options, args) = parser.parse_args()
+if options.edges in "100110":
+  windowEdges = [100.0,110.0]
+elif options.edges in "5070":
+  windowEdges = [50.0,70.0]
+elif options.edges in "80100":
+  windowEdges = [50.0,70.0]
+else:
+  print "invalid higgs mass window supplied."
 
 validCutNames = ["preselection", "nobtag", "btag", "antibtag", "nMinus1"]
 if not options.cutName in validCutNames:
@@ -85,10 +95,10 @@ for withBtag in [options.withBtag]:
     else:
       histsDir = "%s/weightedMCbgHists_%s"%(getcwd(), cutName)
     if sideband:
-      histsDir += "_sideband"
+      histsDir += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
     if useScaleFactors:
       histsDir += "_SF"
-    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors)
+    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors, windowEdges)
     #print "done making all histograms."
     thstacks=[]
     thstackCopies=[]
@@ -130,7 +140,7 @@ for withBtag in [options.withBtag]:
           else:
             dirName += "_noBtag"
         if sideband:
-          dirName += "_sideband"
+          dirName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
         if useScaleFactors:
           dirName += "_SF"
         thisFileName = "%s/%s" % (dirName, filename)
@@ -162,7 +172,7 @@ for withBtag in [options.withBtag]:
       else:
         outDirName = "stackplots_%s" % cutName
       if sideband:
-        outDirName +="_sideband"
+        outDirName +="_sideband%i%i" %(windowEdges[0], windowEdges[1])
       if useScaleFactors:
         outDirName += "_SF"
       if not path.exists(outDirName):
@@ -194,7 +204,7 @@ for withBtag in [options.withBtag]:
         else:
           dName += "_noBtag"
       if sideband:
-        dName += "_sideband"
+        dName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
       datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
       #print datafiles[-1]
       datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
@@ -219,7 +229,7 @@ for withBtag in [options.withBtag]:
             else:
               rName += "_noBtag"
           if sideband:
-            rName += "_sideband"
+            rName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
           if useScaleFactors:
             rName += "_SF"
           outDirName = "stackplots_%s" % rName
