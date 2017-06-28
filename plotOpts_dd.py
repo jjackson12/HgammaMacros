@@ -48,6 +48,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
       can_higgswindow.SetName("%i_%s_c1_higgswindow" % (i, inFileName_higgswindow))
       #print "can_higgswindow: ",
       #print can_higgswindow
+      SetOwnership(can_higgswindow, False)
       srCans.append(can_higgswindow)
       #canName_higgswindow = "c1_higgswindow"
         
@@ -71,6 +72,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
           primitive.SetName("%s_%s_higgswindow" % (inFileName_higgswindow, primitive.GetName()))
       #print "pad_higgswindow: ",
       #print  pad_higgswindow
+      SetOwnership(pad_higgswindow, False)
       srPads.append(pad_higgswindow)
       #print "using higgswindow stack: %s" % padName_higgswindow
     if debug:
@@ -80,6 +82,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
       for primitive in bottomPad_higgswindow.GetListOfPrimitives():
         if not ("TLine" in primitive.IsA().GetName() or "TFrame" in primitive.IsA().GetName()):
           primitive.SetName("%s_%s_higgswindow" % (inFileName_higgswindow, primitive.GetName()))
+      SetOwnership(bottomPad_higgswindow, False)
       srPads.append(bottomPad_higgswindow)
       bottomPad_ratio=srPads[-1]
       
@@ -91,6 +94,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
     if "c1" in key.GetName():
       can_sideband = inFile_sideband.Get(key.GetName()).DrawClone()
       can_sideband.SetName("%i_%s_c1_sideband" % (i, inFileName_sideband))
+      SetOwnership(can_sideband, False)
       sbCans.append(can_sideband)
   can_higgswindow.Draw()
   for prim in can_sideband.GetListOfPrimitives():
@@ -103,12 +107,14 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
       for primitive in pad_sideband.GetListOfPrimitives():
         if not ("TLine" in primitive.IsA().GetName() or "TFrame" in primitive.IsA().GetName()):
           primitive.SetName("%s_%s_sideband" % (inFileName_sideband, primitive.GetName()))
+      SetOwnership(pad_sideband, False)
       sbPads.append(pad_sideband)
     if "ratio" in prim.GetName():
       bottomPad_sideband = prim
       for primitive in bottomPad_sideband.GetListOfPrimitives():
         if not ("TLine" in primitive.IsA().GetName() or "TFrame" in primitive.IsA().GetName()):
           primitive.SetName("%s_%s_sideband" % (inFileName_sideband, primitive.GetName()))
+      SetOwnership(bottomPad_sideband, False)
       sbPads.append(bottomPad_sideband)
       bottomPad_ratio = sbPads[-1]
 
@@ -128,6 +134,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
     if "THStack" in subprim.IsA().GetName():
       subprim.SetName("%i_theStack_%s" % ( i, inFileName_higgswindow))
       stack = subprim
+      SetOwnership(stack, False)
       stacks.append(stack)
     if "SilverJson" in subprim.GetName():
       subprim.SetName("garbage_%i_%s_%s" % (i, inFileName_higgswindow, subprim.GetName()))
@@ -137,6 +144,7 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
     if "SinglePhoton" in subprim.GetName():
       subprim.SetName("%i_theSideband_%s" % (i, inFileName_sideband))
       sideband = subprim
+      SetOwnership(sideband, False)
       sidebands.append(sideband)
     elif "THStack" in subprim.IsA().GetName() or "THist" in subprim.IsA().GetName():
       subprim.SetName("garbage_%i_%s_%s" % (i, inFileName_sideband, subprim.GetName()))
