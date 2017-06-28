@@ -8,7 +8,7 @@ from os import path
 # John Hakala, 12/1/2016
 # A poorly-named collection of functions that churns out all the possible histograms from DDtrees
 
-printCuts = True
+printCuts = False
 
 
 def getHiggsRangesDict():
@@ -24,7 +24,7 @@ def getHiggsRangesDict():
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
   rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
-  rangesDict["%sJett2t1"%label]=[0, 1]
+  rangesDict["%sJett2t1"%label]=[0.0, 1.0]
   rangesDict["%sPrunedJetCorrMass"%label]=[0,200]
   rangesDict["phJetDeltaR_%s"%label]=[0,6]
   rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
@@ -84,7 +84,7 @@ def getRangesDict():
 #    outFile.Close()
 #    return True
 
-def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False):
+def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, windowEdges=[100,110]):
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["bkgSmall3sDir"])
   #regions = ["higgs", "side100110", "side5070"]
@@ -113,13 +113,13 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False):
           hist.Rebin(5)
         #print "cutName is:", cutName
         if   cutName in "btag":
-          cut = getBtagComboCut(region, useTrigger, sideband, useScaleFactors)
+          cut = getBtagComboCut(region, useTrigger, sideband, useScaleFactors, windowEdges)
         elif cutName in "antibtag":
-          cut = getAntiBtagComboCut(region, useTrigger, sideband, useScaleFactors)
+          cut = getAntiBtagComboCut(region, useTrigger, sideband, useScaleFactors, windowEdges)
         elif cutName in "nobtag":
-          cut = getNoBtagComboCut(region, useTrigger, sideband)
+          cut = getNoBtagComboCut(region, useTrigger, sideband, windowEdges)
         elif cutName in "nMinus1":
-          cut = getNminus1ComboCut(region, var, withBtag, useTrigger, sideband)
+          cut = getNminus1ComboCut(region, var, withBtag, useTrigger, sideband, windowEdges)
         elif cutName in "preselection":
           cut = TCut()
         else:
@@ -138,10 +138,16 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False):
         #print "cut is: " 
         #print cut
         if useScaleFactors:
-          cutString = "%sSF*(%s)" % (cutName, cut)
+          if cutName in ["antibtag", "btag"]:
+            cutString = "%sSF*(%s)" % (cutName, cut)
+          else:
+            cutString = "1*(%s)" % (cut)
         else:
-          cutString = "1*(%s)" % (cut)
-        print cutString
+          if cutName in "preselection":
+            cutString = "leadingPhPt>-1"
+          else:
+            cutString = "1*(%s)" % (cut)
+        #print cutString
         nEntries = tree.Draw("%s>> %s"%(var, histName), cutString, "HIST")
         directory = ""
         if cutName in "nMinus1":
@@ -155,7 +161,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False):
           else:
             directory = "weightedMCbgHists_%s"%cutName
         if sideband:
-          directory += "_sideband"
+          directory += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
         if useScaleFactors:
           directory += "_SF"
         filename = "%s/%s_%s_%s"%(directory, var, region, key)
