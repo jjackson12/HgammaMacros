@@ -99,10 +99,12 @@ for fullsimMC in fullsimMCs:
   outCan.cd()
   topPad.Draw()
   outCan.Draw()
+  ksHist = hist.Clone()
   pullHist = hist.Clone() 
   pullHist.SetName("ratio_%i" % fullsimMC)
   for iBin in range(1,hist.GetXaxis().GetNbins()):
     integral = getIntegral(fullsimCurve, hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin))
+    ksHist.SetBinContent(iBin, integral)
     print "bin content from %f to %f is: %f" % (hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), hist.GetBinContent(iBin))
     print "adjusted from x=%f to %f is: %f" % (hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), integral/hist.GetXaxis().GetBinWidth(iBin))
     if not hist.GetBinError(iBin) == 0 and not hist.GetBinContent(iBin) <=0.1 :
@@ -135,5 +137,6 @@ for fullsimMC in fullsimMCs:
   outFile.cd()
   outCan.Write()
   outCan.SaveAs("%s_%i.pdf" % (options.category, fullsimMC))
+  print "KS test result for %i:" % fullsimMC , hist.KolmogorovTest(ksHist)
 outFile.Close()
   
