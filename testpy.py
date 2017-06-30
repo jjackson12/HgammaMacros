@@ -117,6 +117,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
         elif cutName in "antibtag":
           cut = getAntiBtagComboCut(region, useTrigger, sideband, useScaleFactors, windowEdges)
         elif cutName in "nobtag":
+          print "going to pass getNoBtagComboCut windowEdges" 
           cut = getNoBtagComboCut(region, useTrigger, sideband, windowEdges)
         elif cutName in "nMinus1":
           cut = getNminus1ComboCut(region, var, withBtag, useTrigger, sideband, windowEdges)
@@ -128,7 +129,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
           exit(1)
         if useTrigger:
           cut += makeTrigger()
-        #print "cut is now", cut
+        print "cut is now", cut
           
         #if cutName is "preselection":
         #  nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)
@@ -150,21 +151,28 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
         #print cutString
         nEntries = tree.Draw("%s>> %s"%(var, histName), cutString, "HIST")
         directory = ""
+        bareDirectory = ""
         if cutName in "nMinus1":
           if withBtag:
               directory = "weightedMCbgHists_%s_withBtag"%cutName
+              bareDirectory = directory
           else:
               directory = "weightedMCbgHists_%s_noBtag"%cutName
+              bareDirectory = directory
         else:
           if useScaleFactors:
             directory = "weightedMCbgHists_%s"%cutName
+            bareDirectory = directory
           else:
             directory = "weightedMCbgHists_%s"%cutName
+            bareDirectory = directory
         if sideband:
           directory += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
         if useScaleFactors:
           directory += "_SF"
+          bareDirectory += "_SF"
         filename = "%s/%s_%s_%s"%(directory, var, region, key)
+        hackFilename = "%s/%s_%s_%s"%(bareDirectory, var, region, key)
         if not os.path.exists(directory):
           os.makedirs(directory)
         if not nEntries == 0:
@@ -179,7 +187,9 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
           outFile.Close()
           #print "closed outFile" , outFile.GetName()
           nonEmptyFilesDict[filename]="nonempty"
+          nonEmptyFilesDict[hackFilename]="nonempty"
         else:
           nonEmptyFilesDict[filename]="empty"
+          nonEmptyFilesDict[hackFilename]="empty"
           #print "the histogram %s was empty for" % histName, filename
   return nonEmptyFilesDict
