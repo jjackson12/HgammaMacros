@@ -41,6 +41,7 @@ def getVarKeys():
   return varKeys
 
 def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
+    print "makeHiggsWindow got sideband =", sideband, "and windowEdges =", windowEdges
     cutValues = getCutValues()
     cuts = {}
     window = "higgsWindow"
@@ -54,6 +55,7 @@ def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
         window = "sideband80100Window"
     cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues[window][0] )
     cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues[window][1] )
+    print "will return combineCuts(cuts)=", combineCuts(cuts)
     return combineCuts(cuts)
 
 def makeTrigger(which = "OR"):
@@ -116,7 +118,7 @@ def getAntiBtagComboCut(region, useTrigger, sideband=False, scaleFactors=False, 
     return combineCuts(antibtagCuts)
 
 def getNoBtagComboCut(region, useTrigger, sideband=False, windowEdges=[100.0,110.0]):
-    nobtagCuts = copy.deepcopy(getDefaultCuts(region, sideband, windowEdges))
+    nobtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband, windowEdges))
     nobtagCuts.pop("btag")
     nobtagCuts.pop("antibtag")
     return combineCuts(nobtagCuts)
