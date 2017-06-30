@@ -20,17 +20,27 @@ parser.add_option("-l", action="store_false", dest="addLines"     , default=True
                   help = "if -l is used, then do not draw a line at 1 in the ratios"   )
 parser.add_option("-g", action="store_true", dest="graphics"     , default=False,
                   help = "turn off batch mode"                                         )
-parser.add_option("-e", dest="edges"     , default="100110",
+parser.add_option("-e", dest="edges",     
                   help = "the higgs mass window edges: either 100110, 5070, or 80100"  )
 (options, args) = parser.parse_args()
-if options.edges in "100110":
-  windowEdges = [100.0,110.0]
-elif options.edges in "5070":
-  windowEdges = [50.0,70.0]
-elif options.edges in "80100":
-  windowEdges = [50.0,70.0]
-else:
-  print "invalid higgs mass window supplied."
+
+if options.sideband is False:
+  windowEdges=[0,0]
+if options.edges is not None and options.sideband is False:
+  print "cannot specify a sideband window without the -s option."
+  exit(1)
+if options.edges is None and options.sideband is True:
+  options.edges = "100110"
+if options.sideband is True:
+  if options.edges in "100110":
+    windowEdges = [100.0,110.0]
+  elif options.edges in "5070":
+    windowEdges = [50.0,70.0]
+  elif options.edges in "80100":
+    windowEdges = [80.0,100.0]
+  else:
+    print "invalid higgs mass window supplied."
+    exit(1)
 
 validCutNames = ["preselection", "nobtag", "btag", "antibtag", "nMinus1"]
 if not options.cutName in validCutNames:
@@ -98,6 +108,7 @@ for withBtag in [options.withBtag]:
       histsDir += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
     if useScaleFactors:
       histsDir += "_SF"
+    #print "going to pass makeAllHists windowEdges", windowEdges
     nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors, windowEdges)
     #print "done making all histograms."
     thstacks=[]
@@ -139,16 +150,20 @@ for withBtag in [options.withBtag]:
             dirName += "_withBtag"
           else:
             dirName += "_noBtag"
-        if sideband:
-          dirName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
+        #if sideband:
+        #  dirName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
         if useScaleFactors:
           dirName += "_SF"
         thisFileName = "%s/%s" % (dirName, filename)
-        #print "going to use the hist from file %s in building THStack " % thisFileName
-        if nonEmptyFilesDict[thisFileName] == "nonempty":
+        print "going to use the MC background hist from file %s in building THStack " % thisFileName
+        #HACKHACKHACK:
+        if nonEmptyFilesDict[thisFileName] == "nonempty" and path.exists(thisFileName):
           #if printFileNames:
           #  print thisFileName
-          tfiles.append(TFile(path.join(histsDir , filename)))
+          #print "tfiles.append(TFile(path.join(", histsDir " ,", filename, ")))"
+          #tfiles.append(TFile(path.join(histsDir , filename)))
+          tfiles.append(TFile(thisFileName))
+          #print "tfiles[-1]:", tfiles[-1].GetName()
           hists.append(tfiles[-1].Get("hist_%s" % filename))
           hists[-1].SetFillColor(getMCbgColors()[filekey])
           drawInNewCanvas(hists[-1], "HIST")
@@ -206,7 +221,7 @@ for withBtag in [options.withBtag]:
       if sideband:
         dName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
       datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
-      #print datafiles[-1]
+      print "going to use data file",  datafiles[-1].GetName(), "for the plot"
       datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
       #print datahists[-1]
       if not blindData:
@@ -228,12 +243,13 @@ for withBtag in [options.withBtag]:
               rName += "_withBtag"
             else:
               rName += "_noBtag"
-          if sideband:
-            rName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
+          #if sideband:
+          #  rName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
           if useScaleFactors:
             rName += "_SF"
           outDirName = "stackplots_%s" % rName
           sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
+          print "adding signal file", sigfiles[-1].GetName(), "to the plot"
           sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
           sighists[-1].SetLineStyle(3)
           sighists[-1].SetLineWidth(2)
@@ -274,6 +290,18 @@ for withBtag in [options.withBtag]:
       fullStack.Sumw2()
       if varkey in varDict.keys():
         fullStack.GetXaxis().SetTitle(varDict[varkey])
+      ### HEREHERE
+      if sideband:
+        sbScale = fullStack.GetSumOfWeights()/datahists[-1].GetSumOfWeights()
+        for iBin in range(0, datahists[-1].GetNbinsX()):
+          print "sbScale", sbScale 
+          print "old bin content", datahists[-1].GetBinContent(iBin)
+          print "new bin content", datahists[-1].GetBinContent(iBin)*sbScale
+          datahists[-1].SetBinContent(iBin, datahists[-1].GetBinContent(iBin)*sbScale)
+          datahistsCopies[-1].SetBinContent(iBin, datahistsCopies[-1].GetBinContent(iBin)*sbScale)
+      pads[-2].Update()
+      pads[-1].Update()
+      ### HEREHERE
       fullStack.GetXaxis().SetLabelSize(0.10)
       fullStack.GetXaxis().SetTitleSize(0.13)
       fullStack.GetXaxis().SetTitleOffset(2)
