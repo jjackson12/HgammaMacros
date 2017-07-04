@@ -127,7 +127,13 @@ for withBtag in [options.withBtag]:
     varDict = getVariableDict()
 
     #for varkey in [higgsRangesDict.keys()[0]]:
+    if "antibtag" in cutName and not useScaleFactors:
+      for varkey in higgsRangesDict.keys():
+        if "SF" in varkey:
+          print "about to get rid of ", varkey, "from the higgsRangesDict"
+          higgsRangesDict.pop(varkey)
     for varkey in higgsRangesDict.keys():
+      print "varkey is", varkey
       cans.append(TCanvas())
       pads.append(TPad("stack_%s_%s"%(cutName, varkey), "stack_%s_%s"%(cutName, varkey), 0, 0.3, 1, 1.0))
       cans[-1].cd()
