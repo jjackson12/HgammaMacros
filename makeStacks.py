@@ -262,7 +262,7 @@ for withBtag in [options.withBtag]:
           sighists[-1].SetLineColor(colors[sigMass])
           sighists[-1].SetTitle("H#gamma(%r TeV)"%(sigMass/float(1000)))
           sighists[-1].SetMarkerSize(0)
-          sighists[-1].Draw("SAME")
+          sighists[-1].Draw("hist SAME")
 
       pads[-1].SetBottomMargin(0)
       pads[-1].BuildLegend()
