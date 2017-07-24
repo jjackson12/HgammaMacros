@@ -75,6 +75,9 @@ public :
   float matchedJett2t1              = -999. ;
   float higgsJett2t1                = -999. ;
   float higgsJet_pruned_abseta      = -999. ;
+  float higgsJet_pruned_eta         = -999. ;
+  float higgsJet_pruned_phi         = -999. ;
+  float higgsJet_pruned_pt          = -999. ;
   float leadingPhAbsEta             = -999. ;
   float cosThetaStar                =  -99. ;
   float phPtOverMgammaj             =  -99. ;

@@ -40,6 +40,7 @@ if not exists(options.outDir):
   makedirs(options.outDir)
 
 for canKey in outCans.keys():
-  outCans[canKey].Print(join(options.outDir, "%s.pdf"%basename(canKey)))
+  outName = "%s.pdf"%basename(canKey).replace(".root","")
+  outCans[canKey].Print(join(options.outDir, outName))
 
 

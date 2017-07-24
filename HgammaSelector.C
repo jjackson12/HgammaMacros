@@ -64,6 +64,9 @@ void HgammaSelector::Loop(string outputFileName) {
   outputTreeHiggs->Branch("phJetInvMass_pruned_higgs", &phJetInvMass_pruned_higgs);
   outputTreeHiggs->Branch("phJetDeltaR_higgs", &phJetDeltaR_higgs);
   outputTreeHiggs->Branch("higgsJet_pruned_abseta", &higgsJet_pruned_abseta);
+  outputTreeHiggs->Branch("higgsJet_pruned_eta", &higgsJet_pruned_eta);
+  outputTreeHiggs->Branch("higgsJet_pruned_phi", &higgsJet_pruned_phi);
+  outputTreeHiggs->Branch("higgsJet_pruned_pt", &higgsJet_pruned_pt);
   outputTreeHiggs->Branch("higgsPrunedJetCorrMass", &higgsPrunedJetCorrMass);
   outputTreeHiggs->Branch("triggerFired_165HE10", &triggerFired_165HE10);
   outputTreeHiggs->Branch("triggerFired_175", &triggerFired_175);
@@ -133,6 +136,9 @@ void HgammaSelector::Loop(string outputFileName) {
     leadingPhPhi                     = -999  ;
     leadingPhAbsEta                  = -999. ;
     higgsJet_pruned_abseta           = -999. ;
+    higgsJet_pruned_eta              = -999. ;
+    higgsJet_pruned_phi              = -999. ;
+    higgsJet_pruned_pt               = -999. ;
     higgsPrunedJetCorrMass           = -999. ;
     higgsJet_HbbTag                  = -999. ;
     cosThetaStar                     =  -99. ; 
@@ -263,6 +269,9 @@ void HgammaSelector::Loop(string outputFileName) {
         cosThetaStar = std::abs(boostedPho.Pz()/boostedPho.P());
         phPtOverMgammaj = leadingPhPt/sumVector.M();
         higgsJet_pruned_abseta=std::abs(higgsJet_pruned.Eta());
+        higgsJet_pruned_eta=higgsJet_pruned.Eta();
+        higgsJet_pruned_phi=higgsJet_pruned.Phi();
+        higgsJet_pruned_pt=higgsJet_pruned.Pt();
         leadingPhAbsEta = std::abs(leadingPhEta);
         phJetInvMass_pruned_higgs=sumVector.M();
         phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_pruned);
