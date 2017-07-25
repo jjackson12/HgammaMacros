@@ -36,11 +36,10 @@ def getVarKeys():
   varKeys["leadingPhAbsEta"]           = "phEta"
   varKeys["phJetInvMass_puppi_softdrop_higgs"] = "turnon"
   varKeys["phJetDeltaR_higgs"]         = "deltaR"
-  varKeys["higgsJet_pruned_abseta"]    = "jetAbsEta"
-  varKeys["higgsJet_pruned_eta"]       = "jetEta"
-  varKeys["higgsJet_pruned_phi"]       = "jetPhi"
-  varKeys["higgsJet_pruned_pt"]        = "jetPt"
-  varKeys["higgsJet_puppi_softdrop_abseta"]    = "jetEta"
+  varKeys["higgsJet_puppi_softdrop_abseta"]    = "jetAbsEta"
+  varKeys["higgsJet_puppi_softdrop_eta"]       = "jetEta"
+  varKeys["higgsJet_puppi_softdrop_phi"]       = "jetPhi"
+  varKeys["higgsJet_puppi_softdrop_pt"]        = "jetPt"
   varKeys["higgsPuppi_softdropJetCorrMass"]    = "higgsWindow"
   return varKeys
 
