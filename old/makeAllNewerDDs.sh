@@ -34,5 +34,6 @@
 export OUTSIGDIR=80XDDs_Apr17_puppiSoftdrop_sigs
 initialMass=650
 python runHbbGammaSelector.py ~/physics/80Xsignals/flatTuple_m${initialMass}.root ${OUTSIGDIR}/ddTree_Hgamma_m${initialMass}.root compile
+>>>>>>> puppiSoftdrop:makeAllNewerDDs.sh
 masses=(750 850 1000 1150 1300 1450 1600 1750 1900 2050 2450 2850 3250)
 for mass in "${masses[@]}"; do python runHbbGammaSelector.py ~/physics/80Xsignals/flatTuple_m${mass}.root ${OUTSIGDIR}/ddTree_Hgamma_m${mass}.root compile ; done

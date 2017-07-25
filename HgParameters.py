@@ -4,11 +4,15 @@ from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["HgammaFlatTuples"] = "~/physics/80Xsignals"
-  response["small3sDir"]       = "~/physics/nov21_ntuples"
-  response["ddDir"]            = "~/WZgammaMacros/80XDDs_Mar9/"
-  response["sigDDdir"]         = "~/WZgammaMacros/80XDDs_Apr17_puppiSoftdrop_sigs"
-  response["dataDir"]          = "~/WZgammaMacros/80XDDs_Mar9/ddTree_SilverJson.root"
+  response["sigalsSmall3sDir"] = "/Users/johakala/HgammaMacros/organize_smallifications/signals"
+  response["bkgSmall3sDir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/backgrounds"
+  response["dataSmall3Dir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/data"
+  response["dataSmall3File"]       = "/Users/johakala/HgammaMacros/organize_smallifications/smallification_data2016SinglePhoton.root"
+
+  response["bkgDDdir"]            = "/Users/johakala/HgammaMacros/organize_DDs/backgrounds"
+  response["sigDDdir"]         = "/Users/johakala/HgammaMacros/organize_DDs/signals"
+  response["dataDDdir"]          = "/Users/johakala/HgammaMacros/organize_DDs/data/"
+  response["dataDDFile"]          = "/Users/johakala/HgammaMacros/organize_DDs/data/ddTree_data2016SinglePhoton.root"
   return response
 
 def getNormalizations():
@@ -58,7 +62,10 @@ def getSigNevents():
 
 def getVariableDict():
   varDict = {}
-  varDict["higgsJet_puppi_softdrop_abseta"]    = "#||{#eta_{J}}"
+  varDict["higgsJet_pruned_abseta"]    = "#||{#eta_{J}}"
+  varDict["higgsJet_pruned_eta"]       = "#eta_{J}"
+  varDict["higgsJet_pruned_phi"]       = "#phi_{J}"
+  varDict["higgsJet_pruned_pt"]        = "p_{T}^{J}"
   varDict["leadingPhEta"]              = "#eta_{#gamma}"
   varDict["higgsJet_HbbTag"]           = "Hb#bar{b} tagger discriminant"
   varDict["phJetDeltaR_higgs"]         = "#DeltaR(#gamma, jet)"
