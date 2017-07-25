@@ -112,13 +112,13 @@ for withBtag in [options.withBtag]:
     nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors, windowEdges)
     #print "done making all histograms."
     thstacks=[]
-    thstackCopies=[]
+    #thstackCopies=[]
     cans=[]
     pads=[]
     hists=[]
     tfiles=[]
-    datahists=[]
-    datahistsCopies=[]
+    #datahists=[]
+    #datahistsCopies=[]
     datafiles=[]
     sighists=[]
     sigfiles=[]

@@ -34,13 +34,14 @@ def getVarKeys():
   varKeys["leadingPhPhi"]              = "phPhi"
   varKeys["leadingPhPt"]               = "phPt"
   varKeys["leadingPhAbsEta"]           = "phEta"
-  varKeys["phJetInvMass_pruned_higgs"] = "turnon"
+  varKeys["phJetInvMass_puppi_softdrop_higgs"] = "turnon"
   varKeys["phJetDeltaR_higgs"]         = "deltaR"
   varKeys["higgsJet_pruned_abseta"]    = "jetAbsEta"
   varKeys["higgsJet_pruned_eta"]       = "jetEta"
   varKeys["higgsJet_pruned_phi"]       = "jetPhi"
   varKeys["higgsJet_pruned_pt"]        = "jetPt"
-  varKeys["higgsPrunedJetCorrMass"]    = "higgsWindow"
+  varKeys["higgsJet_puppi_softdrop_abseta"]    = "jetEta"
+  varKeys["higgsPuppi_softdropJetCorrMass"]    = "higgsWindow"
   return varKeys
 
 def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
@@ -49,7 +50,6 @@ def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
     cuts = {}
     window = "higgsWindow"
     if sideband:
-      # HERE: this needs to be hacked for alternate sidebands
       if windowEdges == [100.0,110.0]:
         window = "sidebandWindow"
       elif windowEdges == [50.0,70.0]:
@@ -86,22 +86,22 @@ def getDefaultCuts(region, useTrigger, sideband=False, windowEdges=[100.0,110.0]
     if useTrigger: 
       cuts["trigger"]         = makeTrigger()
     if region is "higgs":
-      cuts["turnon"]          = TCut( "phJetInvMass_pruned_higgs>%f"      % cutValues["minInvMass"]     )
-      cuts["deltaR"]          = TCut( "phJetDeltaR_higgs>%f"              % cutValues["deltaR"]         )
+      cuts["turnon"]   = TCut( "phJetInvMass_puppi_softdrop_higgs>%f"      % cutValues["minInvMass"]     )
+      cuts["deltaR"]   = TCut( "phJetDeltaR_higgs>%f"              % cutValues["deltaR"]         )
       cuts["jetAbsEta"]       = TCut( "higgsJet_pruned_abseta<%f"         % cutValues["jetAbsEta"]      )
-      cuts["btag"]            = TCut( "higgsJet_HbbTag>%f"                % cutValues["Hbb"]            )
-      cuts["antibtag"]        = TCut( "higgsJet_HbbTag<%f"                % cutValues["Hbb"]            )
-      #cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"         % cutValues["higgsWindow"][0] )
-      #cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"         % cutValues["higgsWindow"][1] )
+      cuts["btag"]     = TCut( "higgsJet_HbbTag>%f"                % cutValues["Hbb"]            )
+      cuts["antibtag"] = TCut( "higgsJet_HbbTag<%f"                % cutValues["Hbb"]            )
+      #cuts["higgsWindowLow"] = TCut( "higgsPuppi_softdropJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
+      #cuts["higgsWindowHi"]  = TCut( "higgsPuppi_softdropJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
       cuts["higgsWindow"]     = makeHiggsWindow(sideband, windowEdges)
     elif region is "side5070" or region is "side100110":
       if region is "side5070":
         index = "Three"
       else:
         index = "Four"
-      cuts["turnon"]   = TCut( "phJetInvMass_pruned_sideLow%s>%f" % (index, cutValues["minInvMass"] ))
+      cuts["turnon"]   = TCut( "phJetInvMass_puppi_softdrop_sideLow%s>%f" % (index, cutValues["minInvMass"] ))
       cuts["deltaR"]   = TCut( "phJetDeltaR_sideLow%s>%f"         % (index, cutValues["deltaR"]     ))
-      cuts["jetEta"]   = TCut( "sideLow%sJet_pruned_abseta<%f"    % (index, cutValues["jetEta"]     ))
+      cuts["jetEta"]   = TCut( "sideLow%sJet_puppi_softdrop_abseta<%f"    % (index, cutValues["jetEta"]     ))
       cuts["btag"]     = TCut( "sideLow%sJet_HbbTag>%f"           % (index, cutValues["Hbb"]        ))
       cuts["antibtag"] = TCut( "sideLow%sJet_HbbTag<%f"           % (index, cutValues["Hbb"]        ))
     else:

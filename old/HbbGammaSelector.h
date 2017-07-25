@@ -38,12 +38,12 @@ public :
   bool  phoEtaPassesCut             = false ; 
   bool  phoPtPassesCut             = false ; 
   bool  eventHasTightPho            = false ; 
-  bool  eventHasMatchedPrunedJet    = false ; 
-  bool  eventHasHiggsPrunedJet    = false ; 
-  bool  eventHasSideLowPrunedJet    = false ; 
-  bool  eventHasSideLowThreePrunedJet    = false ; 
-  bool  eventHasSideLowFourPrunedJet    = false ; 
-  bool  eventHasSideHiPrunedJet    = false ; 
+  bool  eventHasMatchedPuppi_softdropJet    = false ; 
+  bool  eventHasHiggsPuppi_softdropJet    = false ; 
+  bool  eventHasSideLowPuppi_softdropJet    = false ; 
+  bool  eventHasSideLowThreePuppi_softdropJet    = false ; 
+  bool  eventHasSideLowFourPuppi_softdropJet    = false ; 
+  bool  eventHasSideHiPuppi_softdropJet    = false ; 
   bool  eventHasMatchedSoftdropJet  = false ; 
   int   eventsPassingTrigger        =    0  ;
   int   eventsPassingTrigger_2      =    0  ;
@@ -59,52 +59,51 @@ public :
   float leadingJetEta               = -999. ;
   float leadingJetPhi               = -999. ;
   float leadingJetM                 =    0. ;
-  float leadingJetPrunedM           =    0. ; 
-  float leadingJetSoftdropM         =    0. ;
+  float leadingJetPuppi_softdropM           =    0. ; 
   float HT                          =    0. ;
   float HT_ak4                      =    0. ;
   float leadingJetTau1              = -999. ;
-  float matchedPrunedJetCorrMass    = -999. ;
+  float matchedPuppi_softdropJetCorrMass    = -999. ;
   float matchedJet_HbbTag    = -999. ;
-  float higgsPrunedJetCorrMass    = -999. ;
+  float higgsPuppi_softdropJetCorrMass    = -999. ;
   float higgsJet_HbbTag    = -999. ;
   float test_looseloose    = -1. ;
   bool higgs_looseloose   = false;
-  float sideLowPrunedJetCorrMass    = -999. ;
-  float sideLowThreePrunedJetCorrMass    = -999. ;
-  float sideLowFourPrunedJetCorrMass    = -999. ;
-  float sideLowThreeJet_pruned_abseta = -999;
-  float sideLowFourJet_pruned_abseta = -999;
+  float sideLowPuppi_softdropJetCorrMass    = -999. ;
+  float sideLowThreePuppi_softdropJetCorrMass    = -999. ;
+  float sideLowFourPuppi_softdropJetCorrMass    = -999. ;
+  float sideLowThreeJet_puppi_softdrop_abseta = -999;
+  float sideLowFourJet_puppi_softdrop_abseta = -999;
   float sideLowThreeJet_HbbTag    = -999. ;
   float sideLowFourJet_HbbTag    = -999. ;
-  float sideHiPrunedJetCorrMass     = -999. ;
+  float sideHiPuppi_softdropJetCorrMass     = -999. ;
   float matchedSoftdropJetCorrMass  = -999. ;
-  float pruned_matchedJetTau1       = -999. ;
+  float puppi_softdrop_matchedJetTau1       = -999. ;
   float higgsSoftdropJetCorrMass  = -999. ;
-  float pruned_higgsJetTau1       = -999. ;
-  float pruned_sideLowJetTau1       = -999. ;
-  float pruned_sideLowThreeJetTau1       = -999. ;
-  float pruned_sideLowFourJetTau1       = -999. ;
-  float pruned_sideHiJetTau1        = -999. ;
+  float puppi_softdrop_higgsJetTau1       = -999. ;
+  float puppi_softdrop_sideLowJetTau1       = -999. ;
+  float puppi_softdrop_sideLowThreeJetTau1       = -999. ;
+  float puppi_softdrop_sideLowFourJetTau1       = -999. ;
+  float puppi_softdrop_sideHiJetTau1        = -999. ;
   float softdrop_matchedJetTau1     = -999. ;
   float leadingJetTau2              = -999. ;
-  float pruned_matchedJetTau2       = -999. ;
-  float pruned_higgsJetTau2       = -999. ;
-  float pruned_sideLowJetTau2       = -999. ;
-  float pruned_sideLowThreeJetTau2       = -999. ;
-  float pruned_sideLowFourJetTau2       = -999. ;
-  float pruned_sideHiJetTau2        = -999. ;
+  float puppi_softdrop_matchedJetTau2       = -999. ;
+  float puppi_softdrop_higgsJetTau2       = -999. ;
+  float puppi_softdrop_sideLowJetTau2       = -999. ;
+  float puppi_softdrop_sideLowThreeJetTau2       = -999. ;
+  float puppi_softdrop_sideLowFourJetTau2       = -999. ;
+  float puppi_softdrop_sideHiJetTau2        = -999. ;
   float softdrop_matchedJetTau2     = -999. ;
   float softdrop_higgsJetTau2     = -999. ;
   float leadingJetTau3              = -999. ;
-  float pruned_matchedJetTau3       = -999. ;
-  float pruned_higgsJetTau3       = -999. ;
-  float pruned_sideLowJetTau3       = -999. ;
-  float pruned_sideLowThreeJetTau3       = -999. ;
-  float pruned_sideLowFourJetTau3       = -999. ;
+  float puppi_softdrop_matchedJetTau3       = -999. ;
+  float puppi_softdrop_higgsJetTau3       = -999. ;
+  float puppi_softdrop_sideLowJetTau3       = -999. ;
+  float puppi_softdrop_sideLowThreeJetTau3       = -999. ;
+  float puppi_softdrop_sideLowFourJetTau3       = -999. ;
   float sideLowThreeJett2t1         = -9;
   float sideLowFourJett2t1         = -9;
-  float pruned_sideHiJetTau3        = -999. ;
+  float puppi_softdrop_sideHiJetTau3        = -999. ;
   float softdrop_matchedJetTau3     = -999. ;
   float leadingPhPt                 =    0. ;
   float leadingPhEta                =    0. ;
@@ -114,15 +113,15 @@ public :
   float leadingPhCat                =    0. ;
   float matchedJett2t1              = -999  ;
   float higgsJett2t1              = -999  ;
-  float matchedJet_pruned_abseta    = -999  ;
-  float higgsJet_pruned_abseta    = -999  ;
+  float matchedJet_puppi_softdrop_abseta    = -999  ;
+  float higgsJet_puppi_softdrop_abseta    = -999  ;
   float leadingPhAbsEta             = -999  ;
   float cosThetaStar                =  -99  ;
   float phPtOverMgammaj                =  -99  ;
-  float phJetInvMass_pruned_sig                =  -99  ;
-  float phJetInvMass_pruned_higgs                =  -99  ;
-  float phJetInvMass_pruned_sideLowThree                =  -99  ;
-  float phJetInvMass_pruned_sideLowFour                =  -99  ;
+  float phJetInvMass_puppi_softdrop_sig                =  -99  ;
+  float phJetInvMass_puppi_softdrop_higgs                =  -99  ;
+  float phJetInvMass_puppi_softdrop_sideLowThree                =  -99  ;
+  float phJetInvMass_puppi_softdrop_sideLowFour                =  -99  ;
   float phJetDeltaR_sig                =  -99  ;
   float phJetDeltaR_higgs                =  -99  ;
   float phJetDeltaR_sideLowThree                =  -99  ;
@@ -134,12 +133,12 @@ public :
 
   TLorentzVector leadingPhoton              ;
   TLorentzVector tmpLeadingJet              ;
-  TLorentzVector matchedJet_pruned          ;
-  TLorentzVector higgsJet_pruned          ;
-  TLorentzVector sideLowJet_pruned          ;
-  TLorentzVector sideLowThreeJet_pruned          ;
-  TLorentzVector sideLowFourJet_pruned          ;
-  TLorentzVector sideHiJet_pruned          ;
+  TLorentzVector matchedJet_puppi_softdrop          ;
+  TLorentzVector higgsJet_puppi_softdrop          ;
+  TLorentzVector sideLowJet_puppi_softdrop          ;
+  TLorentzVector sideLowThreeJet_puppi_softdrop          ;
+  TLorentzVector sideLowFourJet_puppi_softdrop          ;
+  TLorentzVector sideHiJet_puppi_softdrop          ;
   TLorentzVector matchedJet_softdrop        ;
   TLorentzVector sumVector                  ;
   TLorentzVector boostedJet                 ;
@@ -158,10 +157,10 @@ public :
      bool tight_medium;
      bool tight_tight;
    }; 
-   leadingSubjets higgs_csvValues;
-   leadingSubjets sideLowFour_csvValues;
-   passSubjetCuts higgs_subjetCutDecisions;
-   passSubjetCuts sideLowFour_subjetCutDecisions;
+   //leadingSubjets higgs_csvValues;
+   //leadingSubjets sideLowFour_csvValues;
+   //passSubjetCuts higgs_subjetCutDecisions;
+   //passSubjetCuts sideLowFour_subjetCutDecisions;
 
 
   // Output histograms
@@ -185,17 +184,17 @@ public :
   TH1F*  leadingJetT2T1                    = new TH1F( "leadingJetT2T1"                   , "Leading jet #tau_{2}/#tau_{1}"        ,  110 ,  -0.05 ,  1.05 );
   TH1F*  leadingJetT3T2                    = new TH1F( "leadingJetT3T2"                   , "Leading jet #tau_{3}/#tau_{2}"        ,  110 ,  -0.05 ,  1.05 );
   TH1F*  leadingJetMassHist                = new TH1F( "leadingJetMassHist"               , "Leading AK8 jet inv. mass"            ,  700 ,      0 ,  7000 );
-  TH1F*  leadingJetPrunedMassHist          = new TH1F( "leadingJetPrunedMassHist"         , "Leading AK8 pruned jet inv. mass"     ,  700 ,      0 ,  7000 );
+  TH1F*  leadingJetPuppi_softdropMassHist          = new TH1F( "leadingJetPuppi_softdropMassHist"         , "Leading AK8 puppi_softdrop jet inv. mass"     ,  700 ,      0 ,  7000 );
   TH1F*  leadingJetSoftdropMassHist        = new TH1F( "leadingJetSoftdropMassHist"       , "Leading AK8 softdrop jet inv. mass"   ,  700 ,      0 ,  7000 );
   TH1F*  matchedJetMassHist                = new TH1F( "matchedJetMassHist"               , "Matched AK8 jet inv. mass"            ,  300 ,      0 ,   300 );
-  TH1F*  matchedJetPrunedMassHist          = new TH1F( "matchedJetPrunedMassHist"         , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  matchedJetPuppi_softdropMassHist          = new TH1F( "matchedJetPuppi_softdropMassHist"         , "Matched AK8 puppi_softdrop jet inv. mass"     ,  300 ,      0 ,   300 );
   TH1F*  higgsJetMassHist                = new TH1F( "higgsJetMassHist"               , "Matched AK8 jet inv. mass"            ,  300 ,      0 ,   300 );
-  TH1F*  higgsJetPrunedMassHist          = new TH1F( "higgsJetPrunedMassHist"         , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
-  TH1F*  sideLowJetPrunedMassHist          = new TH1F( "sideLowJetPrunedMassHist"         , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
-  TH1F*  sideLowThreeJetPrunedMassHist          = new TH1F( "sideLowThreeJetPrunedMassHist"         , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
-  TH1F*  sideLowFourJetPrunedMassHist          = new TH1F( "sideLowFourJetPrunedMassHist"         , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
-  TH1F*  sideHiJetPrunedMassHist           = new TH1F( "sideHiJetPrunedMassHist"          , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
-  TH1F*  bigWindowJetPrunedMassHist        = new TH1F( "bigWindowJetPrunedMassHist"          , "Matched AK8 pruned jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  higgsJetPuppi_softdropMassHist          = new TH1F( "higgsJetPuppi_softdropMassHist"         , "Matched AK8 puppi_softdrop jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  sideLowJetPuppi_softdropMassHist          = new TH1F( "sideLowJetPuppi_softdropMassHist"         , "Matched AK8 puppi_softdrop jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  sideLowThreeJetPuppi_softdropMassHist          = new TH1F( "sideLowThreeJetPuppi_softdropMassHist"         , "Matched AK8 puppi_softdrop jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  sideLowFourJetPuppi_softdropMassHist          = new TH1F( "sideLowFourJetPuppi_softdropMassHist"         , "Matched AK8 puppi_softdrop jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  sideHiJetPuppi_softdropMassHist           = new TH1F( "sideHiJetPuppi_softdropMassHist"          , "Matched AK8 puppi_softdrop jet inv. mass"     ,  300 ,      0 ,   300 );
+  TH1F*  bigWindowJetPuppi_softdropMassHist        = new TH1F( "bigWindowJetPuppi_softdropMassHist"          , "Matched AK8 puppi_softdrop jet inv. mass"     ,  300 ,      0 ,   300 );
   TH1F*  matchedJetSoftdropMassHist        = new TH1F( "matchedJetSoftdropMassHist"       , "Matched AK8 softdrop jet inv. mass"   ,  300 ,      0 ,   300 );
   TH1F*  matchedJett2t1Hist                = new TH1F( "matchedJett2t1Hist"               , "Matched AK8 jet #tau_{2}/#tau_{1}"    ,  110 ,  -0.05 ,  1.05 );
   TH1F*  matchedJetPtHist                  = new TH1F( "matchedJetPtHist"                 , "Matched AK8 jet p_{T}"                ,  700 ,      0 ,  7000 );
@@ -214,22 +213,22 @@ public :
   TH1F*  sideHiJetPtHist                   = new TH1F( "sideHiJetPtHist"                  , "Matched AK8 jet p_{T}"                ,  300 ,      0 ,   300 );
   TH1F*  sideHiJetEtaHist                  = new TH1F( "sideHiJetEtaHist"                 , "Matched AK8 jet #eta"                 ,  300 ,    -6.  ,   6. );
   TH1F*  sideHiJetPhiHist                  = new TH1F( "sideHiJetPhiHist"                 , "Matched AK8 jet #phi"                 ,  300 ,    -4.  ,   4. );
-  TH1F*  phJetDeltaR_pruned                = new TH1F( "phJetDeltaR_pruned"               , "#deltaR(#gamma, j)"                   ,   200 ,      0 ,    10 );  
-  TH1F*  phJetDeltaPhi_pruned              = new TH1F( "phJetDeltaPhi_pruned"             , "#delta#phi(#gamma, j)"                ,   200 ,      0 ,     4 );
-  TH1F*  phJetDeltaEta_pruned              = new TH1F( "phJetDeltaEta_pruned"             , "#delta#eta(#gamma, j)"                ,   200 ,      0 ,    10 );
+  TH1F*  phJetDeltaR_puppi_softdrop                = new TH1F( "phJetDeltaR_puppi_softdrop"               , "#deltaR(#gamma, j)"                   ,   200 ,      0 ,    10 );  
+  TH1F*  phJetDeltaPhi_puppi_softdrop              = new TH1F( "phJetDeltaPhi_puppi_softdrop"             , "#delta#phi(#gamma, j)"                ,   200 ,      0 ,     4 );
+  TH1F*  phJetDeltaEta_puppi_softdrop              = new TH1F( "phJetDeltaEta_puppi_softdrop"             , "#delta#eta(#gamma, j)"                ,   200 ,      0 ,    10 );
   TH1F*  phJetInvMassHist_softdrop         = new TH1F( "phJetInvMassHist_softdrop"        , "Photon+Jet invariant mass (softdrop)" ,  1400 ,      0 ,  7000 );
-  //TH1F*  phJetInvMassHist_pruned           = new TH1F( "phJetInvMassHist_pruned"          , "Photon+Jet invariant mass (pruned)"   ,  1400 ,      0 ,  7000 );
-  //TH1F*  phCorrJetInvMassHist_pruned       = new TH1F( "phCorrJetInvMassHist_pruned"      , "Photon+ZJet invariant mass (pruned)"  ,  1400 ,      0 ,  7000 );
-  TH1F*  phJetInvMassHist_pruned_sig       = new TH1F( "phJetInvMassHist_pruned_sig"      , "m_{#gammaj} for signal region events" ,  1400 ,      0 ,  7000 );
-  TH1F*  phJetInvMassHist_pruned_higgs       = new TH1F( "phJetInvMassHist_pruned_higgs"      , "m_{#gammaj} for higgsnal region events" ,  1400 ,      0 ,  7000 );
-  TH1F*  phJetInvMassHist_pruned_sideHi    = new TH1F( "phJetInvMassHist_pruned_sideHi"   , "m_{#gammaj} for upper sideband events",  1400 ,      0 ,  7000 );
-  TH1F*  phJetInvMassHist_pruned_sideLow   = new TH1F( "phJetInvMassHist_pruned_sideLow"  , "m_{#gammaj} for lower sideband events",  1400 ,      0 ,  7000 );
-  TH1F*  phCorrJetInvMassHist_pruned_sig   = new TH1F( "phCorrJetInvMassHist_pruned_sig"     , "m_{#gammaj} for signal region events (jet p0 = 90 GeV)" ,  1400 ,   0 ,  7000 );
-  TH1F*  phCorrJetInvMassHist_pruned_higgs   = new TH1F( "phCorrJetInvMassHist_pruned_higgs"     , "m_{#gammaj} for higgsnal region events (jet p0 = 90 GeV)" ,  1400 ,   0 ,  7000 );
-  TH1F*  phCorrJetInvMassHist_pruned_sideHi= new TH1F( "phCorrJetInvMassHist_pruned_sideHi"  , "m_{#gammaj} for upper sideband events (jet p0 = 90 GeV)",  1400 ,   0 ,  7000 );
-  TH1F* phCorrJetInvMassHist_pruned_sideLow= new TH1F( "phCorrJetInvMassHist_pruned_sideLow" , "m_{#gammaj} for lower sideband events (jet p0 = 90 GeV)",  1400 ,   0 ,  7000 );
-  TH1F* phCorrJetInvMassHist_pruned_sideLowThree= new TH1F( "phCorrJetInvMassHist_pruned_sideLowThree" , "m_{#gammaj} for lower sideband events (jet p0 = 90 GeV)",  1400 ,   0 ,  7000 );
-  TH1F* phCorrJetInvMassHist_pruned_sideLowFour= new TH1F( "phCorrJetInvMassHist_pruned_sideLowFour" , "m_{#gammaj} for lower sideband events (jet p0 = 90 GeV)",  1400 ,   0 ,  7000 );
+  //TH1F*  phJetInvMassHist_puppi_softdrop           = new TH1F( "phJetInvMassHist_puppi_softdrop"          , "Photon+Jet invariant mass (puppi_softdrop)"   ,  1400 ,      0 ,  7000 );
+  //TH1F*  phCorrJetInvMassHist_puppi_softdrop       = new TH1F( "phCorrJetInvMassHist_puppi_softdrop"      , "Photon+ZJet invariant mass (puppi_softdrop)"  ,  1400 ,      0 ,  7000 );
+  TH1F*  phJetInvMassHist_puppi_softdrop_sig       = new TH1F( "phJetInvMassHist_puppi_softdrop_sig"      , "m_{#gammaj} for signal region events" ,  1400 ,      0 ,  7000 );
+  TH1F*  phJetInvMassHist_puppi_softdrop_higgs       = new TH1F( "phJetInvMassHist_puppi_softdrop_higgs"      , "m_{#gammaj} for higgsnal region events" ,  1400 ,      0 ,  7000 );
+  TH1F*  phJetInvMassHist_puppi_softdrop_sideHi    = new TH1F( "phJetInvMassHist_puppi_softdrop_sideHi"   , "m_{#gammaj} for upper sideband events",  1400 ,      0 ,  7000 );
+  TH1F*  phJetInvMassHist_puppi_softdrop_sideLow   = new TH1F( "phJetInvMassHist_puppi_softdrop_sideLow"  , "m_{#gammaj} for lower sideband events",  1400 ,      0 ,  7000 );
+  TH1F*  phCorrJetInvMassHist_puppi_softdrop_sig   = new TH1F( "phCorrJetInvMassHist_puppi_softdrop_sig"     , "m_{#gammaj} for signal region events (jet p0 = 90 GeV)" ,  1400 ,   0 ,  7000 );
+  TH1F*  phCorrJetInvMassHist_puppi_softdrop_higgs   = new TH1F( "phCorrJetInvMassHist_puppi_softdrop_higgs"     , "m_{#gammaj} for higgsnal region events (jet p0 = 90 GeV)" ,  1400 ,   0 ,  7000 );
+  TH1F*  phCorrJetInvMassHist_puppi_softdrop_sideHi= new TH1F( "phCorrJetInvMassHist_puppi_softdrop_sideHi"  , "m_{#gammaj} for upper sideband events (jet p0 = 90 GeV)",  1400 ,   0 ,  7000 );
+  TH1F* phCorrJetInvMassHist_puppi_softdrop_sideLow= new TH1F( "phCorrJetInvMassHist_puppi_softdrop_sideLow" , "m_{#gammaj} for lower sideband events (jet p0 = 90 GeV)",  1400 ,   0 ,  7000 );
+  TH1F* phCorrJetInvMassHist_puppi_softdrop_sideLowThree= new TH1F( "phCorrJetInvMassHist_puppi_softdrop_sideLowThree" , "m_{#gammaj} for lower sideband events (jet p0 = 90 GeV)",  1400 ,   0 ,  7000 );
+  TH1F* phCorrJetInvMassHist_puppi_softdrop_sideLowFour= new TH1F( "phCorrJetInvMassHist_puppi_softdrop_sideLowFour" , "m_{#gammaj} for lower sideband events (jet p0 = 90 GeV)",  1400 ,   0 ,  7000 );
   TH1F*  phPtOverMgammajHist                         = new TH1F( "phPtOverMgammajHist"   , "Photon p_{T}/m_{#gammaj}" ,  10000 ,      0 ,  100 );
   TH1F*  cosThetaStarHist                         = new TH1F( "cosThetaStarHist"   , "Photon p_{z}/p" ,  1000 ,      0 ,  1 );
 
@@ -367,31 +366,49 @@ public :
    vector<float>   *jetAK8_tau1;
    vector<float>   *jetAK8_tau2;
    vector<float>   *jetAK8_tau3;
-   vector<float>   *jetAK8_pruned_mass;
-   vector<float>   *jetAK8_pruned_massCorr;
-   vector<float>   *jetAK8_pruned_jec;
+   vector<float>   *jetAK8_massCorr;
+   Int_t            jetAK8_puppi_N;
+   vector<float>   *jetAK8_puppi_pt;
+   vector<float>   *jetAK8_puppi_eta;
+   vector<float>   *jetAK8_puppi_phi;
+   vector<float>   *jetAK8_puppi_e;
+   vector<float>   *jetAK8_puppi_jec;
+   vector<int>     *jetAK8_puppi_charge;
+   vector<float>   *jetAK8_puppi_Hbbtag;
+   vector<int>     *jetAK8_puppi_partonFlavour;
+   vector<int>     *jetAK8_puppi_hadronFlavour;
+   vector<int>     *jetAK8_puppi_genParton_pdgID;
+   vector<int>     *jetAK8_puppi_nbHadrons;
+   vector<int>     *jetAK8_puppi_ncHadrons;
+   vector<float>   *jetAK8_puppi_csv;
+   vector<float>   *jetAK8_puppi_tau1;
+   vector<float>   *jetAK8_puppi_tau2;
+   vector<float>   *jetAK8_puppi_tau3;
+   vector<float>   *jetAK8_puppi_softdrop_mass;
+   vector<float>   *jetAK8_puppi_softdrop_massCorr;
+   vector<float>   *jetAK8_puppi_softdrop_jec;
    vector<float>   *jetAK8_softdrop_mass;
    vector<float>   *jetAK8_softdrop_massCorr;
    vector<float>   *jetAK8_softdrop_jec;
-   vector<int>     *subjetAK8_softdrop_N;
-   vector<vector<float> > *subjetAK8_softdrop_pt;
-   vector<vector<float> > *subjetAK8_softdrop_eta;
-   vector<vector<float> > *subjetAK8_softdrop_mass;
-   vector<vector<float> > *subjetAK8_softdrop_phi;
-   vector<vector<float> > *subjetAK8_softdrop_e;
-   vector<vector<int> > *subjetAK8_softdrop_charge;
-   vector<vector<int> > *subjetAK8_softdrop_partonFlavour;
-   vector<vector<int> > *subjetAK8_softdrop_hadronFlavour;
-   vector<int>     *subjetAK8_pruned_N;
-   vector<vector<float> > *subjetAK8_pruned_pt;
-   vector<vector<float> > *subjetAK8_pruned_eta;
-   vector<vector<float> > *subjetAK8_pruned_mass;
-   vector<vector<float> > *subjetAK8_pruned_phi;
-   vector<vector<float> > *subjetAK8_pruned_e;
-   vector<vector<int> > *subjetAK8_pruned_charge;
-   vector<vector<int> > *subjetAK8_pruned_partonFlavour;
-   vector<vector<int> > *subjetAK8_pruned_hadronFlavour;
-   vector<vector<float> > *subjetAK8_pruned_csv;
+   //vector<int>     *subjetAK8_softdrop_N;
+   //vector<vector<float> > *subjetAK8_softdrop_pt;
+   //vector<vector<float> > *subjetAK8_softdrop_eta;
+   //vector<vector<float> > *subjetAK8_softdrop_mass;
+   //vector<vector<float> > *subjetAK8_softdrop_phi;
+   //vector<vector<float> > *subjetAK8_softdrop_e;
+   //vector<vector<int> > *subjetAK8_softdrop_charge;
+   //vector<vector<int> > *subjetAK8_softdrop_partonFlavour;
+   //vector<vector<int> > *subjetAK8_softdrop_hadronFlavour;
+   //vector<int>     *subjetAK8_puppi_softdrop_N;
+   //vector<vector<float> > *subjetAK8_puppi_pt;
+   //vector<vector<float> > *subjetAK8_puppi_eta;
+   //vector<vector<float> > *subjetAK8_puppi_softdrop_mass;
+   //vector<vector<float> > *subjetAK8_puppi_phi;
+   //vector<vector<float> > *subjetAK8_puppi_e;
+   //vector<vector<int> > *subjetAK8_puppi_charge;
+   //vector<vector<int> > *subjetAK8_puppi_partonFlavour;
+   //vector<vector<int> > *subjetAK8_puppi_hadronFlavour;
+   //vector<vector<float> > *subjetAK8_puppi_csv;
    Int_t           genJetAK4_N;
    vector<float>   *genJetAK4_pt;
    vector<float>   *genJetAK4_eta;
@@ -407,7 +424,7 @@ public :
    vector<float>   *genJetAK8_mass;
    vector<float>   *genJetAK8_phi;
    vector<float>   *genJetAK8_e;
-   vector<float>   *genJetAK8_prunedmass;
+   vector<float>   *genJetAK8_puppi_softdropmass;
    vector<float>   *genJetAK8_softdropmass;
    map<string,bool> *HLT_isFired;
    Bool_t          passFilter_HBHE;
@@ -561,30 +578,46 @@ public :
    TBranch        *b_jetAK8_tau1;   //!
    TBranch        *b_jetAK8_tau2;   //!
    TBranch        *b_jetAK8_tau3;   //!
-   TBranch        *b_jetAK8_pruned_mass;   //!
-   TBranch        *b_jetAK8_pruned_massCorr;   //!
-   TBranch        *b_jetAK8_pruned_jec;   //!
+   TBranch        *b_jetAK8_puppi_N;   //!
+   TBranch        *b_jetAK8_puppi_pt;   //!
+   TBranch        *b_jetAK8_puppi_eta;   //!
+   TBranch        *b_jetAK8_puppi_phi;   //!
+   TBranch        *b_jetAK8_puppi_e;   //!
+   TBranch        *b_jetAK8_puppi_jec;   //!
+   TBranch        *b_jetAK8_puppi_charge;   //!
+   TBranch        *b_jetAK8_puppi_partonFlavour;   //!
+   TBranch        *b_jetAK8_puppi_hadronFlavour;   //!
+   TBranch        *b_jetAK8_puppi_genParton_pdgID;   //!
+   TBranch        *b_jetAK8_puppi_nbHadrons;   //!
+   TBranch        *b_jetAK8_puppi_ncHadrons;   //!
+   TBranch        *b_jetAK8_puppi_csv;   //!
+   TBranch        *b_jetAK8_puppi_tau1;   //!
+   TBranch        *b_jetAK8_puppi_tau2;   //!
+   TBranch        *b_jetAK8_puppi_tau3;   //!
+   TBranch        *b_jetAK8_puppi_softdrop_mass;   //!
+   TBranch        *b_jetAK8_puppi_softdrop_massCorr;   //!
+   TBranch        *b_jetAK8_puppi_softdrop_jec;   //!
    TBranch        *b_jetAK8_softdrop_mass;   //!
    TBranch        *b_jetAK8_softdrop_massCorr;   //!
    TBranch        *b_jetAK8_softdrop_jec;   //!
-   TBranch        *b_subjetAK8_softdrop_N;   //!
-   TBranch        *b_subjetAK8_softdrop_pt;   //!
-   TBranch        *b_subjetAK8_softdrop_eta;   //!
-   TBranch        *b_subjetAK8_softdrop_mass;   //!
-   TBranch        *b_subjetAK8_softdrop_phi;   //!
-   TBranch        *b_subjetAK8_softdrop_e;   //!
-   TBranch        *b_subjetAK8_softdrop_charge;   //!
-   TBranch        *b_subjetAK8_softdrop_partonFlavour;   //!
-   TBranch        *b_subjetAK8_softdrop_hadronFlavour;   //!
-   TBranch        *b_subjetAK8_pruned_N;   //!
-   TBranch        *b_subjetAK8_pruned_pt;   //!
-   TBranch        *b_subjetAK8_pruned_eta;   //!
-   TBranch        *b_subjetAK8_pruned_mass;   //!
-   TBranch        *b_subjetAK8_pruned_phi;   //!
-   TBranch        *b_subjetAK8_pruned_e;   //!
-   TBranch        *b_subjetAK8_pruned_charge;   //!
-   TBranch        *b_subjetAK8_pruned_partonFlavour;   //!
-   TBranch        *b_subjetAK8_pruned_hadronFlavour;   //!
+   //TBranch        *b_subjetAK8_softdrop_N;   //!
+   //TBranch        *b_subjetAK8_softdrop_pt;   //!
+   //TBranch        *b_subjetAK8_softdrop_eta;   //!
+   //TBranch        *b_subjetAK8_softdrop_mass;   //!
+   //TBranch        *b_subjetAK8_softdrop_phi;   //!
+   //TBranch        *b_subjetAK8_softdrop_e;   //!
+   //TBranch        *b_subjetAK8_softdrop_charge;   //!
+   //TBranch        *b_subjetAK8_softdrop_partonFlavour;   //!
+   //TBranch        *b_subjetAK8_softdrop_hadronFlavour;   //!
+   //TBranch        *b_subjetAK8_puppi_N;   //!
+   //TBranch        *b_subjetAK8_puppi_pt;   //!
+   //TBranch        *b_subjetAK8_puppi_eta;   //!
+   //TBranch        *b_subjetAK8_puppi_mass;   //!
+   //TBranch        *b_subjetAK8_puppi_phi;   //!
+   //TBranch        *b_subjetAK8_puppi_e;   //!
+   //TBranch        *b_subjetAK8_puppi_charge;   //!
+   //TBranch        *b_subjetAK8_puppi_partonFlavour;   //!
+   //TBranch        *b_subjetAK8_puppi_hadronFlavour;   //!
    TBranch        *b_genJetAK4_N;   //!
    TBranch        *b_genJetAK4_pt;   //!
    TBranch        *b_genJetAK4_eta;   //!
@@ -600,9 +633,9 @@ public :
    TBranch        *b_genJetAK8_mass;   //!
    TBranch        *b_genJetAK8_phi;   //!
    TBranch        *b_genJetAK8_e;   //!
-   TBranch        *b_genJetAK8_prunedmass;   //!
+   TBranch        *b_genJetAK8_puppi_softdropmass;   //!
    TBranch        *b_genJetAK8_softdropmass;   //!
-   TBranch        *b_subjetAK8_pruned_csv;   //!
+   //TBranch        *b_subjetAK8_puppi_softdrop_csv;   //!
    TBranch        *b_HLT_isFired;   //!
    TBranch        *b_passFilter_HBHE_;   //!
    TBranch        *b_passFilter_HBHELoose_;   //!
@@ -650,7 +683,7 @@ public :
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 
-   leadingSubjets getLeadingSubjets(vector<float> prunedJet);
+   leadingSubjets getLeadingSubjets(vector<float> puppi_softdropJet);
    passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);
 };
 
@@ -806,31 +839,46 @@ void HbbGammaSelector::Init(TTree *tree)
    jetAK8_tau1 = 0;
    jetAK8_tau2 = 0;
    jetAK8_tau3 = 0;
-   jetAK8_pruned_mass = 0;
-   jetAK8_pruned_massCorr = 0;
-   jetAK8_pruned_jec = 0;
+   jetAK8_puppi_pt = 0;
+   jetAK8_puppi_eta = 0;
+   jetAK8_puppi_phi = 0;
+   jetAK8_puppi_e = 0;
+   jetAK8_puppi_jec = 0;
+   jetAK8_puppi_charge = 0;
+   jetAK8_puppi_partonFlavour = 0;
+   jetAK8_puppi_hadronFlavour = 0;
+   jetAK8_puppi_genParton_pdgID = 0;
+   jetAK8_puppi_nbHadrons = 0;
+   jetAK8_puppi_ncHadrons = 0;
+   jetAK8_puppi_csv = 0;
+   jetAK8_puppi_tau1 = 0;
+   jetAK8_puppi_tau2 = 0;
+   jetAK8_puppi_tau3 = 0;
+   jetAK8_puppi_softdrop_mass = 0;
+   jetAK8_puppi_softdrop_massCorr = 0;
+   jetAK8_puppi_softdrop_jec = 0;
    jetAK8_softdrop_mass = 0;
    jetAK8_softdrop_massCorr = 0;
    jetAK8_softdrop_jec = 0;
-   subjetAK8_softdrop_N = 0;
-   subjetAK8_softdrop_pt = 0;
-   subjetAK8_softdrop_eta = 0;
-   subjetAK8_softdrop_mass = 0;
-   subjetAK8_softdrop_phi = 0;
-   subjetAK8_softdrop_e = 0;
-   subjetAK8_softdrop_charge = 0;
-   subjetAK8_softdrop_partonFlavour = 0;
-   subjetAK8_softdrop_hadronFlavour = 0;
-   subjetAK8_pruned_N = 0;
-   subjetAK8_pruned_pt = 0;
-   subjetAK8_pruned_eta = 0;
-   subjetAK8_pruned_mass = 0;
-   subjetAK8_pruned_phi = 0;
-   subjetAK8_pruned_e = 0;
-   subjetAK8_pruned_charge = 0;
-   subjetAK8_pruned_partonFlavour = 0;
-   subjetAK8_pruned_hadronFlavour = 0;
-   subjetAK8_pruned_csv = 0;
+   //subjetAK8_softdrop_N = 0;
+   //subjetAK8_softdrop_pt = 0;
+   //subjetAK8_softdrop_eta = 0;
+   //subjetAK8_softdrop_mass = 0;
+   //subjetAK8_softdrop_phi = 0;
+   //subjetAK8_softdrop_e = 0;
+   //subjetAK8_softdrop_charge = 0;
+   //subjetAK8_softdrop_partonFlavour = 0;
+   //subjetAK8_softdrop_hadronFlavour = 0;
+   //subjetAK8_puppi_N = 0;
+   //subjetAK8_puppi_pt = 0;
+   //subjetAK8_puppi_eta = 0;
+   //subjetAK8_puppi_softdrop_mass = 0;
+   //subjetAK8_puppi_phi = 0;
+   //subjetAK8_puppi_e = 0;
+   //subjetAK8_puppi_charge = 0;
+   //subjetAK8_puppi_partonFlavour = 0;
+   //subjetAK8_puppi_hadronFlavour = 0;
+   //subjetAK8_puppi_csv = 0;
    genJetAK4_pt = 0;
    genJetAK4_eta = 0;
    genJetAK4_mass = 0;
@@ -844,7 +892,7 @@ void HbbGammaSelector::Init(TTree *tree)
    genJetAK8_mass = 0;
    genJetAK8_phi = 0;
    genJetAK8_e = 0;
-   genJetAK8_prunedmass = 0;
+   genJetAK8_puppi_softdropmass = 0;
    genJetAK8_softdropmass = 0;
    HLT_isFired = 0;
    METraw_et = 0;
@@ -982,31 +1030,45 @@ void HbbGammaSelector::Init(TTree *tree)
    fChain->SetBranchAddress("jetAK8_tau1", &jetAK8_tau1, &b_jetAK8_tau1);
    fChain->SetBranchAddress("jetAK8_tau2", &jetAK8_tau2, &b_jetAK8_tau2);
    fChain->SetBranchAddress("jetAK8_tau3", &jetAK8_tau3, &b_jetAK8_tau3);
-   fChain->SetBranchAddress("jetAK8_pruned_mass", &jetAK8_pruned_mass, &b_jetAK8_pruned_mass);
-   fChain->SetBranchAddress("jetAK8_pruned_massCorr", &jetAK8_pruned_massCorr, &b_jetAK8_pruned_massCorr);
-   fChain->SetBranchAddress("jetAK8_pruned_jec", &jetAK8_pruned_jec, &b_jetAK8_pruned_jec);
+   fChain->SetBranchAddress("jetAK8_puppi_pt", &jetAK8_puppi_pt, &b_jetAK8_puppi_pt);
+   fChain->SetBranchAddress("jetAK8_puppi_eta", &jetAK8_puppi_eta, &b_jetAK8_puppi_eta);
+   fChain->SetBranchAddress("jetAK8_puppi_phi", &jetAK8_puppi_phi, &b_jetAK8_puppi_phi);
+   fChain->SetBranchAddress("jetAK8_puppi_e", &jetAK8_puppi_e, &b_jetAK8_puppi_e);
+   fChain->SetBranchAddress("jetAK8_puppi_jec", &jetAK8_puppi_jec, &b_jetAK8_puppi_jec);
+   fChain->SetBranchAddress("jetAK8_puppi_partonFlavour", &jetAK8_puppi_partonFlavour, &b_jetAK8_puppi_partonFlavour);
+   fChain->SetBranchAddress("jetAK8_puppi_hadronFlavour", &jetAK8_puppi_hadronFlavour, &b_jetAK8_puppi_hadronFlavour);
+   fChain->SetBranchAddress("jetAK8_puppi_genParton_pdgID", &jetAK8_puppi_genParton_pdgID, &b_jetAK8_puppi_genParton_pdgID);
+   fChain->SetBranchAddress("jetAK8_puppi_nbHadrons", &jetAK8_puppi_nbHadrons, &b_jetAK8_puppi_nbHadrons);
+   fChain->SetBranchAddress("jetAK8_puppi_ncHadrons", &jetAK8_puppi_ncHadrons, &b_jetAK8_puppi_ncHadrons);
+   fChain->SetBranchAddress("jetAK8_puppi_csv", &jetAK8_puppi_csv, &b_jetAK8_puppi_csv);
+   fChain->SetBranchAddress("jetAK8_puppi_tau1", &jetAK8_puppi_tau1, &b_jetAK8_puppi_tau1);
+   fChain->SetBranchAddress("jetAK8_puppi_tau2", &jetAK8_puppi_tau2, &b_jetAK8_puppi_tau2);
+   fChain->SetBranchAddress("jetAK8_puppi_tau3", &jetAK8_puppi_tau3, &b_jetAK8_puppi_tau3);
+   fChain->SetBranchAddress("jetAK8_puppi_softdrop_mass", &jetAK8_puppi_softdrop_mass, &b_jetAK8_puppi_softdrop_mass);
+   fChain->SetBranchAddress("jetAK8_puppi_softdrop_massCorr", &jetAK8_puppi_softdrop_massCorr, &b_jetAK8_puppi_softdrop_massCorr);
+   fChain->SetBranchAddress("jetAK8_puppi_softdrop_jec", &jetAK8_puppi_softdrop_jec, &b_jetAK8_puppi_softdrop_jec);
    fChain->SetBranchAddress("jetAK8_softdrop_mass", &jetAK8_softdrop_mass, &b_jetAK8_softdrop_mass);
    fChain->SetBranchAddress("jetAK8_softdrop_massCorr", &jetAK8_softdrop_massCorr, &b_jetAK8_softdrop_massCorr);
    fChain->SetBranchAddress("jetAK8_softdrop_jec", &jetAK8_softdrop_jec, &b_jetAK8_softdrop_jec);
-   fChain->SetBranchAddress("subjetAK8_softdrop_N", &subjetAK8_softdrop_N, &b_subjetAK8_softdrop_N);
-   fChain->SetBranchAddress("subjetAK8_softdrop_pt", &subjetAK8_softdrop_pt, &b_subjetAK8_softdrop_pt);
-   fChain->SetBranchAddress("subjetAK8_softdrop_eta", &subjetAK8_softdrop_eta, &b_subjetAK8_softdrop_eta);
-   fChain->SetBranchAddress("subjetAK8_softdrop_mass", &subjetAK8_softdrop_mass, &b_subjetAK8_softdrop_mass);
-   fChain->SetBranchAddress("subjetAK8_softdrop_phi", &subjetAK8_softdrop_phi, &b_subjetAK8_softdrop_phi);
-   fChain->SetBranchAddress("subjetAK8_softdrop_e", &subjetAK8_softdrop_e, &b_subjetAK8_softdrop_e);
-   fChain->SetBranchAddress("subjetAK8_softdrop_charge", &subjetAK8_softdrop_charge, &b_subjetAK8_softdrop_charge);
-   fChain->SetBranchAddress("subjetAK8_softdrop_partonFlavour", &subjetAK8_softdrop_partonFlavour, &b_subjetAK8_softdrop_partonFlavour);
-   fChain->SetBranchAddress("subjetAK8_softdrop_hadronFlavour", &subjetAK8_softdrop_hadronFlavour, &b_subjetAK8_softdrop_hadronFlavour);
-   fChain->SetBranchAddress("subjetAK8_pruned_N", &subjetAK8_pruned_N, &b_subjetAK8_pruned_N);
-   fChain->SetBranchAddress("subjetAK8_pruned_pt", &subjetAK8_pruned_pt, &b_subjetAK8_pruned_pt);
-   fChain->SetBranchAddress("subjetAK8_pruned_eta", &subjetAK8_pruned_eta, &b_subjetAK8_pruned_eta);
-   fChain->SetBranchAddress("subjetAK8_pruned_mass", &subjetAK8_pruned_mass, &b_subjetAK8_pruned_mass);
-   fChain->SetBranchAddress("subjetAK8_pruned_phi", &subjetAK8_pruned_phi, &b_subjetAK8_pruned_phi);
-   fChain->SetBranchAddress("subjetAK8_pruned_e", &subjetAK8_pruned_e, &b_subjetAK8_pruned_e);
-   fChain->SetBranchAddress("subjetAK8_pruned_charge", &subjetAK8_pruned_charge, &b_subjetAK8_pruned_charge);
-   fChain->SetBranchAddress("subjetAK8_pruned_partonFlavour", &subjetAK8_pruned_partonFlavour, &b_subjetAK8_pruned_partonFlavour);
-   fChain->SetBranchAddress("subjetAK8_pruned_hadronFlavour", &subjetAK8_pruned_hadronFlavour, &b_subjetAK8_pruned_hadronFlavour);
-   fChain->SetBranchAddress("subjetAK8_pruned_csv", &subjetAK8_pruned_csv, &b_subjetAK8_pruned_csv);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_N", &subjetAK8_softdrop_N, &b_subjetAK8_softdrop_N);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_pt", &subjetAK8_softdrop_pt, &b_subjetAK8_softdrop_pt);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_eta", &subjetAK8_softdrop_eta, &b_subjetAK8_softdrop_eta);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_mass", &subjetAK8_softdrop_mass, &b_subjetAK8_softdrop_mass);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_phi", &subjetAK8_softdrop_phi, &b_subjetAK8_softdrop_phi);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_e", &subjetAK8_softdrop_e, &b_subjetAK8_softdrop_e);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_charge", &subjetAK8_softdrop_charge, &b_subjetAK8_softdrop_charge);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_partonFlavour", &subjetAK8_softdrop_partonFlavour, &b_subjetAK8_softdrop_partonFlavour);
+   //fChain->SetBranchAddress("subjetAK8_softdrop_hadronFlavour", &subjetAK8_softdrop_hadronFlavour, &b_subjetAK8_softdrop_hadronFlavour);
+   //fChain->SetBranchAddress("subjetAK8_puppi_N", &subjetAK8_puppi_softdrop_N, &b_subjetAK8_puppi_softdrop_N);
+   //fChain->SetBranchAddress("subjetAK8_puppi_pt", &subjetAK8_puppi_softdrop_pt, &b_subjetAK8_puppi_softdrop_pt);
+   //fChain->SetBranchAddress("subjetAK8_puppi_eta", &subjetAK8_puppi_eta, &b_subjetAK8_puppi_eta);
+   //fChain->SetBranchAddress("subjetAK8_puppi_softdrop_mass", &subjetAK8_puppi_softdrop_mass, &b_subjetAK8_puppi_softdrop_mass);
+   //fChain->SetBranchAddress("subjetAK8_puppi_phi", &subjetAK8_puppi_phi, &b_subjetAK8_puppi_phi);
+   //fChain->SetBranchAddress("subjetAK8_puppi_e", &subjetAK8_puppi_e, &b_subjetAK8_puppi_e);
+   //fChain->SetBranchAddress("subjetAK8_puppi_charge", &subjetAK8_puppi_charge, &b_subjetAK8_puppi_charge);
+   //fChain->SetBranchAddress("subjetAK8_puppi_partonFlavour", &subjetAK8_puppi_partonFlavour, &b_subjetAK8_puppi_partonFlavour);
+   //fChain->SetBranchAddress("subjetAK8_puppi_hadronFlavour", &subjetAK8_puppi_hadronFlavour, &b_subjetAK8_puppi_hadronFlavour);
+   //fChain->SetBranchAddress("subjetAK8_puppi_csv", &subjetAK8_puppi_csv, &b_subjetAK8_puppi_csv);
    fChain->SetBranchAddress("genJetAK4_N", &genJetAK4_N, &b_genJetAK4_N);
    fChain->SetBranchAddress("genJetAK4_pt", &genJetAK4_pt, &b_genJetAK4_pt);
    fChain->SetBranchAddress("genJetAK4_eta", &genJetAK4_eta, &b_genJetAK4_eta);
@@ -1022,8 +1084,6 @@ void HbbGammaSelector::Init(TTree *tree)
    fChain->SetBranchAddress("genJetAK8_mass", &genJetAK8_mass, &b_genJetAK8_mass);
    fChain->SetBranchAddress("genJetAK8_phi", &genJetAK8_phi, &b_genJetAK8_phi);
    fChain->SetBranchAddress("genJetAK8_e", &genJetAK8_e, &b_genJetAK8_e);
-   fChain->SetBranchAddress("genJetAK8_prunedmass", &genJetAK8_prunedmass, &b_genJetAK8_prunedmass);
-   fChain->SetBranchAddress("genJetAK8_softdropmass", &genJetAK8_softdropmass, &b_genJetAK8_softdropmass);
    fChain->SetBranchAddress("HLT_isFired", &HLT_isFired, &b_HLT_isFired);
    fChain->SetBranchAddress("passFilter_HBHE", &passFilter_HBHE, &b_passFilter_HBHE_);
    fChain->SetBranchAddress("passFilter_HBHELoose", &passFilter_HBHELoose, &b_passFilter_HBHELoose_);

@@ -23,15 +23,15 @@ def getHiggsRangesDict():
   rangesDict["btagSF"]                       = [[0.0, 1.0]]
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]           = [[-1. , 1.]]
-  rangesDict["%sJet_pruned_abseta"%label]    = [[0., 3.]]
+  rangesDict["%sJet_puppi_softdrop_abseta"%label]=[[0., 3]]
   rangesDict["%sJet_pruned_eta"%label]       = [[-3., 3.]]
   rangesDict["%sJet_pruned_phi"%label]       = [[-3.5, 3.5]]
   rangesDict["%sJet_pruned_pt"%label]        = [[0., 4000.]]
   rangesDict["%sJett2t1"%label]              = [[0.0, 1.0]]
   #rangesDict["%sPrunedJetCorrMass"%label]    = [[0.,200.], [0.,1000.]]
-  rangesDict["%sPrunedJetCorrMass"%label]    = [[0.,1000.]]
+  rangesDict["%sPuppi_softdropJetCorrMass"%label]=[[0,200]]
   rangesDict["phJetDeltaR_%s"%label]         = [[0.,6.]]
-  rangesDict["phJetInvMass_pruned_%s"%label] = [[0.,4000.]]
+  rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[[0,4000]]
   return rangesDict
 
 ## this is for making stackplots from the ddTrees
@@ -52,11 +52,11 @@ def getHiggsRangesDict():
 #  rangesDict["leadingPhAbsEta"]=[0.,2.5]
 #  rangesDict["leadingPhEta"]=[-2.8,2.8]
 #  rangesDict["%sJet_HbbTag"%label]=[-1. , 1.]
-#  rangesDict["%sJet_pruned_abseta"%label]=[0., 3]
+#  rangesDict["%sJet_puppi_softdrop_abseta"%label]=[0., 3]
 #  rangesDict["%sJett2t1"%label]=[0, 1]
-#  rangesDict["%sPrunedJetCorrMass"%label]=[0, 4000]
+#  rangesDict["%sPuppi_softdropJetCorrMass"%label]=[0, 4000]
 #  rangesDict["phJetDeltaR_%s"%label]=[0,6]
-#  rangesDict["phJetInvMass_pruned_%s"%label]=[0,4000]
+#  rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[0,4000]
 #  return rangesDict
 
 def getRangesDict():
