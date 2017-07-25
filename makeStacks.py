@@ -62,7 +62,7 @@ showSigs = options.showSigs
 addLines = options.addLines
 useScaleFactors = options.useScaleFactors
 for withBtag in [options.withBtag]:
-  print "withBtag is %r" % withBtag
+  #print "withBtag is %r" % withBtag
   printNonempties = False
   printFileNames  = False
 
@@ -80,8 +80,8 @@ for withBtag in [options.withBtag]:
 
   higgsRangesDict = getHiggsRangesDict()
   #print ""
-  #print "getHiggsRangesDict:"
-  #print higgsRangesDict
+  print "getHiggsRangesDict:"
+  print higgsRangesDict
 
   #for sideband in ['100110','5070']:
   #  SidebandRangesDict = getSidebandRangesDict(sideband)
@@ -130,219 +130,236 @@ for withBtag in [options.withBtag]:
     if "antibtag" in cutName and not useScaleFactors:
       for varkey in higgsRangesDict.keys():
         if "SF" in varkey:
-          print "about to get rid of ", varkey, "from the higgsRangesDict"
+          #print "about to get rid of ", varkey, "from the higgsRangesDict"
           higgsRangesDict.pop(varkey)
     for varkey in higgsRangesDict.keys():
-      print "varkey is", varkey
-      cans.append(TCanvas())
-      pads.append(TPad("stack_%s_%s"%(cutName, varkey), "stack_%s_%s"%(cutName, varkey), 0, 0.3, 1, 1.0))
-      cans[-1].cd()
-      pads[-1].Draw()
-      pads[-1].cd()
+      iRange = 1
+      first = True
+      for rng in higgsRangesDict[varkey]:
+        print "working on range", rng, "for varkey", varkey
+        indexLabel = ""
+        if not first:
+          indexLabel +="_%i" % iRange
+        cans.append(TCanvas())
+        pads.append(TPad("stack_%s_%s%s"%(cutName, varkey, indexLabel), "stack_%s_%s%s"%(cutName, varkey, indexLabel), 0, 0.3, 1, 1.0))
+        cans[-1].cd()
+        pads[-1].Draw()
+        pads[-1].cd()
 
-      #### Build the stackplot
-      thstacks.append(THStack("thstack_%s_%s"%(cutName, varkey),""))
-      thstackCopies.append(THStack("thstackCopy_%s_%s"%(cutName, varkey),""))
-      integralsDict={}
-      namesDict={}
-      for filekey in mcBgWeights.keys():
-        filename = varkey+"_"+treekey+"_"+filekey
-        if printNonempties:
-          print "The nonempty files dict is:"
-          print nonEmptyFilesDict
-        dirName = "weightedMCbgHists_%s" % cutName
-        if cutName in "nMinus1":
-          if withBtag:
-            dirName += "_withBtag"
-          else:
-            dirName += "_noBtag"
-        #if sideband:
-        #  dirName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
-        if useScaleFactors:
-          dirName += "_SF"
-        thisFileName = "%s/%s" % (dirName, filename)
-        print "going to use the MC background hist from file %s in building THStack " % thisFileName
-        #HACKHACKHACK:
-        if nonEmptyFilesDict[thisFileName] == "nonempty" and path.exists(thisFileName):
-          #if printFileNames:
-          #  print thisFileName
-          #print "tfiles.append(TFile(path.join(", histsDir " ,", filename, ")))"
-          #tfiles.append(TFile(path.join(histsDir , filename)))
-          tfiles.append(TFile(thisFileName))
-          #print "tfiles[-1]:", tfiles[-1].GetName()
-          hists.append(tfiles[-1].Get("hist_%s" % filename))
-          hists[-1].SetFillColor(getMCbgColors()[filekey])
-          drawInNewCanvas(hists[-1], "HIST")
-          integralsDict[hists[-1].Integral()] = hists[-1] 
-          namesDict[hists[-1].GetName()] = hists[-1]
-      for mcBG in getMCbgOrderedList():
-        for key in namesDict:
-          if mcBG in key:
-            #print "adding %s to stackplot; it has integral %f" % (integralsDict[key], key)
-            thstacks[-1].Add(namesDict[key])
-            thstackCopies[-1].Add(namesDict[key])
-
-      #### Get the signal histograms
-      
-
-      if cutName in "nMinus1":
-        if withBtag:
-          outDirName = "stackplots_%s_withBtag" % cutName
-        else:
-          outDirName = "stackplots_%s_noBtag" % cutName
-      else:
-        outDirName = "stackplots_%s" % cutName
-      if sideband:
-        outDirName +="_sideband%i%i" %(windowEdges[0], windowEdges[1])
-      if useScaleFactors:
-        outDirName += "_SF"
-      if not path.exists(outDirName):
-        makedirs(outDirName)
-      outfileName = "%s/%s_stack_%s.root"%(outDirName, cutName, varkey)
-      outfile=TFile(outfileName, "RECREATE")
-      cans[-1].cd()
-      pads[-1].Draw()
-      if not "SF" in varkey:
-        pads[-1].SetLogy()
-      pads[-1].cd()
-      thstacks[-1].Draw("hist")
-      thstacks[-1].SetMinimum(0.08)
-      thstacks[-1].SetMaximum(thstacks[-1].GetMaximum()*45)
-      #print thstacks[-1]
-      if varkey in varDict.keys():
-        #print "going to set title for thstacks[-1] to %s " % varkey
-        thstacks[-1].GetXaxis().SetTitle(varDict[varkey])
-      thstacks[-1].GetYaxis().SetTitle("Events/%g"%thstacks[-1].GetXaxis().GetBinWidth(1))
-      thstacks[-1].GetYaxis().SetLabelSize(0.04)
-      thstacks[-1].GetYaxis().SetTitleSize(0.04)
-      thstacks[-1].GetYaxis().SetTitleOffset(1.2)
-
-      dataFileName = varkey+"_"+treekey+"_data2016SinglePhoton.root"
-      dName = "weightedMCbgHists_%s" % cutName
-      if cutName in "nMinus1":
-        if withBtag:
-          dName += "_withBtag"
-        else:
-          dName += "_noBtag"
-      if sideband:
-        dName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
-      datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
-      print "going to use data file",  datafiles[-1].GetName(), "for the plot"
-      datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
-      #print datahists[-1]
-      if not blindData:
-        datahists[-1].Draw("PE SAME")
-      datahists[-1].SetMarkerStyle(20)
-      datahistsCopies.append(datahists[-1].Clone())
-      #for sigMass in [650, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000]:
-      if showSigs:
-        colors={}
-        colors[750]=kCyan-6
-        colors[1000]=kOrange
-        colors[2050]=kMagenta
-        colors[3250]=kRed
-        for sigMass in [750, 1000, 2050, 3250]:
-          sigFileName = varkey+"_"+treekey+"_sig_m%i.root"%sigMass
-          rName = "weightedMCbgHists_%s" % cutName
+        #### Build the stackplot
+        thstacks.append(THStack("thstack_%s_%s%s"%(cutName, varkey, indexLabel),""))
+        thstackCopies.append(THStack("thstackCopy_%s_%s%s"%(cutName, varkey, indexLabel),""))
+        integralsDict={}
+        namesDict={}
+        for filekey in mcBgWeights.keys():
+          filenameDefault = varkey+"_"+treekey+"_"+filekey
+          filename = varkey+"_"+treekey+"_"+filekey.replace(".root", "%s.root"%indexLabel)
+          if printNonempties:
+            print "The nonempty files dict is:"
+            print nonEmptyFilesDict
+          dirName = "weightedMCbgHists_%s" % cutName
           if cutName in "nMinus1":
             if withBtag:
-              rName += "_withBtag"
+              dirName += "_withBtag"
             else:
-              rName += "_noBtag"
+              dirName += "_noBtag"
           #if sideband:
-          #  rName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
+          #  dirName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
           if useScaleFactors:
-            rName += "_SF"
-          outDirName = "stackplots_%s" % rName
-          sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
-          print "adding signal file", sigfiles[-1].GetName(), "to the plot"
-          sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
-          sighists[-1].SetLineStyle(3)
-          sighists[-1].SetLineWidth(2)
-          sighists[-1].SetLineColor(colors[sigMass])
-          sighists[-1].SetTitle("H#gamma(%r TeV)"%(sigMass/float(1000)))
-          sighists[-1].SetMarkerSize(0)
-          sighists[-1].Draw("hist SAME")
+            dirName += "_SF"
+          thisFileName = "%s/%s" % (dirName, filename)
+          thisFileNameDefault = "%s/%s" % (dirName, filenameDefault)
+          print "going to use the MC background hist from file %s in building THStack " % thisFileName
+          #HACKHACKHACK:
+          if nonEmptyFilesDict[thisFileNameDefault] == "nonempty" and path.exists(thisFileName):
+            #if printFileNames:
+            #  print thisFileName
+            #print "tfiles.append(TFile(path.join(", histsDir " ,", filename, ")))"
+            #tfiles.append(TFile(path.join(histsDir , filename)))
+            tfiles.append(TFile(thisFileName))
+            #print "tfiles[-1]:", tfiles[-1].GetName()
+            hists.append(tfiles[-1].Get("hist_%s" % filename))
+            hists[-1].SetFillColor(getMCbgColors()[filekey])
+            drawInNewCanvas(hists[-1], "HIST")
+            integralsDict[hists[-1].Integral()] = hists[-1] 
+            namesDict[hists[-1].GetName()] = hists[-1]
+        for mcBG in getMCbgOrderedList():
+          for key in namesDict:
+            print "key", key
+            print "namesDict[key]", namesDict[key]
+            if mcBG in key:
+              print "mcBG found in namesDict[key]"
+              #print "adding %s to stackplot; it has integral %f" % (integralsDict[key], key)
+              thstacks[-1].Add(namesDict[key])
+              thstackCopies[-1].Add(namesDict[key])
 
-      pads[-1].SetBottomMargin(0)
-      pads[-1].BuildLegend()
-      cans[-1].cd()
-      pads[-1].Draw()
+        #### Get the signal histograms
+        
 
-      TDRify(pads[-1], False, "cpad_%s_%s"%(rName, sigFileName))
-      for prim in pads[-1].GetListOfPrimitives():
-        if "TLegend" in prim.IsA().GetName():
-          prim.SetX1NDC(0.753)
-          prim.SetY1NDC(0.703)
-          prim.SetX2NDC(0.946)
-          prim.SetY2NDC(0.911)
-          for subprim in prim.GetListOfPrimitives():
-            #print "subprim has label:", subprim.GetLabel()
-            for key in legendLabels:
-              if key in subprim.GetLabel():
-                subprim.SetLabel(legendLabels[key])
-                subprim.SetOption("lf")
-              elif "SinglePhoton" in subprim.GetLabel():
-                #print "found something named SinglePhoton"
-                subprim.SetLabel("data")
-                subprim.SetOption("pe")
-
-      pads.append(TPad("ratio_%s_%s"%(cutName, varkey), "ratio_%s_%s"%(cutName, varkey), 0, 0.05, 1, 0.3))
-      pads[-1].SetTopMargin(0)
-      pads[-1].SetBottomMargin(0.15)
-      pads[-1].cd()
-
-      fullStack = thstackCopies[-1].GetStack().Last()
-      fullStack.Sumw2()
-      if varkey in varDict.keys():
-        fullStack.GetXaxis().SetTitle(varDict[varkey])
-      ### HEREHERE
-      if sideband:
-        sbScale = fullStack.GetSumOfWeights()/datahists[-1].GetSumOfWeights()
-        for iBin in range(0, datahists[-1].GetNbinsX()):
-          print "sbScale", sbScale 
-          print "old bin content", datahists[-1].GetBinContent(iBin)
-          print "new bin content", datahists[-1].GetBinContent(iBin)*sbScale
-          datahists[-1].SetBinContent(iBin, datahists[-1].GetBinContent(iBin)*sbScale)
-          datahistsCopies[-1].SetBinContent(iBin, datahistsCopies[-1].GetBinContent(iBin)*sbScale)
-      pads[-2].Update()
-      pads[-1].Update()
-      ### HEREHERE
-      fullStack.GetXaxis().SetLabelSize(0.10)
-      fullStack.GetXaxis().SetTitleSize(0.13)
-      fullStack.GetXaxis().SetTitleOffset(2)
-      gStyle.SetOptStat(0)
-      datahistsCopies[-1].Sumw2()
-      datahistsCopies[-1].Divide(fullStack)
-      datahistsCopies[-1].Draw("PE")
-      if addLines:
-        lines.append(TLine(fullStack.GetXaxis().GetBinLowEdge(1) , 1, fullStack.GetXaxis().GetBinUpEdge(fullStack.GetXaxis().GetNbins()) ,1))
-        lines[-1].SetLineStyle(2)
-        lines[-1].Draw("SAME")
-      datahistsCopies[-1].SetTitle("")
-      datahistsCopies[-1].GetYaxis().SetRangeUser(0,2)
-      datahistsCopies[-1].SetLineColor(kBlack)
-      datahistsCopies[-1].SetStats(kFALSE)
-      datahistsCopies[-1].GetXaxis().SetLabelSize(0.10)
-      datahistsCopies[-1].GetXaxis().SetTitleSize(0.13)
-      datahistsCopies[-1].GetXaxis().SetTitleOffset(2)
-
-      pads[-1].cd()
-      gStyle.SetOptStat(0)
-      cans[-1].cd()
-      if not blindData:
+        if cutName in "nMinus1":
+          if withBtag:
+            outDirName = "stackplots_%s_withBtag" % cutName
+          else:
+            outDirName = "stackplots_%s_noBtag" % cutName
+        else:
+          outDirName = "stackplots_%s" % cutName
+        if sideband:
+          outDirName +="_sideband%i%i" %(windowEdges[0], windowEdges[1])
+        if useScaleFactors:
+          outDirName += "_SF"
+        if not path.exists(outDirName):
+          makedirs(outDirName)
+        outfileName = "%s/%s_stack_%s%s.root"%(outDirName, cutName, varkey, indexLabel)
+        outfile=TFile(outfileName, "RECREATE")
+        cans[-1].cd()
         pads[-1].Draw()
-      #for prim in pads[-1].GetListOfPrimitives():
-      #  if "Text" in prim.IsA().GetName():
-      #    prim.Delete()
-      #  if "Stats" in prim.IsA().GetName():
-      #    prim.Delete()
-      datahistsCopies[-1].GetYaxis().SetTitle("data/MC")
-      datahistsCopies[-1].GetYaxis().SetTitleSize(0.13)
-      datahistsCopies[-1].GetYaxis().SetTitleOffset(0.24)
-      datahistsCopies[-1].GetYaxis().SetLabelSize(0.08)
-      #TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
-      outfile.cd()
-      cans[-1].Write()
-      outfile.Close()
+        if not "SF" in varkey:
+          pads[-1].SetLogy()
+        pads[-1].cd()
+        thstacks[-1].Draw("hist")
+        thstacks[-1].SetMinimum(0.08)
+        thstacks[-1].SetMaximum(thstacks[-1].GetMaximum()*45)
+        #print thstacks[-1]
+        if varkey in varDict.keys():
+          #print "going to set title for thstacks[-1] to %s " % varkey
+          print "varkey:", varkey
+          print "varDict:", varDict
+          print "varDict[varkey]:", varDict[varkey]
+          print thstacks[-1].GetXaxis()
+          thstacks[-1].GetXaxis().SetTitle(varDict[varkey])
+        thstacks[-1].GetYaxis().SetTitle("Events/%g"%thstacks[-1].GetXaxis().GetBinWidth(1))
+        thstacks[-1].GetYaxis().SetLabelSize(0.04)
+        thstacks[-1].GetYaxis().SetTitleSize(0.04)
+        thstacks[-1].GetYaxis().SetTitleOffset(1.2)
+
+        dataFileName = varkey+"_"+treekey+"_data2016SinglePhoton%s.root" % indexLabel
+        dName = "weightedMCbgHists_%s" % cutName
+        if cutName in "nMinus1":
+          if withBtag:
+            dName += "_withBtag"
+          else:
+            dName += "_noBtag"
+        if sideband:
+          dName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
+        datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
+        print "going to use data file",  datafiles[-1].GetName(), "for the plot"
+        datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
+        #print datahists[-1]
+        if not blindData:
+          datahists[-1].Draw("PE SAME")
+        datahists[-1].SetMarkerStyle(20)
+        datahistsCopies.append(datahists[-1].Clone())
+        #for sigMass in [650, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000]:
+        if showSigs:
+          colors={}
+          colors[750]=kCyan-6
+          colors[1000]=kOrange
+          colors[2050]=kMagenta
+          colors[3250]=kRed
+          for sigMass in [750, 1000, 2050, 3250]:
+            sigFileName = varkey+"_"+treekey+"_sig_m%i%s.root"%(sigMass, indexLabel)
+            rName = "weightedMCbgHists_%s" % cutName
+            if cutName in "nMinus1":
+              if withBtag:
+                rName += "_withBtag"
+              else:
+                rName += "_noBtag"
+            #if sideband:
+            #  rName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
+            if useScaleFactors:
+              rName += "_SF"
+            outDirName = "stackplots_%s" % rName
+            sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
+            print "adding signal file", sigfiles[-1].GetName(), "to the plot"
+            sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
+            sighists[-1].SetLineStyle(3)
+            sighists[-1].SetLineWidth(2)
+            sighists[-1].SetLineColor(colors[sigMass])
+            sighists[-1].SetTitle("H#gamma(%r TeV)"%(sigMass/float(1000)))
+            sighists[-1].SetMarkerSize(0)
+            sighists[-1].Draw("hist SAME")
+
+        pads[-1].SetBottomMargin(0)
+        pads[-1].BuildLegend()
+        cans[-1].cd()
+        pads[-1].Draw()
+
+        TDRify(pads[-1], False, "cpad_%s_%s"%(rName, sigFileName))
+        for prim in pads[-1].GetListOfPrimitives():
+          if "TLegend" in prim.IsA().GetName():
+            prim.SetX1NDC(0.753)
+            prim.SetY1NDC(0.703)
+            prim.SetX2NDC(0.946)
+            prim.SetY2NDC(0.911)
+            for subprim in prim.GetListOfPrimitives():
+              #print "subprim has label:", subprim.GetLabel()
+              for key in legendLabels:
+                if key in subprim.GetLabel():
+                  subprim.SetLabel(legendLabels[key])
+                  subprim.SetOption("lf")
+                elif "SinglePhoton" in subprim.GetLabel():
+                  #print "found something named SinglePhoton"
+                  subprim.SetLabel("data")
+                  subprim.SetOption("pe")
+
+        pads.append(TPad("ratio_%s_%s%s"%(cutName, varkey, indexLabel), "ratio_%s_%s%s"%(cutName, varkey, indexLabel), 0, 0.05, 1, 0.3))
+        pads[-1].SetTopMargin(0)
+        pads[-1].SetBottomMargin(0.15)
+        pads[-1].cd()
+
+        fullStack = thstackCopies[-1].GetStack().Last()
+        fullStack.Sumw2()
+        if varkey in varDict.keys():
+          fullStack.GetXaxis().SetTitle(varDict[varkey])
+        ### HEREHERE
+        if sideband:
+          sbScale = fullStack.GetSumOfWeights()/datahists[-1].GetSumOfWeights()
+          for iBin in range(0, datahists[-1].GetNbinsX()):
+            #print "sbScale", sbScale 
+            #print "old bin content", datahists[-1].GetBinContent(iBin)
+            #print "new bin content", datahists[-1].GetBinContent(iBin)*sbScale
+            datahists[-1].SetBinContent(iBin, datahists[-1].GetBinContent(iBin)*sbScale)
+            datahistsCopies[-1].SetBinContent(iBin, datahistsCopies[-1].GetBinContent(iBin)*sbScale)
+        pads[-2].Update()
+        pads[-1].Update()
+        ### HEREHERE
+        fullStack.GetXaxis().SetLabelSize(0.10)
+        fullStack.GetXaxis().SetTitleSize(0.13)
+        fullStack.GetXaxis().SetTitleOffset(2)
+        gStyle.SetOptStat(0)
+        datahistsCopies[-1].Sumw2()
+        datahistsCopies[-1].Divide(fullStack)
+        datahistsCopies[-1].Draw("PE")
+        if addLines:
+          lines.append(TLine(fullStack.GetXaxis().GetBinLowEdge(1) , 1, fullStack.GetXaxis().GetBinUpEdge(fullStack.GetXaxis().GetNbins()) ,1))
+          lines[-1].SetLineStyle(2)
+          lines[-1].Draw("SAME")
+        datahistsCopies[-1].SetTitle("")
+        datahistsCopies[-1].GetYaxis().SetRangeUser(0,2)
+        datahistsCopies[-1].SetLineColor(kBlack)
+        datahistsCopies[-1].SetStats(kFALSE)
+        datahistsCopies[-1].GetXaxis().SetLabelSize(0.10)
+        datahistsCopies[-1].GetXaxis().SetTitleSize(0.13)
+        datahistsCopies[-1].GetXaxis().SetTitleOffset(2)
+
+        pads[-1].cd()
+        gStyle.SetOptStat(0)
+        cans[-1].cd()
+        if not blindData:
+          pads[-1].Draw()
+        #for prim in pads[-1].GetListOfPrimitives():
+        #  if "Text" in prim.IsA().GetName():
+        #    prim.Delete()
+        #  if "Stats" in prim.IsA().GetName():
+        #    prim.Delete()
+        datahistsCopies[-1].GetYaxis().SetTitle("data/MC")
+        datahistsCopies[-1].GetYaxis().SetTitleSize(0.13)
+        datahistsCopies[-1].GetYaxis().SetTitleOffset(0.24)
+        datahistsCopies[-1].GetYaxis().SetLabelSize(0.08)
+        #TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
+        outfile.cd()
+        cans[-1].Write()
+        outfile.Close()
+        iRange += 1
+        first = False
 

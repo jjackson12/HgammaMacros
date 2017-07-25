@@ -1,20 +1,17 @@
 from os import listdir, makedirs
 from os.path import isfile, join, exists, basename
+from shutil import rmtree
 from optparse import OptionParser
 
 
 parser = OptionParser()
 parser.add_option("-i", "--inDir", dest="inDir",
                   help = "the input directory")
-parser.add_option("-o", "--outDir", dest="outDir", 
-                  help = "the output directory")
 parser.add_option("-b", action="store_true", dest="batch", default=False, 
                   help = "turn on batch mode")
 (options, args) = parser.parse_args()
 if options.inDir is None:  
     parser.error('Input dir not given')
-if options.outDir is None:  
-    parser.error('Output dir not given')
 
 from tcanvasTDR import TDRify
 from ROOT import *
@@ -32,15 +29,16 @@ outCans = {}
 for inFile in inFiles:
   for key in inFile.GetListOfKeys():
     print key
-  fileObj = inFile.Get(key.GetName())
-  if fileObj.IsA().GetName() == "TCanvas":
-    outCans[inFile.GetName()]=fileObj
+    fileObj = inFile.Get(key.GetName())
+    print fileObj 
+    if fileObj.IsA().GetName() == "TCanvas":
+      outCans[inFile.GetName()]=fileObj
 
-if not exists(options.outDir):
-  makedirs(options.outDir)
+if exists("pdf_tdr_%s" % options.inDir):
+  rmtree("pdf_tdr_%s" % options.inDir)
+makedirs("pdf_tdr_%s" % options.inDir)
+
 
 for canKey in outCans.keys():
   outName = "%s.pdf"%basename(canKey).replace(".root","")
-  outCans[canKey].Print(join(options.outDir, outName))
-
-
+  outCans[canKey].Print(join("pdf_tdr_%s" % options.inDir, outName))
