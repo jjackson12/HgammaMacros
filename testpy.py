@@ -29,7 +29,7 @@ def getHiggsRangesDict():
   rangesDict["%sJet_puppi_pt"%label]        = [[0., 4000.]]
   rangesDict["%sJett2t1"%label]              = [[0.0, 1.0]]
   #rangesDict["%sPrunedJetCorrMass"%label]    = [[0.,200.], [0.,1000.]]
-  rangesDict["%sPuppi_softdropJetCorrMass"%label]=[[0,200]]
+  rangesDict["%sPuppi_softdropJetCorrMass"%label]=[[50.,150.]]
   rangesDict["phJetDeltaR_%s"%label]         = [[0.,6.]]
   rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[[0,4000]]
   return rangesDict
