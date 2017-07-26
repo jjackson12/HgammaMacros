@@ -63,10 +63,10 @@ void HgammaSelector::Loop(string outputFileName) {
   outputTreeHiggs->Branch("leadingPhAbsEta", &leadingPhAbsEta);
   outputTreeHiggs->Branch("phJetInvMass_puppi_softdrop_higgs", &phJetInvMass_puppi_softdrop_higgs);
   outputTreeHiggs->Branch("phJetDeltaR_higgs", &phJetDeltaR_higgs);
-  outputTreeHiggs->Branch("higgsJet_puppi_softdrop_abseta", &higgsJet_puppi_softdrop_abseta);
-  outputTreeHiggs->Branch("higgsJet_puppi_softdrop_eta", &higgsJet_puppi_softdrop_eta);
-  outputTreeHiggs->Branch("higgsJet_puppi_softdrop_phi", &higgsJet_puppi_softdrop_phi);
-  outputTreeHiggs->Branch("higgsJet_puppi_softdrop_pt", &higgsJet_puppi_softdrop_pt);
+  outputTreeHiggs->Branch("higgsJet_puppi_abseta", &higgsJet_puppi_abseta);
+  outputTreeHiggs->Branch("higgsJet_puppi_eta", &higgsJet_puppi_eta);
+  outputTreeHiggs->Branch("higgsJet_puppi_phi", &higgsJet_puppi_phi);
+  outputTreeHiggs->Branch("higgsJet_puppi_pt", &higgsJet_puppi_pt);
   outputTreeHiggs->Branch("higgsPuppi_softdropJetCorrMass", &higgsPuppi_softdropJetCorrMass);
   outputTreeHiggs->Branch("triggerFired_165HE10", &triggerFired_165HE10);
   outputTreeHiggs->Branch("triggerFired_175", &triggerFired_175);
@@ -128,17 +128,17 @@ void HgammaSelector::Loop(string outputFileName) {
     leadingPhE                       = 0.    ;
     puppi_softdrop_higgsJetTau1              = -999. ;
     puppi_softdrop_higgsJetTau2              = -999. ;
-    puppi_softdrop_higgsJetTau3              = -999. ;
+    //puppi_softdrop_higgsJetTau3              = -999. ;
 
     // final output variables
     leadingPhPt                      = 0.    ;
     leadingPhEta                     = -999  ;
     leadingPhPhi                     = -999  ;
     leadingPhAbsEta                  = -999. ;
-    higgsJet_puppi_softdrop_abseta           = -999. ;
-    higgsJet_puppi_softdrop_eta              = -999. ;
-    higgsJet_puppi_softdrop_phi              = -999. ;
-    higgsJet_puppi_softdrop_pt               = -999. ;
+    higgsJet_puppi_abseta           = -999. ;
+    higgsJet_puppi_eta              = -999. ;
+    higgsJet_puppi_phi              = -999. ;
+    higgsJet_puppi_pt               = -999. ;
     higgsPuppi_softdropJetCorrMass           = -999. ;
     higgsJet_HbbTag                  = -999. ;
     cosThetaStar                     =  -99. ; 
@@ -268,10 +268,10 @@ void HgammaSelector::Loop(string outputFileName) {
         boostedJet.Boost(-(sumVector.BoostVector()));
         cosThetaStar = std::abs(boostedPho.Pz()/boostedPho.P());
         phPtOverMgammaj = leadingPhPt/sumVector.M();
-        higgsJet_puppi_softdrop_abseta=std::abs(higgsJet_puppi_softdrop.Eta());
-        higgsJet_puppi_softdrop_eta=higgsJet_puppi_softdrop.Eta();
-        higgsJet_puppi_softdrop_phi=higgsJet_puppi_softdrop.Phi();
-        higgsJet_puppi_softdrop_pt=higgsJet_puppi_softdrop.Pt();
+        higgsJet_puppi_abseta=std::abs(higgsJet_puppi_softdrop.Eta());
+        higgsJet_puppi_eta=higgsJet_puppi_softdrop.Eta();
+        higgsJet_puppi_phi=higgsJet_puppi_softdrop.Phi();
+        higgsJet_puppi_pt=higgsJet_puppi_softdrop.Pt();
         leadingPhAbsEta = std::abs(leadingPhEta);
         phJetInvMass_puppi_softdrop_higgs=sumVector.M();
         phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_puppi_softdrop);

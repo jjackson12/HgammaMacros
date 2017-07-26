@@ -23,10 +23,10 @@ def getHiggsRangesDict():
   rangesDict["btagSF"]                       = [[0.0, 1.0]]
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]           = [[-1. , 1.]]
-  rangesDict["%sJet_puppi_softdrop_abseta"%label]=[[0., 3]]
-  rangesDict["%sJet_pruned_eta"%label]       = [[-3., 3.]]
-  rangesDict["%sJet_pruned_phi"%label]       = [[-3.5, 3.5]]
-  rangesDict["%sJet_pruned_pt"%label]        = [[0., 4000.]]
+  rangesDict["%sJet_puppi_abseta"%label]=[[0., 3]]
+  rangesDict["%sJet_puppi_eta"%label]       = [[-3., 3.]]
+  rangesDict["%sJet_puppi_phi"%label]       = [[-3.5, 3.5]]
+  rangesDict["%sJet_puppi_pt"%label]        = [[0., 4000.]]
   rangesDict["%sJett2t1"%label]              = [[0.0, 1.0]]
   #rangesDict["%sPrunedJetCorrMass"%label]    = [[0.,200.], [0.,1000.]]
   rangesDict["%sPuppi_softdropJetCorrMass"%label]=[[0,200]]
@@ -139,7 +139,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
             exit(1)
           if useTrigger:
             cut += makeTrigger()
-          #print "cut is now", cut
+          print "cut is now", cut
             
           #if cutName is "preselection":
           #  nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)

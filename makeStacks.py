@@ -112,13 +112,13 @@ for withBtag in [options.withBtag]:
     nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors, windowEdges)
     #print "done making all histograms."
     thstacks=[]
-    #thstackCopies=[]
+    thstackCopies=[]
     cans=[]
     pads=[]
     hists=[]
     tfiles=[]
-    #datahists=[]
-    #datahistsCopies=[]
+    datahists=[]
+    datahistsCopies=[]
     datafiles=[]
     sighists=[]
     sigfiles=[]
@@ -198,11 +198,11 @@ for withBtag in [options.withBtag]:
 
         if cutName in "nMinus1":
           if withBtag:
-            outDirName = "stackplots_%s_withBtag" % cutName
+            outDirName = "stackplots_puppiSoftdrop_%s_withBtag" % cutName
           else:
-            outDirName = "stackplots_%s_noBtag" % cutName
+            outDirName = "stackplots_puppiSoftdrop_%s_noBtag" % cutName
         else:
-          outDirName = "stackplots_%s" % cutName
+          outDirName = "stackplots_puppiSoftdrop_%s" % cutName
         if sideband:
           outDirName +="_sideband%i%i" %(windowEdges[0], windowEdges[1])
         if useScaleFactors:
@@ -268,7 +268,7 @@ for withBtag in [options.withBtag]:
             #  rName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
             if useScaleFactors:
               rName += "_SF"
-            outDirName = "stackplots_%s" % rName
+            outDirName = "stackplots_puppiSoftdrop_%s" % rName
             sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
             print "adding signal file", sigfiles[-1].GetName(), "to the plot"
             sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
