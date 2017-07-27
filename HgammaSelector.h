@@ -52,38 +52,43 @@ public :
   float leadingJetM                      =    0. ;
   float leadingJetPrunedM                =    0. ; 
   float leadingJetSoftdropM              =    0. ;
-  //float HT                               =    0. ;
-  //float HT_ak4                           =    0. ;
+  //float HT                             =    0. ;
+  //float HT_ak4                         =    0. ;
   float leadingJetTau1                   = -999. ;
-  float higgsPrunedJetCorrMass    = -999. ;
-  float higgsJet_HbbTag    = -999. ;
-  //float test_looseloose    = -1. ;
-  //bool higgs_looseloose   = false;
-  float higgsSoftdropJetCorrMass  = -999. ;
-  float pruned_higgsJetTau1       = -999. ;
+  float higgsPrunedJetCorrMass           = -999. ;
+  float higgsJet_HbbTag                  = -999. ;
+  //float test_looseloose                = -1.   ;
+  //bool higgs_looseloose                = false ;
+  float higgsSoftdropJetCorrMass    = -999. ;
+  float pruned_higgsJetTau1         = -999. ;
   float leadingJetTau2              = -999. ;
-  float pruned_higgsJetTau2       = -999. ;
-  float softdrop_higgsJetTau2     = -999. ;
+  float pruned_higgsJetTau2         = -999. ;
+  float softdrop_higgsJetTau2       = -999. ;
   float leadingJetTau3              = -999. ;
-  float pruned_higgsJetTau3       = -999. ;
+  float pruned_higgsJetTau3         = -999. ;
   float leadingPhPt                 =    0. ;
   float leadingPhEta                =    0. ;
   float leadingPhPhi                =    0. ;
   float leadingPhE                  =    0. ;
   float leadingPhMVA                =    0. ;
   float leadingPhCat                =    0. ;
-  float matchedJett2t1              = -999  ;
-  float higgsJett2t1              = -999  ;
-  float higgsJet_pruned_abseta    = -999  ;
-  float leadingPhAbsEta             = -999  ;
-  float cosThetaStar                =  -99  ;
-  float phPtOverMgammaj                =  -99  ;
-  float phJetInvMass_pruned_higgs                =  -99  ;
-  float phJetDeltaR_higgs                =  -99  ;
+  float matchedJett2t1              = -999. ;
+  float higgsJett2t1                = -999. ;
+  float higgsJet_pruned_abseta      = -999. ;
+  float higgsJet_pruned_eta         = -999. ;
+  float higgsJet_pruned_phi         = -999. ;
+  float higgsJet_pruned_pt          = -999. ;
+  float leadingPhAbsEta             = -999. ;
+  float cosThetaStar                =  -99. ;
+  float phPtOverMgammaj             =  -99. ;
+  float phJetInvMass_pruned_higgs   =  -99. ;
+  float phJetDeltaR_higgs           =  -99. ;
+  float antibtagSF                  =  -99. ;
+  float btagSF                      =  -99. ;
 
   TLorentzVector leadingPhoton              ;
   TLorentzVector tmpLeadingJet              ;
-  TLorentzVector higgsJet_pruned          ;
+  TLorentzVector higgsJet_pruned            ;
   TLorentzVector sumVector                  ;
   TLorentzVector boostedJet                 ;
   TLorentzVector boostedPho                 ;
@@ -550,8 +555,13 @@ public :
    virtual void     Show(Long64_t entry = -1);
    //virtual unsigned short     FindEvent(unsigned int run, unsigned int lumiBlock, unsigned long long event);
 
-   leadingSubjets getLeadingSubjets(vector<float> prunedJet);
-   passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);
+   
+   float computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug = false);
+   float computePhotonSF(float photonPt, float photonEta, bool debug = false);
+   float computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug = false);
+
+   //leadingSubjets getLeadingSubjets(vector<float> prunedJet);
+   //passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);
 };
 
 #endif

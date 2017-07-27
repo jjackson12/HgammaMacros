@@ -13,6 +13,7 @@ void HgammaSelector::Loop(string outputFileName) {
   cout << "output filename is: " << outputFileName << endl;
   // Flags for running this macro
   bool debugFlag                     =  false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
+  bool debugSF                       =  false ; 
   bool checkTrigger                  =  false ;
   bool dumpEventInfo                 =  false ;
   //bool ignoreAllCuts                 =  false ;
@@ -63,9 +64,14 @@ void HgammaSelector::Loop(string outputFileName) {
   outputTreeHiggs->Branch("phJetInvMass_pruned_higgs", &phJetInvMass_pruned_higgs);
   outputTreeHiggs->Branch("phJetDeltaR_higgs", &phJetDeltaR_higgs);
   outputTreeHiggs->Branch("higgsJet_pruned_abseta", &higgsJet_pruned_abseta);
+  outputTreeHiggs->Branch("higgsJet_pruned_eta", &higgsJet_pruned_eta);
+  outputTreeHiggs->Branch("higgsJet_pruned_phi", &higgsJet_pruned_phi);
+  outputTreeHiggs->Branch("higgsJet_pruned_pt", &higgsJet_pruned_pt);
   outputTreeHiggs->Branch("higgsPrunedJetCorrMass", &higgsPrunedJetCorrMass);
   outputTreeHiggs->Branch("triggerFired_165HE10", &triggerFired_165HE10);
   outputTreeHiggs->Branch("triggerFired_175", &triggerFired_175);
+  outputTreeHiggs->Branch("antibtagSF", &antibtagSF);
+  outputTreeHiggs->Branch("btagSF", &btagSF);
 
 
   // Branches from EXOVVNtuplizer tree
@@ -130,12 +136,17 @@ void HgammaSelector::Loop(string outputFileName) {
     leadingPhPhi                     = -999  ;
     leadingPhAbsEta                  = -999. ;
     higgsJet_pruned_abseta           = -999. ;
+    higgsJet_pruned_eta              = -999. ;
+    higgsJet_pruned_phi              = -999. ;
+    higgsJet_pruned_pt               = -999. ;
     higgsPrunedJetCorrMass           = -999. ;
     higgsJet_HbbTag                  = -999. ;
     cosThetaStar                     =  -99. ; 
     phPtOverMgammaj                  =  -99. ; 
     triggerFired_175                 = false ; 
     triggerFired_165HE10             = false ; 
+    btagSF                           =  -99. ;
+    antibtagSF                       =  -99. ;
 
     leadingPhoton        .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     sumVector            .SetPtEtaPhiE( 0., 0., 0., 0.) ;
@@ -148,7 +159,7 @@ void HgammaSelector::Loop(string outputFileName) {
     // Print out trigger information
     if (jentry%reportEvery==0) {
       cout.flush();
-      cout << fixed << setw(4) << setprecision(2) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events." << '\r';
+      cout << fixed << setw(4) << setprecision(2) << (float(jentry)/float(nentries))*100 << "% done: Scanned " << jentry << " events.        " << '\r';
     }
     if (debugFlag && dumpEventInfo) cout << "\nIn event number " << jentry << ":" << endl;
     if (checkTrigger && debugFlag) cout << "     Trigger info is: " << endl;
@@ -249,6 +260,8 @@ void HgammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << pruned_higgsJetTau2/pruned_higgsJetTau1 << endl;
         }
         higgsJett2t1 = pruned_higgsJetTau2/pruned_higgsJetTau1;
+        antibtagSF = computeOverallSF("antibtag" , higgsJet_pruned.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF);
+        btagSF     = computeOverallSF("btag"     , higgsJet_pruned.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF);
         boostedPho = leadingPhoton;
         boostedPho.Boost(-(sumVector.BoostVector()));
         boostedJet = higgsJet_pruned;
@@ -256,6 +269,9 @@ void HgammaSelector::Loop(string outputFileName) {
         cosThetaStar = std::abs(boostedPho.Pz()/boostedPho.P());
         phPtOverMgammaj = leadingPhPt/sumVector.M();
         higgsJet_pruned_abseta=std::abs(higgsJet_pruned.Eta());
+        higgsJet_pruned_eta=higgsJet_pruned.Eta();
+        higgsJet_pruned_phi=higgsJet_pruned.Phi();
+        higgsJet_pruned_pt=higgsJet_pruned.Pt();
         leadingPhAbsEta = std::abs(leadingPhEta);
         phJetInvMass_pruned_higgs=sumVector.M();
         phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_pruned);
@@ -282,7 +298,7 @@ void HgammaSelector::Loop(string outputFileName) {
   outputFile->Close();
 
   cout.flush();
-  cout << "100% done: Scanned " << nentries << " events.     " << endl;
+  cout << "100% done: Scanned " << nentries << " events.       " << endl;
   cout << "HLT_Photon175 fired " << eventsPassingTrigger_175 << " times" << endl;
   cout << "The HLT_Photon175 efficiency was " << (float) eventsPassingTrigger_175/ (float)nentries << endl;
   cout << "HLT_Photon165_HE10 fired " << eventsPassingTrigger_165HE10 << " times" << endl;
@@ -290,22 +306,68 @@ void HgammaSelector::Loop(string outputFileName) {
   cout << "\nCompleted output file is " << outputFileName.c_str() <<".\n" << endl;
 }
 
-HgammaSelector::leadingSubjets HgammaSelector::getLeadingSubjets(vector<float> prunedJet) {
-  // Note: in miniaod, there are only two subjets stored since the declustering is done recursively and miniaod's declustering stops after splitting into two subjets
-  leadingSubjets topCSVs;
-  topCSVs.leading = -10.;
-  topCSVs.subleading = -10.;
-  for (uint iSubjet=0; iSubjet<prunedJet.size(); ++iSubjet) {
-    if (prunedJet.at(iSubjet)>topCSVs.leading) {
-      topCSVs.subleading = topCSVs.leading;
-      topCSVs.leading = prunedJet.at(iSubjet);
+float HgammaSelector::computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug) {
+  return computePhotonSF(photonPt, photonEta, debug)*computeBtagSF(category, jetPt, jetHbbTag, debug);
+}
+
+float HgammaSelector::computePhotonSF(float photonPt, float photonEta, bool debug) {
+  return 1.;
+}
+float HgammaSelector::computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug) {
+  float mistagSF = 0.;
+  if (jetPt < 350) { mistagSF = 0.85; }
+  else if (jetPt > 350) { mistagSF = 0.91; }
+  if (mistagSF == 0.) {
+    std::cout << "ERROR -- Something is awry!" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  float response = -1337.;
+  if (category=="antibtag") {
+    if (jetHbbTag >= 0.9) {
+      if (debug) std::cout << "passes btag! ";
+      response =  1.-mistagSF;
     }
-    else if (topCSVs.leading > prunedJet.at(iSubjet) && topCSVs.subleading < prunedJet.at(iSubjet)) {
-      topCSVs.subleading = prunedJet.at(iSubjet);
+    else if (jetHbbTag < 0.9) {
+      if (debug) std::cout << "fails btag! ";
+      response =  1.;
     }
   }
-  return topCSVs;
+  else if (category=="btag") {
+    if (jetHbbTag >= 0.9) {
+      if (debug) std::cout << "passes btag! ";
+      response = mistagSF;
+    }
+    else if (jetHbbTag < 0.9) {
+      if (debug) std::cout << "fails btag! ";
+      response = 0.;
+    }
+  }
+  if (response == -1337.) {
+    std::cout << "ERROR -- Something went horribly wrong!" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  if (debug) std::cout << "for " << category << " category SF, response: " << response << std::endl;
+  return response;
 }
+
+
+//HgammaSelector::leadingSubjets HgammaSelector::getLeadingSubjets(vector<float> prunedJet) {
+//  // Note: in miniaod, there are only two subjets stored since the declustering is done recursively and miniaod's declustering stops after splitting into two subjets
+//  leadingSubjets topCSVs;
+//  topCSVs.leading = -10.;
+//  topCSVs.subleading = -10.;
+//  for (uint iSubjet=0; iSubjet<prunedJet.size(); ++iSubjet) {
+//    if (prunedJet.at(iSubjet)>topCSVs.leading) {
+//      topCSVs.subleading = topCSVs.leading;
+//      topCSVs.leading = prunedJet.at(iSubjet);
+//    }
+//    else if (topCSVs.leading > prunedJet.at(iSubjet) && topCSVs.subleading < prunedJet.at(iSubjet)) {
+//      topCSVs.subleading = prunedJet.at(iSubjet);
+//    }
+//  }
+//  return topCSVs;
+//}
+
 
 //HgammaSelector::passSubjetCuts HgammaSelector::getSubjetCutDecisions(leadingSubjets subjets) {
 //  float looseWP  = 0.605;

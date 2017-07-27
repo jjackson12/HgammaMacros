@@ -7,7 +7,7 @@ def getCutValues():
   cutValues = {}
   cutValues["minInvMass"]     = 600.0
   cutValues["phEta"]          = 1.4442
-  cutValues["jetEta"]         = 2.2
+  cutValues["jetAbsEta"]         = 2.2
   cutValues["deltaR"]         = 1.1
   cutValues["ptOverM"]        = 0.35
   cutValues["Hbb"]            = 0.9
@@ -36,19 +36,29 @@ def getVarKeys():
   varKeys["leadingPhAbsEta"]           = "phEta"
   varKeys["phJetInvMass_pruned_higgs"] = "turnon"
   varKeys["phJetDeltaR_higgs"]         = "deltaR"
-  varKeys["higgsJet_pruned_abseta"]    = "jetEta"
+  varKeys["higgsJet_pruned_abseta"]    = "jetAbsEta"
+  varKeys["higgsJet_pruned_eta"]       = "jetEta"
+  varKeys["higgsJet_pruned_phi"]       = "jetPhi"
+  varKeys["higgsJet_pruned_pt"]        = "jetPt"
   varKeys["higgsPrunedJetCorrMass"]    = "higgsWindow"
   return varKeys
 
-def makeHiggsWindow(sideband=False):
+def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
+    print "makeHiggsWindow got sideband =", sideband, "and windowEdges =", windowEdges
     cutValues = getCutValues()
     cuts = {}
     window = "higgsWindow"
     if sideband:
       # HERE: this needs to be hacked for alternate sidebands
-      window = "sideband5070Window"
+      if windowEdges == [100.0,110.0]:
+        window = "sidebandWindow"
+      elif windowEdges == [50.0,70.0]:
+        window = "sideband5070Window"
+      elif windowEdges == [80.0,100.0]:
+        window = "sideband80100Window"
     cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues[window][0] )
     cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues[window][1] )
+    print "will return combineCuts(cuts)=", combineCuts(cuts)
     return combineCuts(cuts)
 
 def makeTrigger(which = "OR"):
@@ -59,7 +69,7 @@ def makeTrigger(which = "OR"):
   return combineCuts(cuts)
     
 
-def getDefaultCuts(region, useTrigger, sideband=False):
+def getDefaultCuts(region, useTrigger, sideband=False, windowEdges=[100.0,110.0]):
     cutValues = getCutValues()
 
     cuts = {} 
@@ -67,20 +77,23 @@ def getDefaultCuts(region, useTrigger, sideband=False):
     cuts["ptOverM"]         = TCut( "phPtOverMgammaj>%f"           % cutValues["ptOverM"]    )
     cuts ["phPhi"]          = TCut()
     cuts ["t2t1"]           = TCut()
+    cuts ["jetPt"]          = TCut()
+    cuts ["jetPhi"]         = TCut()
+    cuts ["jetEta"]         = TCut()
     cuts ["btagHolder"]     = TCut()
     cuts ["cosThetaStar"]   = TCut()
     cuts ["phPt"]           = TCut()
     if useTrigger: 
       cuts["trigger"]         = makeTrigger()
     if region is "higgs":
-      cuts["turnon"]   = TCut( "phJetInvMass_pruned_higgs>%f"      % cutValues["minInvMass"]     )
-      cuts["deltaR"]   = TCut( "phJetDeltaR_higgs>%f"              % cutValues["deltaR"]         )
-      cuts["jetEta"]   = TCut( "higgsJet_pruned_abseta<%f"         % cutValues["jetEta"]         )
-      cuts["btag"]     = TCut( "higgsJet_HbbTag>%f"                % cutValues["Hbb"]            )
-      cuts["antibtag"] = TCut( "higgsJet_HbbTag<%f"                % cutValues["Hbb"]            )
-      #cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
-      #cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
-      cuts["higgsWindow"]   = makeHiggsWindow(sideband)
+      cuts["turnon"]          = TCut( "phJetInvMass_pruned_higgs>%f"      % cutValues["minInvMass"]     )
+      cuts["deltaR"]          = TCut( "phJetDeltaR_higgs>%f"              % cutValues["deltaR"]         )
+      cuts["jetAbsEta"]       = TCut( "higgsJet_pruned_abseta<%f"         % cutValues["jetAbsEta"]      )
+      cuts["btag"]            = TCut( "higgsJet_HbbTag>%f"                % cutValues["Hbb"]            )
+      cuts["antibtag"]        = TCut( "higgsJet_HbbTag<%f"                % cutValues["Hbb"]            )
+      #cuts["higgsWindowLow"] = TCut( "higgsPrunedJetCorrMass>%f"         % cutValues["higgsWindow"][0] )
+      #cuts["higgsWindowHi"]  = TCut( "higgsPrunedJetCorrMass<%f"         % cutValues["higgsWindow"][1] )
+      cuts["higgsWindow"]     = makeHiggsWindow(sideband, windowEdges)
     elif region is "side5070" or region is "side100110":
       if region is "side5070":
         index = "Three"
@@ -96,27 +109,32 @@ def getDefaultCuts(region, useTrigger, sideband=False):
       quit()
     return cuts
     
-def getBtagComboCut(region, useTrigger, sideband=False):
-    btagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband))
+def getBtagComboCut(region, useTrigger, sideband=False, scaleFactors=False, windowEdges=[100,110]):
+    btagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband, windowEdges))
     btagCuts.pop("antibtag")
+    if scaleFactors:
+      btagCuts.pop("btag")
     return combineCuts(btagCuts)
 
-def getAntiBtagComboCut(region, useTrigger, sideband=False):
-    antibtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband))
+def getAntiBtagComboCut(region, useTrigger, sideband=False, scaleFactors=False, windowEdges=[100.0,110.0]):
+    antibtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband, windowEdges))
     antibtagCuts.pop("btag")
+    if scaleFactors:
+      antibtagCuts.pop("antibtag")
     return combineCuts(antibtagCuts)
 
-def getNoBtagComboCut(region, useTrigger, sideband=False):
-    nobtagCuts = copy.deepcopy(getDefaultCuts(region, sideband))
+def getNoBtagComboCut(region, useTrigger, sideband=False, windowEdges=[100.0,110.0]):
+    nobtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband, windowEdges))
     nobtagCuts.pop("btag")
     nobtagCuts.pop("antibtag")
     return combineCuts(nobtagCuts)
 
-def getNminus1ComboCut(region, popVar, withBtag, useTrigger, sideband=False):
-    nobtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband))
+def getNminus1ComboCut(region, popVar, withBtag, useTrigger, sideband=False, windowEdges=[100.0,110.0]):
+    nobtagCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband, windowEdges))
     nobtagCuts.pop("antibtag")
     if not withBtag:
       nobtagCuts.pop("btag")
-    nobtagCuts.pop(getVarKeys()[popVar])
+    if not "SF" in popVar:
+      nobtagCuts.pop(getVarKeys()[popVar])
     return combineCuts(nobtagCuts)
 
