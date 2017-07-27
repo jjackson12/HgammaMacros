@@ -78,4 +78,4 @@ def haddTogetherAllDatasets(outDir, haddDatasets = True, mergeData = True, show 
       print getoutput(incantationMuons)
 
 if __name__ == "__main__":
-  haddTogetherAllDatasets("smallifications_May2", True, True, True)
+  haddTogetherAllDatasets("smallifications_July25", True, True, True)
