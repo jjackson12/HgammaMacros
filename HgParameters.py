@@ -63,6 +63,9 @@ def getSigNevents():
 def getVariableDict():
   varDict = {}
   varDict["higgsJet_pruned_abseta"]    = "#||{#eta_{J}}"
+  varDict["higgsJet_pruned_eta"]       = "#eta_{J}"
+  varDict["higgsJet_pruned_phi"]       = "#phi_{J}"
+  varDict["higgsJet_pruned_pt"]        = "p_{T}^{J}"
   varDict["leadingPhEta"]              = "#eta_{#gamma}"
   varDict["higgsJet_HbbTag"]           = "Hb#bar{b} tagger discriminant"
   varDict["phJetDeltaR_higgs"]         = "#DeltaR(#gamma, jet)"
@@ -72,8 +75,8 @@ def getVariableDict():
   varDict["phPtOverMgammaj"]           = "p_{T}^{#gamma}/m_{#gammaJ}  "
   varDict["leadingPhPhi"]              = "#phi_{#gamma}"
   varDict["cosThetaStar"]              = "#||{cos(#theta*)}"
-  varDict["phJetInvMass_pruned_higgs"] = "m_{#gammaJ} (GeV)"
-  varDict["higgsPrunedJetCorrMass"]    = "m_{J}^{pruned} (GeV)"
+  varDict["phJetInvMass_puppi_softdrop_higgs"] = "m_{#gammaJ} (GeV)"
+  varDict["higgsPuppi_softdropJetCorrMass"]    = "m_{J}^{puppi_softdrop} (GeV)"
   return varDict
 
 

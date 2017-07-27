@@ -15,7 +15,7 @@ void HbbGammaSelector::Loop(string outputFileName) {
   bool checkTrigger                  =  false ;
   //bool ignoreAllCuts                 =  false ;
   bool dumpEventInfo                 =  false ;
-  bool noHLTinfo                     =  false  ;  // This is for the 2016 MC with no HLT info
+  bool noHLTinfo                     =  true  ;  // This is for the 2016 MC with no HLT info
   int  entriesToCheck                =  100000000 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
   int  reportEvery                   =  5000  ;
 
@@ -52,10 +52,10 @@ void HbbGammaSelector::Loop(string outputFileName) {
   outputTreeHiggs->Branch("leadingPhPhi", &leadingPhPhi);
   outputTreeHiggs->Branch("leadingPhPt", &leadingPhPt);
   outputTreeHiggs->Branch("leadingPhAbsEta", &leadingPhAbsEta);
-  outputTreeHiggs->Branch("phJetInvMass_pruned_higgs", &phJetInvMass_pruned_higgs);
+  outputTreeHiggs->Branch("phJetInvMass_puppi_softdrop_higgs", &phJetInvMass_puppi_softdrop_higgs);
   outputTreeHiggs->Branch("phJetDeltaR_higgs", &phJetDeltaR_higgs);
-  outputTreeHiggs->Branch("higgsJet_pruned_abseta", &higgsJet_pruned_abseta);
-  outputTreeHiggs->Branch("higgsPrunedJetCorrMass", &higgsPrunedJetCorrMass);
+  outputTreeHiggs->Branch("higgsJet_puppi_softdrop_abseta", &higgsJet_puppi_softdrop_abseta);
+  outputTreeHiggs->Branch("higgsPuppi_softdropJetCorrMass", &higgsPuppi_softdropJetCorrMass);
   outputTreeHiggs->Branch("triggerFired", &triggerFired);
 
   outputTree5070->Branch("sideLowThreeJett2t1", &sideLowThreeJett2t1);
@@ -64,11 +64,11 @@ void HbbGammaSelector::Loop(string outputFileName) {
   outputTree5070->Branch("leadingPhEta", &leadingPhEta);
   outputTree5070->Branch("leadingPhPhi", &leadingPhPhi);
   outputTree5070->Branch("leadingPhPt", &leadingPhPt);
-  outputTree5070->Branch("phJetInvMass_pruned_sideLowThree", &phJetInvMass_pruned_sideLowThree);
+  outputTree5070->Branch("phJetInvMass_puppi_softdrop_sideLowThree", &phJetInvMass_puppi_softdrop_sideLowThree);
   outputTree5070->Branch("phJetDeltaR_sideLowThree", &phJetDeltaR_sideLowThree);
   outputTree5070->Branch("leadingPhAbsEta", &leadingPhAbsEta);
-  outputTree5070->Branch("sideLowThreeJet_pruned_abseta", &sideLowThreeJet_pruned_abseta);
-  outputTree5070->Branch("sideLowThreePrunedJetCorrMass", &sideLowThreePrunedJetCorrMass);
+  outputTree5070->Branch("sideLowThreeJet_puppi_softdrop_abseta", &sideLowThreeJet_puppi_softdrop_abseta);
+  outputTree5070->Branch("sideLowThreePuppi_softdropJetCorrMass", &sideLowThreePuppi_softdropJetCorrMass);
   outputTree5070->Branch("sideLowThreeJet_HbbTag", &sideLowThreeJet_HbbTag);
 
   outputTree100110->Branch("sideLowFourJett2t1", &sideLowFourJett2t1);
@@ -77,11 +77,11 @@ void HbbGammaSelector::Loop(string outputFileName) {
   outputTree100110->Branch("leadingPhEta", &leadingPhEta);
   outputTree100110->Branch("leadingPhPhi", &leadingPhPhi);
   outputTree100110->Branch("leadingPhPt", &leadingPhPt);
-  outputTree100110->Branch("phJetInvMass_pruned_sideLowFour", &phJetInvMass_pruned_sideLowFour);
+  outputTree100110->Branch("phJetInvMass_puppi_softdrop_sideLowFour", &phJetInvMass_puppi_softdrop_sideLowFour);
   outputTree100110->Branch("phJetDeltaR_sideLowFour", &phJetDeltaR_sideLowFour);
   outputTree100110->Branch("leadingPhAbsEta", &leadingPhAbsEta);
-  outputTree100110->Branch("sideLowFourJet_pruned_abseta", &sideLowFourJet_pruned_abseta);
-  outputTree100110->Branch("sideLowFourPrunedJetCorrMass", &sideLowFourPrunedJetCorrMass);
+  outputTree100110->Branch("sideLowFourJet_puppi_softdrop_abseta", &sideLowFourJet_puppi_softdrop_abseta);
+  outputTree100110->Branch("sideLowFourPuppi_softdropJetCorrMass", &sideLowFourPuppi_softdropJetCorrMass);
   outputTree100110->Branch("sideLowFourJet_HbbTag", &sideLowFourJet_HbbTag);
   //outputTree100110->Branch("sideLowFour_csvValues", &sideLowFour_csvValues);
   //outputTree100110->Branch("sideLowFour_subjetCutDecisions", &sideLowFour_subjetCutDecisions);
@@ -98,23 +98,23 @@ void HbbGammaSelector::Loop(string outputFileName) {
   fChain->SetBranchStatus( "ph_passEleVeto"           ,  1 );
   fChain->SetBranchStatus( "jetAK4_pt"                ,  1 );  
   fChain->SetBranchStatus( "jetAK4_IDLoose"           ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_pt"                ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_mass"              ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_pruned_massCorr"   ,  1 );
-  fChain->SetBranchStatus( "jetAK8_softdrop_massCorr" ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_e"                 ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_eta"               ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_phi"               ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_tau1"              ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_tau2"              ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_tau3"              ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_pt"                ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_softdrop_mass"              ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_softdrop_massCorr"   ,  1 );
+  fChain->SetBranchStatus( "jetAK8_puppi_softdrop_massCorr" ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_e"                 ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_eta"               ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_phi"               ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_tau1"              ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_tau2"              ,  1 );  
+  fChain->SetBranchStatus( "jetAK8_puppi_tau3"              ,  1 );  
   fChain->SetBranchStatus( "jetAK8_IDTight"           ,  1 );  
   fChain->SetBranchStatus( "jetAK8_IDTightLepVeto"    ,  1 );  
   fChain->SetBranchStatus( "jetAK8_Hbbtag"            ,  1 );  
   fChain->SetBranchStatus("EVENT_run"      ,  1 );
   fChain->SetBranchStatus("EVENT_lumiBlock"      ,  1 );
   fChain->SetBranchStatus("EVENT_event"      ,  1 );
-  //fChain->SetBranchStatus("subjetAK8_pruned_csv"      ,  1 );
+  //fChain->SetBranchStatus("subjetAK8_puppi_softdrop_csv"      ,  1 );
 
   if (fChain == 0) return;
 
@@ -133,17 +133,17 @@ void HbbGammaSelector::Loop(string outputFileName) {
     leadingPhEta                     = -999  ;
     leadingPhPhi                     = -999  ;
     leadingPhE                       = 0.    ;
-    eventHasHiggsPrunedJet           = false ;
-    eventHasSideLowThreePrunedJet    = false ;
-    eventHasSideLowFourPrunedJet     = false ;
+    eventHasHiggsPuppi_softdropJet           = false ;
+    eventHasSideLowThreePuppi_softdropJet    = false ;
+    eventHasSideLowFourPuppi_softdropJet     = false ;
     eventHasMatchedSoftdropJet       = false ;
-    matchedPrunedJetCorrMass         = -999. ;
-    higgsPrunedJetCorrMass           = -999. ;
+    matchedPuppi_softdropJetCorrMass         = -999. ;
+    higgsPuppi_softdropJetCorrMass           = -999. ;
     matchedJet_HbbTag                = -999. ;
     higgsJet_HbbTag                  = -999. ;
-    pruned_higgsJetTau1              = -999. ;
-    pruned_higgsJetTau2              = -999. ;
-    pruned_higgsJetTau3              = -999. ;
+    puppi_softdrop_higgsJetTau1              = -999. ;
+    puppi_softdrop_higgsJetTau2              = -999. ;
+    puppi_softdrop_higgsJetTau3              = -999. ;
     phoIsTight                       = false ;
     phoEtaPassesCut                  = false ;
     phoPtPassesCut                   = false ;
@@ -155,15 +155,15 @@ void HbbGammaSelector::Loop(string outputFileName) {
     leadingPhAbsEta                  = -999  ;
     cosThetaStar                     =   -99 ; 
     phPtOverMgammaj                  =   -99 ; 
-    higgsJet_pruned_abseta           = -999  ;
-    sideLowThreeJet_pruned_abseta    = -999  ;
+    higgsJet_puppi_softdrop_abseta           = -999  ;
+    sideLowThreeJet_puppi_softdrop_abseta    = -999  ;
     sideLowThreeJet_HbbTag           = -999. ;
-    phJetInvMass_pruned_sideLowThree =  -99  ;
+    phJetInvMass_puppi_softdrop_sideLowThree =  -99  ;
     phJetDeltaR_sideLowThree         =  -99  ;
-    sideLowFourJet_pruned_abseta     = -999  ;
+    sideLowFourJet_puppi_softdrop_abseta     = -999  ;
     sideLowFourJet_HbbTag            = -999. ;
-    phJetInvMass_pruned_higgs        =  -99  ;
-    phJetInvMass_pruned_sideLowFour  =  -99  ;
+    phJetInvMass_puppi_softdrop_higgs        =  -99  ;
+    phJetInvMass_puppi_softdrop_sideLowFour  =  -99  ;
     phJetDeltaR_higgs                =  -99  ;
     phJetDeltaR_sideLowFour          =  -99  ;
 
@@ -224,78 +224,79 @@ void HbbGammaSelector::Loop(string outputFileName) {
     if (debugFlag && eventHasTightPho && dumpEventInfo) cout << "    This event has a tight photon." << endl;
 
     // Loop over AK8 jets
-    for (uint iJet = 0; iJet<jetAK8_pt->size() ; ++iJet) { 
-      if (debugFlag && dumpEventInfo) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_pt->at(iJet) << endl;
+    //cout << " jetAK8_puppi_pt->size() is: " << jetAK8_puppi_pt->size()<< endl;
+    for (uint iJet = 0; iJet<jetAK8_puppi_pt->size() ; ++iJet) { 
+      if (debugFlag && dumpEventInfo) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_puppi_pt->at(iJet) << endl;
  
-      if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_pt->at(iJet)>250) { 
+      if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_puppi_pt->at(iJet)>250) { 
       // Get leading jet variables, requiring tight jet ID
-        tmpLeadingJet.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
+        tmpLeadingJet.SetPtEtaPhiE(jetAK8_puppi_pt->at(iJet), jetAK8_puppi_eta->at(iJet), jetAK8_puppi_phi->at(iJet), jetAK8_puppi_e->at(iJet));
 
-        if (!eventHasHiggsPrunedJet) { 
-          eventHasHiggsPrunedJet = true;
+        if (!eventHasHiggsPuppi_softdropJet) { 
+          eventHasHiggsPuppi_softdropJet = true;
           if(debugFlag && dumpEventInfo) {
-            cout << "    pruned higgs AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
-            cout << "    pruned higgs AK8 jet mass is: " << jetAK8_mass->at(iJet) << endl ;
-            cout << "    pruned higgs AK8 jet eta is: "  << jetAK8_eta->at(iJet)  << endl ;
-            cout << "    pruned higgs AK8 jet phi is: "  << jetAK8_phi->at(iJet)  << endl ;
-            cout << "    pruned higgs AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
+            cout << "    puppi_softdrop higgs AK8 jet e is: "    << jetAK8_puppi_e->at(iJet)    << endl ;
+            cout << "    puppi_softdrop higgs AK8 jet mass is: " << jetAK8_puppi_softdrop_mass->at(iJet) << endl ;
+            cout << "    puppi_softdrop higgs AK8 jet eta is: "  << jetAK8_puppi_eta->at(iJet)  << endl ;
+            cout << "    puppi_softdrop higgs AK8 jet phi is: "  << jetAK8_puppi_phi->at(iJet)  << endl ;
+            cout << "    puppi_softdrop higgs AK8 jet pt is: "   << jetAK8_puppi_pt->at(iJet)   << endl ;
           }
-          higgsJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          if (higgsJet_pruned.DeltaR(leadingPhoton) < 0.8) {
-            higgsJet_pruned.SetPtEtaPhiE(0,0,0,0);
-            eventHasHiggsPrunedJet = false;
+          higgsJet_puppi_softdrop.SetPtEtaPhiE(jetAK8_puppi_pt->at(iJet), jetAK8_puppi_eta->at(iJet), jetAK8_puppi_phi->at(iJet), jetAK8_puppi_e->at(iJet));
+          if (higgsJet_puppi_softdrop.DeltaR(leadingPhoton) < 0.8) {
+            higgsJet_puppi_softdrop.SetPtEtaPhiE(0,0,0,0);
+            eventHasHiggsPuppi_softdropJet = false;
           }
           else {
-            if  ( iJet<jetAK8_pruned_massCorr->size() && abs(jetAK8_pruned_massCorr->at(iJet) - 125) <  abs(higgsPrunedJetCorrMass -  125 )) {
-              higgsPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+            if  ( iJet<jetAK8_puppi_softdrop_massCorr->size() && abs(jetAK8_puppi_softdrop_massCorr->at(iJet) - 125) <  abs(higgsPuppi_softdropJetCorrMass -  125 )) {
+              higgsPuppi_softdropJetCorrMass = jetAK8_puppi_softdrop_massCorr->at(iJet);
               higgsJet_HbbTag = jetAK8_Hbbtag->at(iJet);
-              pruned_higgsJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-              pruned_higgsJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-              pruned_higgsJetTau3 = jetAK8_tau3 ->  at(iJet) ;
-              //higgs_csvValues = getLeadingSubjets(subjetAK8_pruned_csv->at(iJet));
+              puppi_softdrop_higgsJetTau1 = jetAK8_puppi_tau1 ->  at(iJet) ;
+              puppi_softdrop_higgsJetTau2 = jetAK8_puppi_tau2 ->  at(iJet) ;
+              puppi_softdrop_higgsJetTau3 = jetAK8_puppi_tau3 ->  at(iJet) ;
+              //higgs_csvValues = getLeadingSubjets(subjetAK8_puppi_softdrop_csv->at(iJet));
               //cout << "    for higgs jet, get csv values " << higgs_csvValues.leading << ", " << higgs_csvValues.subleading << endl;
               //higgs_subjetCutDecisions = getSubjetCutDecisions(higgs_csvValues);
             }
           }
         }
         else if (debugFlag && dumpEventInfo) cout << " this event failed the jet requirement for the higgs branch!" << endl;
-        if (iJet<jetAK8_pruned_massCorr->size() && jetAK8_pruned_massCorr->at(iJet) >sidebandThreeCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandThreeCutHigh && !eventHasSideLowThreePrunedJet) {
-          eventHasSideLowThreePrunedJet = true;
-          sideLowThreeJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          if (sideLowThreeJet_pruned.DeltaR(leadingPhoton) < 0.8) {
-            sideLowThreeJet_pruned.SetPtEtaPhiE(0,0,0,0);
-            eventHasSideLowThreePrunedJet = false;
+        if (iJet<jetAK8_puppi_softdrop_massCorr->size() && jetAK8_puppi_softdrop_massCorr->at(iJet) >sidebandThreeCutLow  && jetAK8_puppi_softdrop_massCorr->at(iJet) < sidebandThreeCutHigh && !eventHasSideLowThreePuppi_softdropJet) {
+          eventHasSideLowThreePuppi_softdropJet = true;
+          sideLowThreeJet_puppi_softdrop.SetPtEtaPhiE(jetAK8_puppi_pt->at(iJet), jetAK8_puppi_eta->at(iJet), jetAK8_puppi_phi->at(iJet), jetAK8_puppi_e->at(iJet));
+          if (sideLowThreeJet_puppi_softdrop.DeltaR(leadingPhoton) < 0.8) {
+            sideLowThreeJet_puppi_softdrop.SetPtEtaPhiE(0,0,0,0);
+            eventHasSideLowThreePuppi_softdropJet = false;
           }
-          else if (iJet<jetAK8_pruned_massCorr->size() ) {
-            sideLowThreePrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+          else if (iJet<jetAK8_puppi_softdrop_massCorr->size() ) {
+            sideLowThreePuppi_softdropJetCorrMass = jetAK8_puppi_softdrop_massCorr->at(iJet);
             sideLowThreeJet_HbbTag = jetAK8_Hbbtag->at(iJet);
-            pruned_sideLowThreeJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-            pruned_sideLowThreeJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-            pruned_sideLowThreeJetTau3 = jetAK8_tau3 ->  at(iJet) ;
+            puppi_softdrop_sideLowThreeJetTau1 = jetAK8_puppi_tau1 ->  at(iJet) ;
+            puppi_softdrop_sideLowThreeJetTau2 = jetAK8_puppi_tau2 ->  at(iJet) ;
+            puppi_softdrop_sideLowThreeJetTau3 = jetAK8_puppi_tau3 ->  at(iJet) ;
           }
         }
 
         if(debugFlag && dumpEventInfo) {
-          cout << "    pruned sideLow AK8 jet e is: "    << jetAK8_e->at(iJet)    << endl ;
-          cout << "    pruned sideLow AK8 jet mass is: " << jetAK8_mass->at(iJet) << endl ;
-          cout << "    pruned sideLow AK8 jet eta is: "  << jetAK8_eta->at(iJet)  << endl ;
-          cout << "    pruned sideLow AK8 jet phi is: "  << jetAK8_phi->at(iJet)  << endl ;
-          cout << "    pruned sideLow AK8 jet pt is: "   << jetAK8_pt->at(iJet)   << endl ;
+          cout << "    puppi_softdrop sideLow AK8 jet e is: "    << jetAK8_puppi_e->at(iJet)    << endl ;
+          cout << "    puppi_softdrop sideLow AK8 jet mass is: " << jetAK8_puppi_softdrop_mass->at(iJet) << endl ;
+          cout << "    puppi_softdrop sideLow AK8 jet eta is: "  << jetAK8_puppi_eta->at(iJet)  << endl ;
+          cout << "    puppi_softdrop sideLow AK8 jet phi is: "  << jetAK8_puppi_phi->at(iJet)  << endl ;
+          cout << "    puppi_softdrop sideLow AK8 jet pt is: "   << jetAK8_puppi_pt->at(iJet)   << endl ;
         }
-        if (iJet<jetAK8_pruned_massCorr->size()  && jetAK8_pruned_massCorr->at(iJet) >sidebandFourCutLow  && jetAK8_pruned_massCorr->at(iJet) < sidebandFourCutHigh && !eventHasSideLowFourPrunedJet) {
-          eventHasSideLowFourPrunedJet = true;
-          sideLowFourJet_pruned.SetPtEtaPhiE(jetAK8_pt->at(iJet), jetAK8_eta->at(iJet), jetAK8_phi->at(iJet), jetAK8_e->at(iJet));
-          if (sideLowFourJet_pruned.DeltaR(leadingPhoton) < 0.8) {
-            sideLowFourJet_pruned.SetPtEtaPhiE(0,0,0,0);
-            eventHasSideLowFourPrunedJet = false;
+        if (iJet<jetAK8_puppi_softdrop_massCorr->size()  && jetAK8_puppi_softdrop_massCorr->at(iJet) >sidebandFourCutLow  && jetAK8_puppi_softdrop_massCorr->at(iJet) < sidebandFourCutHigh && !eventHasSideLowFourPuppi_softdropJet) {
+          eventHasSideLowFourPuppi_softdropJet = true;
+          sideLowFourJet_puppi_softdrop.SetPtEtaPhiE(jetAK8_puppi_pt->at(iJet), jetAK8_puppi_eta->at(iJet), jetAK8_puppi_phi->at(iJet), jetAK8_puppi_e->at(iJet));
+          if (sideLowFourJet_puppi_softdrop.DeltaR(leadingPhoton) < 0.8) {
+            sideLowFourJet_puppi_softdrop.SetPtEtaPhiE(0,0,0,0);
+            eventHasSideLowFourPuppi_softdropJet = false;
           }
-          else if (iJet<jetAK8_pruned_massCorr->size()){
-            sideLowFourPrunedJetCorrMass = jetAK8_pruned_massCorr->at(iJet);
+          else if (iJet<jetAK8_puppi_softdrop_massCorr->size()){
+            sideLowFourPuppi_softdropJetCorrMass = jetAK8_puppi_softdrop_massCorr->at(iJet);
             sideLowFourJet_HbbTag = jetAK8_Hbbtag->at(iJet);
-            pruned_sideLowFourJetTau1 = jetAK8_tau1 ->  at(iJet) ;
-            pruned_sideLowFourJetTau2 = jetAK8_tau2 ->  at(iJet) ;
-            pruned_sideLowFourJetTau3 = jetAK8_tau3 ->  at(iJet) ;
-            //sideLowFour_csvValues = getLeadingSubjets(subjetAK8_pruned_csv->at(iJet));
+            puppi_softdrop_sideLowFourJetTau1 = jetAK8_puppi_tau1 ->  at(iJet) ;
+            puppi_softdrop_sideLowFourJetTau2 = jetAK8_puppi_tau2 ->  at(iJet) ;
+            puppi_softdrop_sideLowFourJetTau3 = jetAK8_puppi_tau3 ->  at(iJet) ;
+            //sideLowFour_csvValues = getLeadingSubjets(subjetAK8_puppi_softdrop_csv->at(iJet));
             //cout << "    for sideband jet, get csv values " << sideLowFour_csvValues.leading << ", " << sideLowFour_csvValues.subleading << endl;
             //sideLowFour_subjetCutDecisions = getSubjetCutDecisions(sideLowFour_csvValues);
             //cout << "    for sideband jet, get loose_loose = " << sideLowFour_subjetCutDecisions.loose_loose << endl;
@@ -311,39 +312,39 @@ void HbbGammaSelector::Loop(string outputFileName) {
     // Fill histograms with events that have a photon passing ID and a loose jet
     // TODO: photon pT cut applied here. unhardcode
     if ( (eventHasTightPho  && leadingPhoton.Pt()>180 && abs(leadingPhoton.Eta()) < 2.6)) {
-      if( (eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 250 && abs(higgsJet_pruned.Eta()) < 2.6 )) {
-        sumVector = leadingPhoton + higgsJet_pruned;
+      if( (eventHasHiggsPuppi_softdropJet && higgsJet_puppi_softdrop.Pt() > 250 && abs(higgsJet_puppi_softdrop.Eta()) < 2.6 )) {
+        sumVector = leadingPhoton + higgsJet_puppi_softdrop;
         if (debugFlag && dumpEventInfo) {
-          cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
+          cout << "    using matching with puppi_softdrop,   sumvector E is: " << sumVector.E() << endl;
           cout << "                                  sumvector M is: " << sumVector.M() << endl;
-          cout << "                                    tau2/tau1 is: " << pruned_higgsJetTau2/pruned_higgsJetTau1 << endl;
+          cout << "                                    tau2/tau1 is: " << puppi_softdrop_higgsJetTau2/puppi_softdrop_higgsJetTau1 << endl;
         }
         if (noHLTinfo) triggerFired = true;        
         if (triggerFired ) {//|| !requireTrigger || ignoreAllCuts) 
-          higgsJett2t1 = pruned_higgsJetTau2/pruned_higgsJetTau1;
+          higgsJett2t1 = puppi_softdrop_higgsJetTau2/puppi_softdrop_higgsJetTau1;
           higgsJett2t1Hist->Fill(higgsJett2t1);
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));
-          boostedJet = higgsJet_pruned;
+          boostedJet = higgsJet_puppi_softdrop;
           boostedJet.Boost(-(sumVector.BoostVector()));
           cosThetaStar = std::abs(boostedPho.Pz()/boostedPho.P());
           phPtOverMgammaj = leadingPhPt/sumVector.M();
-          higgsJet_pruned_abseta=std::abs(higgsJet_pruned.Eta());
+          higgsJet_puppi_softdrop_abseta=std::abs(higgsJet_puppi_softdrop.Eta());
           leadingPhAbsEta = std::abs(leadingPhEta);
-          phJetInvMass_pruned_higgs=sumVector.M();
-          phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_pruned);
+          phJetInvMass_puppi_softdrop_higgs=sumVector.M();
+          phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_puppi_softdrop);
           if ( phJetDeltaR_higgs>0.8 ) {
-            phJetDeltaPhi_pruned->Fill(leadingPhoton.DeltaPhi(higgsJet_pruned));
-            phJetDeltaEta_pruned->Fill(abs( leadingPhoton.Eta() - higgsJet_pruned.Eta() ));
-            phJetDeltaR_pruned->Fill(leadingPhoton.DeltaR(higgsJet_pruned));
+            phJetDeltaPhi_puppi_softdrop->Fill(leadingPhoton.DeltaPhi(higgsJet_puppi_softdrop));
+            phJetDeltaEta_puppi_softdrop->Fill(abs( leadingPhoton.Eta() - higgsJet_puppi_softdrop.Eta() ));
+            phJetDeltaR_puppi_softdrop->Fill(leadingPhoton.DeltaR(higgsJet_puppi_softdrop));
             leadingPhPtHist->Fill(leadingPhPt);
             leadingPhEtaHist->Fill(leadingPhEta);
             leadingPhPhiHist->Fill(leadingPhPhi);
-            phJetInvMassHist_pruned_higgs->Fill(phJetInvMass_pruned_higgs);
-            higgsJetPrunedMassHist ->Fill(higgsPrunedJetCorrMass);
-            higgsJetPtHist->Fill( higgsJet_pruned.Pt());
-            higgsJetEtaHist->Fill(higgsJet_pruned.Eta());
-            higgsJetPhiHist->Fill(higgsJet_pruned.Phi());
+            phJetInvMassHist_puppi_softdrop_higgs->Fill(phJetInvMass_puppi_softdrop_higgs);
+            higgsJetPuppi_softdropMassHist ->Fill(higgsPuppi_softdropJetCorrMass);
+            higgsJetPtHist->Fill( higgsJet_puppi_softdrop.Pt());
+            higgsJetEtaHist->Fill(higgsJet_puppi_softdrop.Eta());
+            higgsJetPhiHist->Fill(higgsJet_puppi_softdrop.Phi());
             phPtOverMgammajHist->Fill(phPtOverMgammaj);
             cosThetaStarHist->Fill(cosThetaStar);
             if (debugFlag && dumpEventInfo) cout << "this event passed!" << endl;
@@ -353,63 +354,63 @@ void HbbGammaSelector::Loop(string outputFileName) {
           outputTreeHiggs->Fill();
         }
         else if (debugFlag && dumpEventInfo) cout << "this event failed the trigger cut!" << endl;
-        higgsJet_pruned.SetT(90);
-        sumVector = leadingPhoton + higgsJet_pruned;
-        if (triggerFired ) phCorrJetInvMassHist_pruned_higgs->Fill(sumVector.M());
+        higgsJet_puppi_softdrop.SetT(90);
+        sumVector = leadingPhoton + higgsJet_puppi_softdrop;
+        if (triggerFired ) phCorrJetInvMassHist_puppi_softdrop_higgs->Fill(sumVector.M());
       }
       else if (debugFlag && dumpEventInfo) {
-        cout << " this event failed 'if( (eventHasHiggsPrunedJet && higgsJet_pruned.Pt() > 250 && abs(higgsJet_pruned.Eta()) < 2.6 ))'" << endl;
-        cout << "eventHasHiggsPrunedJet="  << eventHasHiggsPrunedJet << ", higgsJet_pruned.Pt()=" << higgsJet_pruned.Pt() << ", abs(higgsJet_pruned.Eta())=" << higgsJet_pruned.Eta() << endl;
+        cout << " this event failed 'if( (eventHasHiggsPuppi_softdropJet && higgsJet_puppi_softdrop.Pt() > 250 && abs(higgsJet_puppi_softdrop.Eta()) < 2.6 ))'" << endl;
+        cout << "eventHasHiggsPuppi_softdropJet="  << eventHasHiggsPuppi_softdropJet << ", higgsJet_puppi_softdrop.Pt()=" << higgsJet_puppi_softdrop.Pt() << ", abs(higgsJet_puppi_softdrop.Eta())=" << higgsJet_puppi_softdrop.Eta() << endl;
       }
-      if(eventHasSideLowThreePrunedJet && sideLowThreeJet_pruned.Pt() > 250 && abs(sideLowThreeJet_pruned.Eta()) < 2.6 ) {
-        sumVector = leadingPhoton + sideLowThreeJet_pruned;
+      if(eventHasSideLowThreePuppi_softdropJet && sideLowThreeJet_puppi_softdrop.Pt() > 250 && abs(sideLowThreeJet_puppi_softdrop.Eta()) < 2.6 ) {
+        sumVector = leadingPhoton + sideLowThreeJet_puppi_softdrop;
         if (debugFlag && dumpEventInfo) {
-          cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
+          cout << "    using matching with puppi_softdrop,   sumvector E is: " << sumVector.E() << endl;
           cout << "                                  sumvector M is: " << sumVector.M() << endl;
-          cout << "                                    tau2/tau1 is: " << pruned_sideLowThreeJetTau2/pruned_sideLowThreeJetTau1 << endl;
+          cout << "                                    tau2/tau1 is: " << puppi_softdrop_sideLowThreeJetTau2/puppi_softdrop_sideLowThreeJetTau1 << endl;
         }
                 
         if (triggerFired ){//|| !requireTrigger) 
-          sideLowThreeJett2t1 = pruned_sideLowThreeJetTau2/pruned_sideLowThreeJetTau1;
+          sideLowThreeJett2t1 = puppi_softdrop_sideLowThreeJetTau2/puppi_softdrop_sideLowThreeJetTau1;
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));
-          boostedJet = sideLowThreeJet_pruned;
+          boostedJet = sideLowThreeJet_puppi_softdrop;
           boostedJet.Boost(-(sumVector.BoostVector()));
           cosThetaStar = std::abs(boostedPho.Pz()/boostedPho.P());
           phPtOverMgammaj = leadingPhPt/sumVector.M();
-          sideLowThreeJet_pruned_abseta=std::abs(sideLowThreeJet_pruned.Eta());
+          sideLowThreeJet_puppi_softdrop_abseta=std::abs(sideLowThreeJet_puppi_softdrop.Eta());
           leadingPhAbsEta = std::abs(leadingPhEta);
-          phJetInvMass_pruned_sideLowThree=sumVector.M();
-          phJetDeltaR_sideLowThree=leadingPhoton.DeltaR(sideLowThreeJet_pruned);
+          phJetInvMass_puppi_softdrop_sideLowThree=sumVector.M();
+          phJetDeltaR_sideLowThree=leadingPhoton.DeltaR(sideLowThreeJet_puppi_softdrop);
           outputTree5070->Fill();
         }
-          sideLowThreeJet_pruned.SetT(90);
-          sumVector = leadingPhoton + sideLowThreeJet_pruned;
+          sideLowThreeJet_puppi_softdrop.SetT(90);
+          sumVector = leadingPhoton + sideLowThreeJet_puppi_softdrop;
       }
-      if( (eventHasSideLowFourPrunedJet && sideLowFourJet_pruned.Pt() > 250 && abs(sideLowFourJet_pruned.Eta()) < 2.6 )) {
-        sumVector = leadingPhoton + sideLowFourJet_pruned;
+      if( (eventHasSideLowFourPuppi_softdropJet && sideLowFourJet_puppi_softdrop.Pt() > 250 && abs(sideLowFourJet_puppi_softdrop.Eta()) < 2.6 )) {
+        sumVector = leadingPhoton + sideLowFourJet_puppi_softdrop;
         if (debugFlag && dumpEventInfo) {
-          cout << "    using matching with pruned,   sumvector E is: " << sumVector.E() << endl;
+          cout << "    using matching with puppi_softdrop,   sumvector E is: " << sumVector.E() << endl;
           cout << "                                  sumvector M is: " << sumVector.M() << endl;
-          cout << "                                    tau2/tau1 is: " << pruned_sideLowFourJetTau2/pruned_sideLowFourJetTau1 << endl;
+          cout << "                                    tau2/tau1 is: " << puppi_softdrop_sideLowFourJetTau2/puppi_softdrop_sideLowFourJetTau1 << endl;
         }
                 
         if (triggerFired ){//|| !requireTrigger || ignoreAllCuts) 
-          sideLowFourJett2t1 = pruned_sideLowFourJetTau2/pruned_sideLowFourJetTau1;
+          sideLowFourJett2t1 = puppi_softdrop_sideLowFourJetTau2/puppi_softdrop_sideLowFourJetTau1;
           boostedPho = leadingPhoton;
           boostedPho.Boost(-(sumVector.BoostVector()));
-          boostedJet = sideLowFourJet_pruned;
+          boostedJet = sideLowFourJet_puppi_softdrop;
           boostedJet.Boost(-(sumVector.BoostVector()));
           cosThetaStar = std::abs(boostedPho.Pz()/boostedPho.P());
           phPtOverMgammaj = leadingPhPt/sumVector.M();
-          sideLowFourJet_pruned_abseta=std::abs(sideLowFourJet_pruned.Eta());
+          sideLowFourJet_puppi_softdrop_abseta=std::abs(sideLowFourJet_puppi_softdrop.Eta());
           leadingPhAbsEta = std::abs(leadingPhEta);
-          phJetInvMass_pruned_sideLowFour=sumVector.M();
-          phJetDeltaR_sideLowFour=leadingPhoton.DeltaR(sideLowFourJet_pruned);
+          phJetInvMass_puppi_softdrop_sideLowFour=sumVector.M();
+          phJetDeltaR_sideLowFour=leadingPhoton.DeltaR(sideLowFourJet_puppi_softdrop);
           outputTree100110->Fill();
         }
-          sideLowFourJet_pruned.SetT(90);
-          sumVector = leadingPhoton + sideLowFourJet_pruned;
+          sideLowFourJet_puppi_softdrop.SetT(90);
+          sumVector = leadingPhoton + sideLowFourJet_puppi_softdrop;
       }
     }
     if (debugFlag && entriesToCheck == jentry) break; // when debugFlag is true, break the event loop after reaching entriesToCheck 
@@ -427,22 +428,22 @@ void HbbGammaSelector::Loop(string outputFileName) {
   cout << "\nCompleted output file is " << outputFileName.c_str() <<".\n" << endl;
 }
 
-HbbGammaSelector::leadingSubjets HbbGammaSelector::getLeadingSubjets(vector<float> prunedJet) {
-  // Note: in miniaod, there are only two subjets stored since the declustering is done recursively and miniaod's declustering stops after splitting into two subjets
-  leadingSubjets topCSVs;
-  topCSVs.leading = -10.;
-  topCSVs.subleading = -10.;
-  for (uint iSubjet=0; iSubjet<prunedJet.size(); ++iSubjet) {
-    if (prunedJet.at(iSubjet)>topCSVs.leading) {
-      topCSVs.subleading = topCSVs.leading;
-      topCSVs.leading = prunedJet.at(iSubjet);
-    }
-    else if (topCSVs.leading > prunedJet.at(iSubjet) && topCSVs.subleading < prunedJet.at(iSubjet)) {
-      topCSVs.subleading = prunedJet.at(iSubjet);
-    }
-  }
-  return topCSVs;
-}
+//HbbGammaSelector::leadingSubjets HbbGammaSelector::getLeadingSubjets(vector<float> puppi_softdropJet) {
+//  // Note: in miniaod, there are only two subjets stored since the declustering is done recursively and miniaod's declustering stops after splitting into two subjets
+//  leadingSubjets topCSVs;
+//  topCSVs.leading = -10.;
+//  topCSVs.subleading = -10.;
+//  for (uint iSubjet=0; iSubjet<puppi_softdropJet.size(); ++iSubjet) {
+//    if (puppi_softdropJet.at(iSubjet)>topCSVs.leading) {
+//      topCSVs.subleading = topCSVs.leading;
+//      topCSVs.leading = puppi_softdropJet.at(iSubjet);
+//    }
+//    else if (topCSVs.leading > puppi_softdropJet.at(iSubjet) && topCSVs.subleading < puppi_softdropJet.at(iSubjet)) {
+//      topCSVs.subleading = puppi_softdropJet.at(iSubjet);
+//    }
+//  }
+//  return topCSVs;
+//}
 
 //HbbGammaSelector::passSubjetCuts HbbGammaSelector::getSubjetCutDecisions(leadingSubjets subjets) {
 //  float looseWP  = 0.605;
