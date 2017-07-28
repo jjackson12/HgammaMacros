@@ -22,8 +22,8 @@ void HgammaSelector::Loop(string outputFileName) {
   int  reportEvery                   =  5000  ;
 
   // Photon id cut values
-  float endcap_phoMVAcut             = 0.336 ;  // See https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2015
-  float barrel_phoMVAcut             = 0.374 ;
+  float endcap_phoMVAcut             = 0.20 ;  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2016
+  float barrel_phoMVAcut             = 0.20 ;
   float phoEtaMax                    =   2.4 ;
   float jetEtaMax                    =   2.4 ;
   //float jetT2T1Max                   =   0.5 ;
