@@ -6,7 +6,8 @@ from pprint import pprint
 debug = False
 
 baseDir = path.join(getcwd(), "organize_smallifications")
-categories = ["backgrounds", "signals", "data"]
+#categories = ["backgrounds", "signals", "data", "data_frags/singleMuonFrags"]
+categories = ["data_frags/singleMuonFrags"]
 catDirs = {}
 for category in categories:
   catDirs[category] = path.join(baseDir, category)
@@ -27,7 +28,7 @@ for catDir in catDirs:
   for inputFile in inputFiles:
     if first:
       print "about to call the first processHg" 
-      processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), False)
+      processHg(inputFile, inputFile.replace("trig", "ddTree").replace("smallifications", "DDs"), False)
       first=False
     elif not debug:
-      processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), True, True)
+      processHg(inputFile, inputFile.replace("trig", "ddTree").replace("smallifications", "DDs"), True, True)

@@ -85,6 +85,7 @@ public :
   float phJetDeltaR_higgs           =  -99. ;
   float antibtagSF                  =  -99. ;
   float btagSF                      =  -99. ;
+  float weightFactor                =  -99. ;
 
   TLorentzVector leadingPhoton              ;
   TLorentzVector tmpLeadingJet              ;

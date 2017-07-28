@@ -22,8 +22,8 @@ void HgammaSelector::Loop(string outputFileName) {
   int  reportEvery                   =  5000  ;
 
   // Photon id cut values
-  float endcap_phoMVAcut             = 0.336 ;  // See https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2015
-  float barrel_phoMVAcut             = 0.374 ;
+  float endcap_phoMVAcut             = 0.20 ;  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariatePhotonIdentificationRun2#Recommended_MVA_recipes_for_2016
+  float barrel_phoMVAcut             = 0.20 ;
   float phoEtaMax                    =   2.4 ;
   float jetEtaMax                    =   2.4 ;
   //float jetT2T1Max                   =   0.5 ;
@@ -72,6 +72,7 @@ void HgammaSelector::Loop(string outputFileName) {
   outputTreeHiggs->Branch("triggerFired_175", &triggerFired_175);
   outputTreeHiggs->Branch("antibtagSF", &antibtagSF);
   outputTreeHiggs->Branch("btagSF", &btagSF);
+  outputTreeHiggs->Branch("weightFactor", &weightFactor);
 
 
   // Branches from EXOVVNtuplizer tree
@@ -108,6 +109,20 @@ void HgammaSelector::Loop(string outputFileName) {
 
   Long64_t nentries = fChain->GetEntriesFast();
   Long64_t nbytes = 0, nb = 0;
+
+  TFile* trigEffFile = new TFile("inputs/JetTrig.root");
+  TCanvas* trigEffCan = (TCanvas*) trigEffFile->Get("effi");
+  TPad* trigEffPad = (TPad*) trigEffCan->GetPrimitive("pad1");
+  TIter it(trigEffPad->GetListOfPrimitives());
+  TH1D* trigEffHist;
+  while (TObject* obj = it()) {
+    if (strncmp(obj->IsA()->GetName(), "TH1D", 4)==0) {
+      if (((TH1D*)obj)->GetLineColor() == 432) {
+        trigEffHist = (TH1D*)obj;
+      }
+    }
+  }
+  trigEffFile->Close();
 
   cout << "\n\nStarting HgammaSelector::Loop().\n" << endl;
   // Loop over all events
@@ -147,6 +162,7 @@ void HgammaSelector::Loop(string outputFileName) {
     triggerFired_165HE10             = false ; 
     btagSF                           =  -99. ;
     antibtagSF                       =  -99. ;
+    weightFactor                     =  -99. ;
 
     leadingPhoton        .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     sumVector            .SetPtEtaPhiE( 0., 0., 0., 0.) ;
@@ -251,8 +267,8 @@ void HgammaSelector::Loop(string outputFileName) {
 
     // Fill histograms with events that have a photon passing ID and a loose jet
     // TODO: photon pT cut applied here. unhardcode
-    if ( (eventHasTightPho  && leadingPhoton.Pt()>180 && abs(leadingPhoton.Eta()) < 2.6)) {
-      if( (eventHasHiggsPuppi_softdropJet && higgsJet_puppi_softdrop.Pt() > 250 && abs(higgsJet_puppi_softdrop.Eta()) < 2.6 )) {
+    if ( (eventHasTightPho  && leadingPhoton.Pt()>120 && abs(leadingPhoton.Eta()) < 1.4442)) {
+    //  if( (eventHasHiggsPuppi_softdropJet && higgsJet_puppi_softdrop.Pt() > 250 && abs(higgsJet_puppi_softdrop.Eta()) < 2.6 )) {
         sumVector = leadingPhoton + higgsJet_puppi_softdrop;
         if (debugFlag && dumpEventInfo) {
           cout << "    using matching with puppi_softdrop,   sumvector E is: " << sumVector.E() << endl;
@@ -262,6 +278,7 @@ void HgammaSelector::Loop(string outputFileName) {
         higgsJett2t1 = puppi_softdrop_higgsJetTau2/puppi_softdrop_higgsJetTau1;
         antibtagSF = computeOverallSF("antibtag" , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF);
         btagSF     = computeOverallSF("btag"     , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF);
+        weightFactor = 1/trigEffHist->GetBinContent(trigEffHist->GetXaxis()->FindBin(leadingPhoton.Pt()));;
         boostedPho = leadingPhoton;
         boostedPho.Boost(-(sumVector.BoostVector()));
         boostedJet = higgsJet_puppi_softdrop;
@@ -275,10 +292,10 @@ void HgammaSelector::Loop(string outputFileName) {
         leadingPhAbsEta = std::abs(leadingPhEta);
         phJetInvMass_puppi_softdrop_higgs=sumVector.M();
         phJetDeltaR_higgs=leadingPhoton.DeltaR(higgsJet_puppi_softdrop);
-        if ( phJetDeltaR_higgs<0.8 ) {
-          if (debugFlag && dumpEventInfo) cout << "this event failed the DR cut!" << endl;
-          continue;
-        }
+        //if ( phJetDeltaR_higgs<0.8 ) {
+        //  if (debugFlag && dumpEventInfo) cout << "this event failed the DR cut!" << endl;
+        //  continue;
+        //}
         //if (loadEventMap && FindEvent(EVENT_run, EVENT_lumiBlock, EVENT_event)!=0) cout << "found an event that passed selection but did not fire the trigger" << endl;
         outputTreeHiggs->Fill();
         //higgsJet_puppi_softdrop.SetT(90);
@@ -287,7 +304,7 @@ void HgammaSelector::Loop(string outputFileName) {
       else if (debugFlag && dumpEventInfo) {
         cout << " this event failed 'if( (eventHasHiggsPuppi_softdropJet && higgsJet_puppi_softdrop.Pt() > 250 && abs(higgsJet_puppi_softdrop.Eta()) < 2.6 ))'" << endl;
         cout << "eventHasHiggsPuppi_softdropJet="  << eventHasHiggsPuppi_softdropJet << ", higgsJet_puppi_softdrop.Pt()=" << higgsJet_puppi_softdrop.Pt() << ", abs(higgsJet_puppi_softdrop.Eta())=" << higgsJet_puppi_softdrop.Eta() << endl;
-      }
+    //  }
     }
     if (debugFlag && entriesToCheck == jentry) break; // when debugFlag is true, break the event loop after reaching entriesToCheck 
   }
