@@ -161,6 +161,7 @@ void HgammaSelector::Loop(string outputFileName) {
     triggerFired_165HE10             = false ; 
     btagSF                           =  -99. ;
     antibtagSF                       =  -99. ;
+    weightFactor                     =  -99. ;
 
     leadingPhoton        .SetPtEtaPhiE( 0., 0., 0., 0.) ;
     sumVector            .SetPtEtaPhiE( 0., 0., 0., 0.) ;
@@ -276,6 +277,7 @@ void HgammaSelector::Loop(string outputFileName) {
         higgsJett2t1 = puppi_softdrop_higgsJetTau2/puppi_softdrop_higgsJetTau1;
         antibtagSF = computeOverallSF("antibtag" , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF);
         btagSF     = computeOverallSF("btag"     , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF);
+        weightFactor = 1/trigEffHist->GetBinContent(trigEffHist->GetXaxis()->FindBin(leadingPhoton.Pt()));
         boostedPho = leadingPhoton;
         boostedPho.Boost(-(sumVector.BoostVector()));
         boostedJet = higgsJet_puppi_softdrop;
