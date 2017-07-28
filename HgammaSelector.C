@@ -109,6 +109,20 @@ void HgammaSelector::Loop(string outputFileName) {
   Long64_t nentries = fChain->GetEntriesFast();
   Long64_t nbytes = 0, nb = 0;
 
+  TFile* trigEffFile = new TFile("inputs/JetTrig.root");
+  TCanvas* trigEffCan = (TCanvas*) trigEffFile->Get("effi");
+  TPad* trigEffPad = (TPad*) trigEffCan->GetPrimitive("pad1");
+  TIter it(trigEffPad->GetListOfPrimitives());
+  TH1D* trigEffHist;
+  while (TObject* obj = it()) {
+    if (strncmp(obj->IsA()->GetName(), "TH1D", 4)==0) {
+      if (((TH1D*)obj)->GetLineColor() == 432) {
+        trigEffHist = (TH1D*)obj;
+      }
+    }
+  }
+  trigEffFile->Close();
+
   cout << "\n\nStarting HgammaSelector::Loop().\n" << endl;
   // Loop over all events
   for (Long64_t jentry=0; jentry<nentries;++jentry) {
