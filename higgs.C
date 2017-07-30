@@ -28,10 +28,10 @@ int higgs::Loop(std::string category, float HbbCutValue,  float pToverMcutValue,
                  jetEtaCutValue,
                  phoEtaCutValue
                ) < 0 
-            || higgsPrunedJetCorrMass < jetMassLowerBound
-            || higgsPrunedJetCorrMass > jetMassUpperBound
-            || phJetInvMass_pruned_higgs < lowerMassBound 
-            || phJetInvMass_pruned_higgs > upperMassBound 
+            || higgsPuppi_softdropJetCorrMass < jetMassLowerBound
+            || higgsPuppi_softdropJetCorrMass > jetMassUpperBound
+            || phJetInvMass_puppi_softdrop_higgs < lowerMassBound 
+            || phJetInvMass_puppi_softdrop_higgs > upperMassBound 
          ) continue;
       //cout << runNo << " : " << lumiNo  << " : " << eventNo << endl;
       ++nHiggsJets;
@@ -43,7 +43,7 @@ Int_t higgs::Cut(Long64_t entry, std::string category, float HbbCutValue, float 
   //LoadTree(entry);
   if (    
            leadingPhAbsEta          < phoEtaCutValue
-       &&  higgsJet_pruned_abseta   < jetEtaCutValue
+       &&  higgsJet_puppi_abseta   < jetEtaCutValue
        &&  phJetDeltaR_higgs        > deltaRcutValue
        &&  phPtOverMgammaj          > pToverMcutValue
        &&  (     (category == "btag"     && higgsJet_HbbTag >= HbbCutValue) 

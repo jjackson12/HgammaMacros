@@ -43,10 +43,10 @@ public :
    Float_t         leadingPhPhi;
    Float_t         leadingPhPt;
    Float_t         leadingPhAbsEta;
-   Float_t         phJetInvMass_pruned_higgs;
+   Float_t         phJetInvMass_puppi_softdrop_higgs;
    Float_t         phJetDeltaR_higgs;
-   Float_t         higgsJet_pruned_abseta;
-   Float_t         higgsPrunedJetCorrMass;
+   Float_t         higgsJet_puppi_abseta;
+   Float_t         higgsPuppi_softdropJetCorrMass;
    //Int_t         eventNo;
    //Int_t         lumiNo;
    //Int_t         runNo;
@@ -70,10 +70,10 @@ public :
    TBranch        *b_leadingPhPhi;   //!
    TBranch        *b_leadingPhPt;   //!
    TBranch        *b_leadingPhAbsEta;   //!
-   TBranch        *b_phJetInvMass_pruned_higgs;   //!
+   TBranch        *b_phJetInvMass_puppi_softdrop_higgs;   //!
    TBranch        *b_phJetDeltaR_higgs;   //!
-   TBranch        *b_higgsJet_pruned_abseta;   //!
-   TBranch        *b_higgsPrunedJetCorrMass;   //!
+   TBranch        *b_higgsJet_puppi_abseta;   //!
+   TBranch        *b_higgsPuppi_softdropJetCorrMass;   //!
    //TBranch        *b_eventNo;   //!
    //TBranch        *b_lumiNo;   //!
    //TBranch        *b_runNo;   //!
@@ -151,14 +151,14 @@ void higgs::Init(TTree *tree)
    fChain->SetBranchAddress("higgsJett2t1", &higgsJett2t1, &b_higgsJett2t1);
    fChain->SetBranchAddress("higgsJet_HbbTag", &higgsJet_HbbTag, &b_higgsJet_HbbTag);
    //fChain->SetBranchAddress("test_looseloose", &test_looseloose, &b_test_looseloose);
-   fChain->SetBranchAddress("leading", &leading, &b_higgs_csvValues_leading);
-   fChain->SetBranchAddress("subleading", &subleading, &b_higgs_csvValues_subleading);
-   fChain->SetBranchAddress("loose_loose", &loose_loose, &b_higgs_subjetCutDecisions_loose_loose);
-   fChain->SetBranchAddress("medium_loose", &medium_loose, &b_higgs_subjetCutDecisions_medium_loose);
-   fChain->SetBranchAddress("medium_medium", &medium_medium, &b_higgs_subjetCutDecisions_medium_medium);
-   fChain->SetBranchAddress("tight_loose", &tight_loose, &b_higgs_subjetCutDecisions_tight_loose);
-   fChain->SetBranchAddress("tight_medium", &tight_medium, &b_higgs_subjetCutDecisions_tight_medium);
-   fChain->SetBranchAddress("tight_tight", &tight_tight, &b_higgs_subjetCutDecisions_tight_tight);
+   //fChain->SetBranchAddress("leading", &leading, &b_higgs_csvValues_leading);
+   //fChain->SetBranchAddress("subleading", &subleading, &b_higgs_csvValues_subleading);
+   //fChain->SetBranchAddress("loose_loose", &loose_loose, &b_higgs_subjetCutDecisions_loose_loose);
+   //fChain->SetBranchAddress("medium_loose", &medium_loose, &b_higgs_subjetCutDecisions_medium_loose);
+   //fChain->SetBranchAddress("medium_medium", &medium_medium, &b_higgs_subjetCutDecisions_medium_medium);
+   //fChain->SetBranchAddress("tight_loose", &tight_loose, &b_higgs_subjetCutDecisions_tight_loose);
+   //fChain->SetBranchAddress("tight_medium", &tight_medium, &b_higgs_subjetCutDecisions_tight_medium);
+   //fChain->SetBranchAddress("tight_tight", &tight_tight, &b_higgs_subjetCutDecisions_tight_tight);
    //fChain->SetBranchAddress("higgs_looseloose", &higgs_looseloose, &b_higgs_looseloose);
    fChain->SetBranchAddress("cosThetaStar", &cosThetaStar, &b_cosThetaStar);
    fChain->SetBranchAddress("phPtOverMgammaj", &phPtOverMgammaj, &b_phPtOverMgammaj);
@@ -166,10 +166,10 @@ void higgs::Init(TTree *tree)
    fChain->SetBranchAddress("leadingPhPhi", &leadingPhPhi, &b_leadingPhPhi);
    fChain->SetBranchAddress("leadingPhPt", &leadingPhPt, &b_leadingPhPt);
    fChain->SetBranchAddress("leadingPhAbsEta", &leadingPhAbsEta, &b_leadingPhAbsEta);
-   fChain->SetBranchAddress("phJetInvMass_pruned_higgs", &phJetInvMass_pruned_higgs, &b_phJetInvMass_pruned_higgs);
+   fChain->SetBranchAddress("phJetInvMass_puppi_softdrop_higgs", &phJetInvMass_puppi_softdrop_higgs, &b_phJetInvMass_puppi_softdrop_higgs);
    fChain->SetBranchAddress("phJetDeltaR_higgs", &phJetDeltaR_higgs, &b_phJetDeltaR_higgs);
-   fChain->SetBranchAddress("higgsJet_pruned_abseta", &higgsJet_pruned_abseta, &b_higgsJet_pruned_abseta);
-   fChain->SetBranchAddress("higgsPrunedJetCorrMass", &higgsPrunedJetCorrMass, &b_higgsPrunedJetCorrMass);
+   fChain->SetBranchAddress("higgsJet_puppi_abseta", &higgsJet_puppi_abseta, &b_higgsJet_puppi_abseta);
+   fChain->SetBranchAddress("higgsPuppi_softdropJetCorrMass", &higgsPuppi_softdropJetCorrMass, &b_higgsPuppi_softdropJetCorrMass);
    //fChain->SetBranchAddress("eventNo", &eventNo, &b_eventNo);
    //fChain->SetBranchAddress("lumiNo", &lumiNo, &b_lumiNo);
    //fChain->SetBranchAddress("runNo", &runNo, &b_runNo);
