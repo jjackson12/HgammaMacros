@@ -72,6 +72,7 @@ void HgammaSelector::Loop(string outputFileName) {
   outputTreeHiggs->Branch("triggerFired_175", &triggerFired_175);
   outputTreeHiggs->Branch("antibtagSF", &antibtagSF);
   outputTreeHiggs->Branch("btagSF", &btagSF);
+  outputTreeHiggs->Branch("weightFactor", &weightFactor);
 
 
   // Branches from EXOVVNtuplizer tree
@@ -113,7 +114,7 @@ void HgammaSelector::Loop(string outputFileName) {
   TCanvas* trigEffCan = (TCanvas*) trigEffFile->Get("effi");
   TPad* trigEffPad = (TPad*) trigEffCan->GetPrimitive("pad1");
   TIter it(trigEffPad->GetListOfPrimitives());
-  TH1D* trigEffHist;
+  TH1D* trigEffHist = new TH1D();
   while (TObject* obj = it()) {
     if (strncmp(obj->IsA()->GetName(), "TH1D", 4)==0) {
       if (((TH1D*)obj)->GetLineColor() == 432) {

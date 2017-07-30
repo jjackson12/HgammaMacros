@@ -257,9 +257,6 @@ public :
    vector<float>   *jetAK8_tau3;
    vector<float>   *jetAK8_puppi_softdrop_mass;
    vector<float>   *jetAK8_puppi_softdrop_massCorr;
-   vector<float>   *jetAK8_puppi_jec;
-   vector<float>   *jetAK8_puppi_jecUp;
-   vector<float>   *jetAK8_puppi_jecDown;
    Int_t            jetAK8_puppi_N;
    vector<float>   *jetAK8_puppi_pt;
    vector<float>   *jetAK8_puppi_eta;
@@ -267,12 +264,6 @@ public :
    vector<float>   *jetAK8_puppi_e;
    vector<int>     *jetAK8_puppi_charge;
    vector<float>   *jetAK8_puppi_Hbbtag;
-   vector<int>     *jetAK8_puppi_partonFlavour;
-   vector<int>     *jetAK8_puppi_hadronFlavour;
-   vector<int>     *jetAK8_puppi_genParton_pdgID;
-   vector<int>     *jetAK8_puppi_nbHadrons;
-   vector<int>     *jetAK8_puppi_ncHadrons;
-   vector<float>   *jetAK8_puppi_csv;
    vector<float>   *jetAK8_puppi_tau1;
    vector<float>   *jetAK8_puppi_tau2;
    vector<float>   *jetAK8_softdrop_mass;
@@ -481,21 +472,11 @@ public :
    TBranch        *b_jetAK8_puppi_eta;   //!
    TBranch        *b_jetAK8_puppi_phi;   //!
    TBranch        *b_jetAK8_puppi_e;   //!
-   TBranch        *b_jetAK8_puppi_jec;   //!
-   TBranch        *b_jetAK8_puppi_charge;   //!
-   TBranch        *b_jetAK8_puppi_partonFlavour;   //!
-   TBranch        *b_jetAK8_puppi_hadronFlavour;   //!
-   TBranch        *b_jetAK8_puppi_genParton_pdgID;   //!
-   TBranch        *b_jetAK8_puppi_nbHadrons;   //!
-   TBranch        *b_jetAK8_puppi_ncHadrons;   //!
-   TBranch        *b_jetAK8_puppi_csv;   //!
    TBranch        *b_jetAK8_puppi_tau1;   //!
    TBranch        *b_jetAK8_puppi_tau2;   //!
    TBranch        *b_jetAK8_puppi_tau3;   //!
    TBranch        *b_jetAK8_puppi_softdrop_mass;   //!
    TBranch        *b_jetAK8_puppi_softdrop_massCorr;   //!
-   TBranch        *b_jetAK8_puppi_jecUp;   //!
-   TBranch        *b_jetAK8_puppi_jecDown;   //!
    TBranch        *b_jetAK8_softdrop_mass;   //!
    TBranch        *b_jetAK8_softdrop_massCorr;   //!
    TBranch        *b_jetAK8_softdrop_jec;   //!
@@ -761,21 +742,10 @@ void HgammaSelector::Init(TTree *tree)
    jetAK8_puppi_eta = 0;
    jetAK8_puppi_phi = 0;
    jetAK8_puppi_e = 0;
-   jetAK8_puppi_jec = 0;
-   jetAK8_puppi_charge = 0;
-   jetAK8_puppi_partonFlavour = 0;
-   jetAK8_puppi_hadronFlavour = 0;
-   jetAK8_puppi_genParton_pdgID = 0;
-   jetAK8_puppi_nbHadrons = 0;
-   jetAK8_puppi_ncHadrons = 0;
-   jetAK8_puppi_csv = 0;
    jetAK8_puppi_tau1 = 0;
    jetAK8_puppi_tau2 = 0;
    jetAK8_puppi_softdrop_mass = 0;
    jetAK8_puppi_softdrop_massCorr = 0;
-   jetAK8_puppi_jec = 0;
-   jetAK8_puppi_jecUp = 0;
-   jetAK8_puppi_jecDown = 0;
    jetAK8_softdrop_mass = 0;
    jetAK8_softdrop_massCorr = 0;
    jetAK8_softdrop_jec = 0;
@@ -964,20 +934,10 @@ void HgammaSelector::Init(TTree *tree)
    fChain->SetBranchAddress("jetAK8_puppi_eta", &jetAK8_puppi_eta, &b_jetAK8_puppi_eta);
    fChain->SetBranchAddress("jetAK8_puppi_phi", &jetAK8_puppi_phi, &b_jetAK8_puppi_phi);
    fChain->SetBranchAddress("jetAK8_puppi_e", &jetAK8_puppi_e, &b_jetAK8_puppi_e);
-   fChain->SetBranchAddress("jetAK8_puppi_jec", &jetAK8_puppi_jec, &b_jetAK8_puppi_jec);
-   fChain->SetBranchAddress("jetAK8_puppi_partonFlavour", &jetAK8_puppi_partonFlavour, &b_jetAK8_puppi_partonFlavour);
-   fChain->SetBranchAddress("jetAK8_puppi_hadronFlavour", &jetAK8_puppi_hadronFlavour, &b_jetAK8_puppi_hadronFlavour);
-   fChain->SetBranchAddress("jetAK8_puppi_genParton_pdgID", &jetAK8_puppi_genParton_pdgID, &b_jetAK8_puppi_genParton_pdgID);
-   fChain->SetBranchAddress("jetAK8_puppi_nbHadrons", &jetAK8_puppi_nbHadrons, &b_jetAK8_puppi_nbHadrons);
-   fChain->SetBranchAddress("jetAK8_puppi_ncHadrons", &jetAK8_puppi_ncHadrons, &b_jetAK8_puppi_ncHadrons);
-   fChain->SetBranchAddress("jetAK8_puppi_csv", &jetAK8_puppi_csv, &b_jetAK8_puppi_csv);
    fChain->SetBranchAddress("jetAK8_puppi_tau1", &jetAK8_puppi_tau1, &b_jetAK8_puppi_tau1);
    fChain->SetBranchAddress("jetAK8_puppi_tau2", &jetAK8_puppi_tau2, &b_jetAK8_puppi_tau2);
    fChain->SetBranchAddress("jetAK8_puppi_softdrop_mass", &jetAK8_puppi_softdrop_mass, &b_jetAK8_puppi_softdrop_mass);
    fChain->SetBranchAddress("jetAK8_puppi_softdrop_massCorr", &jetAK8_puppi_softdrop_massCorr, &b_jetAK8_puppi_softdrop_massCorr);
-   fChain->SetBranchAddress("jetAK8_puppi_jec", &jetAK8_puppi_jec, &b_jetAK8_puppi_jec);
-   fChain->SetBranchAddress("jetAK8_puppi_jecUp", &jetAK8_puppi_jecUp, &b_jetAK8_puppi_jecUp);
-   fChain->SetBranchAddress("jetAK8_puppi_jecDown", &jetAK8_puppi_jecDown, &b_jetAK8_puppi_jecDown);
    fChain->SetBranchAddress("jetAK8_softdrop_mass", &jetAK8_softdrop_mass, &b_jetAK8_softdrop_mass);
    fChain->SetBranchAddress("jetAK8_softdrop_massCorr", &jetAK8_softdrop_massCorr, &b_jetAK8_softdrop_massCorr);
    fChain->SetBranchAddress("jetAK8_softdrop_jec", &jetAK8_softdrop_jec, &b_jetAK8_softdrop_jec);
