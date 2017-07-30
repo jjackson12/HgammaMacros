@@ -189,8 +189,10 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
   graphPoints3250 = []
   #graphPoints4000 = []
   nSteps = total.GetNbinsX()
-  lowerBound = getRangesDict()[whichVarAmI(inFileName_higgswindow)][0]
-  upperBound = getRangesDict()[whichVarAmI(inFileName_higgswindow)][1]
+  # HACK HACK
+  lowerBound = getRangesDict()[whichVarAmI(inFileName_higgswindow)][0][0]
+  upperBound = getRangesDict()[whichVarAmI(inFileName_higgswindow)][0][1]
+  # END HACK HACK
   stepSize = (upperBound-lowerBound)/nSteps
   for i in range(0, total.GetNbinsX()):
     slideValue = lowerBound+i*stepSize
@@ -379,8 +381,8 @@ for direction in ["up", "down"]:
   i=0
   for key in getHiggsRangesDict().keys():
     # for withBtag / noBtag you need to change the next THREE lines
-    sideband_varName    = "stackplots_nMinus1_%s_sideband%i%i/nMinus1_stack_%s.root"%( withBtag, windowEdges[0], windowEdges[1], key)
-    higgswindow_varName = "stackplots_nMinus1_%s/nMinus1_stack_%s.root"%(withBtag, key)
+    sideband_varName    = "stackplots_puppiSoftdrop_nMinus1_%s_sideband%i%i/nMinus1_stack_%s.root"%( withBtag, windowEdges[0], windowEdges[1], key)
+    higgswindow_varName = "stackplots_puppiSoftdrop_nMinus1_%s/nMinus1_stack_%s.root"%(withBtag, key)
     makeOpt(sideband_varName, higgswindow_varName, direction, withBtag == "withBtag", srCans, srPads, sbCans, sbPads, stacks, sidebands, i, windowEdges)
     i+=1
   if direction is direction[-1]:
@@ -394,8 +396,8 @@ for direction in ["up", "down"]:
 #  sidebands = []
 #  i=0
 #  for key in getHiggsRangesDict().keys():
-#    sideband_varName = "stackplots_nMinus1_noBtag_sideband/nMinus1_stack_%s.root"%key
-#    higgswindow_varName = "stackplots_nMinus1_noBtag/nMinus1_stack_%s.root"%key
+#    sideband_varName = "stackplots_puppiSoftdrop_nMinus1_noBtag_sideband/nMinus1_stack_%s.root"%key
+#    higgswindow_varName = "stackplots_puppiSoftdrop_nMinus1_noBtag/nMinus1_stack_%s.root"%key
 #    makeOpt(sideband_varName, higgswindow_varName, direction, False, srCans, srPads, sbCans, sbPads, stacks, sidebands, i)
 #    i+=1
 #  if direction is direction[-1]:
