@@ -11,7 +11,7 @@ def getSignalEfficiencies(massWindowToCheck):
 
   samplesDirs = getSamplesDirs()
   cutValues = getCutValues()
-  cutsDict = getDefaultCuts("higgs")
+  cutsDict = getDefaultCuts("higgs", False, False, [0.,0.])
 
   instance("higgs", "compile")
 
@@ -21,8 +21,10 @@ def getSignalEfficiencies(massWindowToCheck):
   higgsTrees = {}
 
   # create a dict of dd trees by masses
-  for mass in getNormalizations().keys():
-    sigDDs[mass] = TFile("%s/ddTree_Hgamma_m%s.root" % (samplesDirs["ddDir"], mass))
+  masses = getNormalizations().keys()
+  print "calculating efficiencies for masses:", masses
+  for mass in masses:
+    sigDDs[mass] = TFile("%s/ddTree_sig_m%s.root" % (samplesDirs["sigDDdir"], mass))
     higgsTrees[mass] = sigDDs[mass].Get("higgs")
     print "higgsTrees:"
     print higgsTrees
@@ -31,8 +33,8 @@ def getSignalEfficiencies(massWindowToCheck):
   for key in higgsTrees.keys():
     higgsCounter = higgs(higgsTrees[key])
     # check with no masswindow applied
-    nEntriesWithBtag = higgsCounter.Loop("btag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetEta"], cutValues["phEta"])
-    nEntriesNoBtag = higgsCounter.Loop("nobtag", 0.9, 0.35, 1.1, 2.4, 1.4442)
+    nEntriesWithBtag = higgsCounter.Loop("btag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetAbsEta"], cutValues["phEta"])
+    nEntriesNoBtag = higgsCounter.Loop("nobtag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetAbsEta"], cutValues["phEta"])
     btagEfficiency = nEntriesWithBtag/float(nEntriesNoBtag)
     totalEfficiency = nEntriesWithBtag/float(getSigNevents()[str(mass)])
     thisMassEff     = {}
@@ -46,12 +48,13 @@ def getSignalEfficiencies(massWindowToCheck):
     # check with masswindows
     for masswindow in [[110, 140], [90, 150], [95,145], [100,140]]:
       # higgsCounter: higgs::Loop(float HbbCutValue, float pToverMcutValue, float deltaRcutValue, float jetEtaCutValue, float phoEtaCutValue, float lowerMassBound, float upperMassBound)
-      nEntriesWithBtag = higgsCounter.Loop("btag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetEta"], cutValues["phEta"], masswindow[0], masswindow[1])
-      nEntriesWithAntiBtag = higgsCounter.Loop("antibtag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetEta"], cutValues["phEta"], masswindow[0], masswindow[1])
-      nEntriesNoBtag = higgsCounter.Loop("nobtag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetEta"], cutValues["phEta"], masswindow[0], masswindow[1])
+      nEntriesWithBtag = higgsCounter.Loop("btag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetAbsEta"], cutValues["phEta"], masswindow[0], masswindow[1])
+      nEntriesWithAntiBtag = higgsCounter.Loop("antibtag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetAbsEta"], cutValues["phEta"], masswindow[0], masswindow[1])
+      nEntriesNoBtag = higgsCounter.Loop("nobtag", cutValues["Hbb"], cutValues["ptOverM"], cutValues["deltaR"], cutValues["jetAbsEta"], cutValues["phEta"], masswindow[0], masswindow[1])
       btagEfficiency = nEntriesWithBtag/float(nEntriesNoBtag)
       antiBtagEfficiency = nEntriesWithAntiBtag/float(nEntriesNoBtag)
 
+      print "nEntriesNoBtag:", nEntriesNoBtag, "getSigNevents()[str(%s)]"%mass, getSigNevents()[str(mass)]
       noBtagEfficiency = nEntriesNoBtag/float(getSigNevents()[str(mass)])
       thisMassEff["nobtag"] = noBtagEfficiency
 
