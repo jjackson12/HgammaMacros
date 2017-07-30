@@ -44,7 +44,7 @@ def getVarKeys():
   return varKeys
 
 def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
-    print "makeHiggsWindow got sideband =", sideband, "and windowEdges =", windowEdges
+    #print "makeHiggsWindow got sideband =", sideband, "and windowEdges =", windowEdges
     cutValues = getCutValues()
     cuts = {}
     window = "higgsWindow"
@@ -57,7 +57,7 @@ def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
         window = "sideband80100Window"
     cuts["higgsWindowLow"] = TCut( "higgsPuppi_softdropJetCorrMass>%f"   % cutValues[window][0] )
     cuts["higgsWindowHi"]  = TCut( "higgsPuppi_softdropJetCorrMass<%f"   % cutValues[window][1] )
-    print "will return combineCuts(cuts)=", combineCuts(cuts)
+    #print "will return combineCuts(cuts)=", combineCuts(cuts)
     return combineCuts(cuts)
 
 def makeTrigger(which = "OR"):

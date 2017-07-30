@@ -47,6 +47,25 @@ if not options.cutName in validCutNames:
   print "please select a cutName with the -c option, options are: %s" % str(validCutNames )
   exit(1)
 
+def isOrIsNot(boolean, singularOrPlural):
+  if singularOrPlural == "singular":
+    return "is" if boolean else "isn't"
+  else:
+    return "are" if boolean else "aren't"
+
+print "Making stackplots for %s cuts." % options.cutName,
+if options.cutName != "preselection":
+  print "The btagging cut %s being applied%s" % (
+         isOrIsNot(options.withBtag, "singular"), 
+         "and btagging scalefactors %s being used."%isOrIsNot(options.useScaleFactors, "plural") if options.withBtag else "."
+        ),
+  if options.sideband:
+    print "Data %s shown in the mass window." % isOrIsNot(True, "singular"), windowEdges,
+  print "MC backgrounds",
+  if options.showSigs:
+    print "and signals",
+  print "%s being shown in the signal region [110.0, 140.0]." % isOrIsNot(True, "plural")
+
 from ROOT import *
 if not options.graphics:
   gROOT.SetBatch()
@@ -80,8 +99,8 @@ for withBtag in [options.withBtag]:
 
   higgsRangesDict = getHiggsRangesDict()
   #print ""
-  print "getHiggsRangesDict:"
-  print higgsRangesDict
+  #print "getHiggsRangesDict:"
+  #print higgsRangesDict
 
   #for sideband in ['100110','5070']:
   #  SidebandRangesDict = getSidebandRangesDict(sideband)
@@ -136,7 +155,7 @@ for withBtag in [options.withBtag]:
       iRange = 1
       first = True
       for rng in higgsRangesDict[varkey]:
-        print "working on range", rng, "for varkey", varkey
+        #print "working on range", rng, "for varkey", varkey
         indexLabel = ""
         if not first:
           indexLabel +="_%i" % iRange
@@ -169,7 +188,7 @@ for withBtag in [options.withBtag]:
             dirName += "_SF"
           thisFileName = "%s/%s" % (dirName, filename)
           thisFileNameDefault = "%s/%s" % (dirName, filenameDefault)
-          print "going to use the MC background hist from file %s in building THStack " % thisFileName
+          #print "going to use the MC background hist from file %s in building THStack " % thisFileName
           #HACKHACKHACK:
           if nonEmptyFilesDict[thisFileNameDefault] == "nonempty" and path.exists(thisFileName):
             #if printFileNames:
@@ -185,10 +204,10 @@ for withBtag in [options.withBtag]:
             namesDict[hists[-1].GetName()] = hists[-1]
         for mcBG in getMCbgOrderedList():
           for key in namesDict:
-            print "key", key
-            print "namesDict[key]", namesDict[key]
+            #print "key", key
+            #print "namesDict[key]", namesDict[key]
             if mcBG in key:
-              print "mcBG found in namesDict[key]"
+              #print "mcBG found in namesDict[key]"
               #print "adding %s to stackplot; it has integral %f" % (integralsDict[key], key)
               thstacks[-1].Add(namesDict[key])
               thstackCopies[-1].Add(namesDict[key])
@@ -222,10 +241,10 @@ for withBtag in [options.withBtag]:
         #print thstacks[-1]
         if varkey in varDict.keys():
           #print "going to set title for thstacks[-1] to %s " % varkey
-          print "varkey:", varkey
-          print "varDict:", varDict
-          print "varDict[varkey]:", varDict[varkey]
-          print thstacks[-1].GetXaxis()
+          #print "varkey:", varkey
+          #print "varDict:", varDict
+          #print "varDict[varkey]:", varDict[varkey]
+          #print thstacks[-1].GetXaxis()
           thstacks[-1].GetXaxis().SetTitle(varDict[varkey])
         thstacks[-1].GetYaxis().SetTitle("Events/%g"%thstacks[-1].GetXaxis().GetBinWidth(1))
         thstacks[-1].GetYaxis().SetLabelSize(0.04)
@@ -242,7 +261,7 @@ for withBtag in [options.withBtag]:
         if sideband:
           dName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
         datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
-        print "going to use data file",  datafiles[-1].GetName(), "for the plot"
+        #print "going to use data file",  datafiles[-1].GetName(), "for the plot"
         datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
         #print datahists[-1]
         if not blindData:
@@ -270,7 +289,7 @@ for withBtag in [options.withBtag]:
               rName += "_SF"
             outDirName = "stackplots_puppiSoftdrop_%s" % rName
             sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
-            print "adding signal file", sigfiles[-1].GetName(), "to the plot"
+            #print "adding signal file", sigfiles[-1].GetName(), "to the plot"
             sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
             sighists[-1].SetLineStyle(3)
             sighists[-1].SetLineWidth(2)

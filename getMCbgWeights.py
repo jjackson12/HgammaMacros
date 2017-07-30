@@ -31,7 +31,7 @@ def getMCbgSampleEvents(small3Dir):
   sampleEvents = {}
   for key in sampleXsects:
     mcBGfileName = "%s/%s%s" % (small3Dir, getSmallPrefix(), key)
-    print "the small3 input filename is: %s" % mcBGfileName
+    #print "the small3 input filename is: %s" % mcBGfileName
     mcBGfile = TFile( mcBGfileName )
     #print mcBGfile
     hCounter = mcBGfile.Get("ntuplizer/hCounter")

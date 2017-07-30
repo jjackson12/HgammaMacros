@@ -127,7 +127,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
           elif cutName in "antibtag":
             cut = getAntiBtagComboCut(region, useTrigger, sideband, useScaleFactors, windowEdges)
           elif cutName in "nobtag":
-            print "going to pass getNoBtagComboCut windowEdges" 
+            #print "going to pass getNoBtagComboCut windowEdges" 
             cut = getNoBtagComboCut(region, useTrigger, sideband, windowEdges)
           elif cutName in "nMinus1":
             cut = getNminus1ComboCut(region, var, withBtag, useTrigger, sideband, windowEdges)
@@ -139,7 +139,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
             exit(1)
           if useTrigger:
             cut += makeTrigger()
-          print "cut is now", cut
+          #print "cut is now", cut
             
           #if cutName is "preselection":
           #  nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)
