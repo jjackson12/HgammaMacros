@@ -4,7 +4,7 @@ from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["sigalsSmall3sDir"] = "/Users/johakala/HgammaMacros/organize_smallifications/signals"
+  response["signalsSmall3sDir"] = "/Users/johakala/HgammaMacros/organize_smallifications/signals"
   response["bkgSmall3sDir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/backgrounds"
   response["dataSmall3Dir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/data"
   response["dataSmall3File"]       = "/Users/johakala/HgammaMacros/organize_smallifications/smallification_data2016SinglePhoton.root"
@@ -55,17 +55,17 @@ def getMassWindows():
 def getSigNevents():
   sigNevents = {}
   for mass in getNormalizations().keys():
-    flattuple = TFile("%s/flatTuple_m%s.root"%(getSamplesDirs()["HgammaFlatTuples"], mass))
+    flattuple = TFile("%s/smallified_sig_m%s.root"%(getSamplesDirs()["signalsSmall3sDir"], mass))
     hCounter = flattuple.Get("ntuplizer/hCounter")
-    sigNevents[mass] = hCounter.GetEntries()
+    sigNevents[mass] = hCounter.GetBinContent(1)
   return sigNevents
 
 def getVariableDict():
   varDict = {}
-  varDict["higgsJet_pruned_abseta"]    = "#||{#eta_{J}}"
-  varDict["higgsJet_pruned_eta"]       = "#eta_{J}"
-  varDict["higgsJet_pruned_phi"]       = "#phi_{J}"
-  varDict["higgsJet_pruned_pt"]        = "p_{T}^{J}"
+  varDict["higgsJet_puppi_abseta"]    = "#||{#eta_{J}}"
+  varDict["higgsJet_puppi_eta"]       = "#eta_{J}"
+  varDict["higgsJet_puppi_phi"]       = "#phi_{J}"
+  varDict["higgsJet_puppi_pt"]        = "p_{T}^{J}"
   varDict["leadingPhEta"]              = "#eta_{#gamma}"
   varDict["higgsJet_HbbTag"]           = "Hb#bar{b} tagger discriminant"
   varDict["phJetDeltaR_higgs"]         = "#DeltaR(#gamma, jet)"
@@ -76,7 +76,7 @@ def getVariableDict():
   varDict["leadingPhPhi"]              = "#phi_{#gamma}"
   varDict["cosThetaStar"]              = "#||{cos(#theta*)}"
   varDict["phJetInvMass_puppi_softdrop_higgs"] = "m_{#gammaJ} (GeV)"
-  varDict["higgsPuppi_softdropJetCorrMass"]    = "m_{J}^{puppi_softdrop} (GeV)"
+  varDict["higgsPuppi_softdropJetCorrMass"]    = "m_{J}^{PUPPI+SD} (GeV)"
   return varDict
 
 
