@@ -1,4 +1,5 @@
 from optparse import OptionParser
+from pprint import pprint
 
 fitParams = {    '650_antibtag' :[707.012, 14.4759, 1.3, 5, 707.012, 102.161, 0.401398],
                  '750_antibtag' :[750.247, 24.3098, 1.28213, 1.05337, 750.247, 152.79, 0.95748],
@@ -37,14 +38,16 @@ parser.add_option("-c", dest="category",
                   help = "the category: either btag or antibtag")
 parser.add_option("-r", dest="binWidth", type=int, default=10,
                   help = "the bin width for output plot")
-parser.add_option("-b", action="store_true", dest="batch",
-                  help = "turn on batch mode")
+parser.add_option("-g", action="store_true", dest="graphics",
+                  help = "turn off batch mode")
 (options, args) = parser.parse_args()
 if not options.category in ["btag", "antibtag"]:
   print "you must pick either 'btag' or 'antibtag' as the -c option"
   exit(1)
 from ROOT import *
-if options.batch:
+print "options.graphics is:", options.graphics
+if not options.graphics:
+  print "setting batch mode"
   gROOT.SetBatch()
 
 def makeCrystalBall(mass, category):
@@ -70,38 +73,41 @@ def makeGauss(mass, category):
 
 gStyle.SetOptStat(0)
 outFile = TFile("prettyFits_%s.root" % options.category, "RECREATE")
-def getIntegral(curve, xLow, xHi):
-  integral = Double(0)
-  yLow  = Double(curve.Eval(xLow))
-  yHi   = Double(curve.Eval(xHi) )
-  #print "curve at x=%f has value y=%f" % (xLow, yLow)
-  #print "curve at x=%f has value y=%f" % (xHi, yHi)
-  xLast = Double(xLow            )
-  yLast = Double(yLow            )
-  xx = Double(xLow               )
-  yy = Double(yLow               )
-  for iPoint in range(0, curve.GetN()):
-    #curve.GetPoint(iPoint-1, xLast, yLast)
-    curve.GetPoint(iPoint, xx, yy)
-    if xx>=xLow and xx<=xHi :
-      #print "python evaluates %f <= %f to %r" % (xx, xHi, xx<=xHi)
-      #print "found a point between %f and %f: it has (x,y) value (%f, %f)"%(xLow, xHi, xx,yy)
-      #print "will add (%f=%f) * (%f+%f)/2" % (xx, xLast, yy, yLast)
-      integral +=  (xx-xLast) *(yy+yLast)/2
-      #print "   == %f" % ((xx-xLast) *(yy+yLast)/2)
-      #print " total   == %f" % integral
-      xLast = Double(float(xx))
-      yLast = Double(float(yy))
-  #print "  adding the last piece"
-  #print "(%f-%f) * (%f+%f)/2" % (xHi, xLast, yHi, yLast) 
-  integral +=  (xHi-xLast) *(yHi+yLast)/2 
-  #print "   == %f" % ((xHi-xLast) *(yHi+yLast)/2)
-  #print "total = %f" % integral
+def getIntegral(curve, xLow, xHi, crystalBall=TF1(), gauss=TF1()):
+  #integral = Double(0)
+  #yLow  = Double(curve.Eval(xLow))
+  #yHi   = Double(curve.Eval(xHi) )
+  ##print "curve at x=%f has value y=%f" % (xLow, yLow)
+  ##print "curve at x=%f has value y=%f" % (xHi, yHi)
+  #xLast = Double(xLow            )
+  #yLast = Double(yLow            )
+  #xx = Double(xLow               )
+  #yy = Double(yLow               )
+  #for iPoint in range(0, curve.GetN()):
+  #  #curve.GetPoint(iPoint-1, xLast, yLast)
+  #  curve.GetPoint(iPoint, xx, yy)
+  #  if xx>=xLow and xx<=xHi :
+  #    #print "python evaluates %f <= %f to %r" % (xx, xHi, xx<=xHi)
+  #    #print "found a point between %f and %f: it has (x,y) value (%f, %f)"%(xLow, xHi, xx,yy)
+  #    #print "will add (%f=%f) * (%f+%f)/2" % (xx, xLast, yy, yLast)
+  #    integral +=  (xx-xLast) *(yy+yLast)/2
+  #    #print "   == %f" % ((xx-xLast) *(yy+yLast)/2)
+  #    #print " total   == %f" % integral
+  #    xLast = Double(float(xx))
+  #    yLast = Double(float(yy))
+  ##print "  adding the last piece"
+  ##print "(%f-%f) * (%f+%f)/2" % (xHi, xLast, yHi, yLast) 
+  #integral +=  (xHi-xLast) *(yHi+yLast)/2 
+  ##print "   == %f" % ((xHi-xLast) *(yHi+yLast)/2)
+  ##print "total = %f" % integral
+  integral = crystalBall.Integral(xLow, xHi)+gauss.Integral(xLow, xHi)
   return integral
 
 from ROOT import *
 fullsimMCs      = [750, 850, 1000, 1150, 1300, 1450, 1600, 1750, 1900, 2050, 2450, 2850, 3250]
 #fullsimMCs      = [1000]
+ksTestResults = {}
+ksTestResults["category"] = options.category
 for fullsimMC in fullsimMCs:
   outCan = TCanvas("c_%i"% fullsimMC, "c_%i"% fullsimMC, 600, 800)
   fullsimHist     = None
@@ -172,16 +178,21 @@ for fullsimMC in fullsimMCs:
   pullHist = hist.Clone() 
   pullHist.SetName("ratio_%i" % fullsimMC)
   for iBin in range(1,hist.GetXaxis().GetNbins()):
-    integral = getIntegral(fullsimCurve, hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin))
+    integral = getIntegral(fullsimCurve, hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), crystalBall, gaussian)
     #print "bin content from %f to %f is: %f" % (hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), hist.GetBinContent(iBin))
     #print "adjusted from x=%f to %f is: %f" % (hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), integral/hist.GetXaxis().GetBinWidth(iBin))
     if not hist.GetBinError(iBin) == 0 :
       binnedCurveVal = integral/hist.GetXaxis().GetBinWidth(iBin) 
-      if hist.GetXaxis().GetBinUpEdge(iBin) > 700:
+      if hist.GetXaxis().GetBinUpEdge(iBin) > 700 and hist.GetXaxis().GetBinLowEdge(iBin) > float(fullsimMC)*0.75 and hist.GetXaxis().GetBinUpEdge(iBin) < float(fullsimMC)*1.2:
         cloneHist.SetBinContent(iBin, hist.GetBinContent(iBin))
         ksHist.SetBinContent(iBin, binnedCurveVal)
+        if binnedCurveVal < 0:
+          print "Got a weird binned curve val!: ", binnedCurveVal
+          print "integral:", integral
+          print "bin width:", hist.GetXaxis().GetBinWidth(iBin)
+       
       else: 
-        cloneHist.SetBinContent(iBin, hist.GetBinContent(iBin))
+        cloneHist.SetBinContent(iBin, 0)
         ksHist.SetBinContent(iBin, 0)
       if not hist.GetBinContent(iBin) <=0.1 :
         pullHist.SetBinContent(iBin, (binnedCurveVal - hist.GetBinContent(iBin))/hist.GetBinError(iBin))
@@ -218,6 +229,7 @@ for fullsimMC in fullsimMCs:
   outCan.Write()
   outCan.SaveAs("%s_%i.pdf" % (options.category, fullsimMC))
   newCan = TCanvas()
+  newCan.SetName("k_%s" % fullsimMC)
   newCan.cd()
   hist.Draw()
   hist.SetLineColor(kGreen)
@@ -225,12 +237,15 @@ for fullsimMC in fullsimMCs:
   ksHist.Draw("SAME")
   ksHist.SetLineColor(kRed)
   ksHist.SetMarkerColor(kRed)
+  ksHist.SetName("ksHist")
   cloneHist.Draw("SAME")
   cloneHist.SetMarkerColor(kBlue)
   cloneHist.SetLineColor(kBlue)
+  cloneHist.SetName("cloneHist")
   fullsimCurve.Draw("SAME")
   fullsimCurve.SetLineColor(kBlack)
   newCan.Write()
-  print "KS test result for %i:" % fullsimMC , cloneHist.KolmogorovTest(ksHist, "MX")
+  ksTestResults[fullsimMC] = cloneHist.KolmogorovTest(ksHist)
 outFile.Close()
+pprint(ksTestResults)
   
