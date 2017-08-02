@@ -59,7 +59,7 @@ def getWeightsDict(bkgSmall3Dir):
   sampleXsects = getMCbgSampleXsects() 
   sampleEvents = getMCbgSampleEvents(bkgSmall3Dir)
 
-  lumi = 36420
+  lumi = 35900
 
   sampleWeights = {}
   for key in sampleXsects:

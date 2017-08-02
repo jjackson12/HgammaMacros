@@ -133,7 +133,7 @@ def getNminus1ComboCut(region, popVar, withBtag, useTrigger, sideband=False, win
     nobtagCuts.pop("antibtag")
     if not withBtag:
       nobtagCuts.pop("btag")
-    if not "SF" in popVar:
+    if not "SF" in popVar and not "weightFactor" in popVar:
       nobtagCuts.pop(getVarKeys()[popVar])
     return combineCuts(nobtagCuts)
 

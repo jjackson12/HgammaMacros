@@ -35,7 +35,7 @@ outfile.cd()
 graphs   = []
 
 #for category in ['btag', 'antibtag']:
-sigEffs = getSignalEfficiencies([110., 140.])
+sigEffs = getSignalEfficiencies()
 for category in ['btag', 'antibtag']:
   #canvases.append(TCanvas())
   graphs.append(TGraph())
@@ -44,8 +44,8 @@ for category in ['btag', 'antibtag']:
   masses = getNormalizations()  
   print sigEffs
   for mass in masses.keys():
-    print "%r: %f" % (float(mass), sigEffs["%s" % str(mass)][category])
-    graphs[-1].SetPoint(graphs[-1].GetN(), float(mass), sigEffs["%s" % str(mass)][category])
+    print "%r: %f" % (float(mass), sigEffs[category][str(mass)])
+    graphs[-1].SetPoint(graphs[-1].GetN(), float(mass), sigEffs[category][str(mass)])
   graphs[-1].GetXaxis().SetTitle("Signal mass (GeV)")
   graphs[-1].GetYaxis().SetTitle("#varepsilon")
   graphs[-1].SetMarkerStyle(2)

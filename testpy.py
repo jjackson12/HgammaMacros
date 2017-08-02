@@ -21,6 +21,7 @@ def getHiggsRangesDict():
   rangesDict["leadingPhEta"]                 = [[-2.8,2.8]]
   rangesDict["antibtagSF"]                   = [[0.0, 1.0]]
   rangesDict["btagSF"]                       = [[0.0, 1.0]]
+  rangesDict["weightFactor"]                 = [[0.0, 2.0]]
   label = "higgs"
   rangesDict["%sJet_HbbTag"%label]           = [[-1. , 1.]]
   rangesDict["%sJet_puppi_abseta"%label]=[[0., 3]]
