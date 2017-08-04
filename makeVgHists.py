@@ -58,19 +58,47 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
   outFile.Close()
 
 if __name__=="__main__":
-  
-  if path.exists("vgHists"):
-    rmtree ("vgHists")
-  inSigFileNames = glob("organize_DDs/signals/*.root")
-  sigNevents = getSigNevents()
-  print "sigNevents:", sigNevents
-  for inSigFileName in inSigFileNames:
-    if "650" in inSigFileName:
-      continue;
-    mass = inSigFileName.split("sig_m")[-1].split(".root")[0]
-    makeHist(inSigFileName, "btag", "signals", sigNevents[mass])
-    makeHist(inSigFileName, "antibtag", "signals", sigNevents[mass])
-  inDataName = "organize_DDs/data/ddTree_data2016SinglePhoton.root"
-  for windowEdges in [[100., 110.], [50., 70.]]:
-    makeHist(inDataName, "antibtag", "data", -999, windowEdges)
-    makeHist(inDataName, "btag", "data", -999, windowEdges)
+  from sys import argv
+  if len(argv) > 0 and argv[1] == "vgMC":
+    inDirs = ["stackplots_puppiSoftdrop_antibtag_SF_vgMC","stackplots_puppiSoftdrop_btag_SF_vgMC"]
+    inFiles = {}
+    for inDir in inDirs:
+      fileNames = glob("%s/*.root" % inDir)
+      for fileName in fileNames:
+        if "stack_phJetInvMass_puppi_softdrop_higgs" in fileName:
+          kind = "antibtag" if "antibtag" in fileName else "btag"
+          inFiles[kind] = TFile(fileName)
+    inHists = {}
+    for cat in inFiles.keys():
+      for key in inFiles[cat].GetListOfKeys():
+        if "TCanvas" in inFiles[cat].Get(key.GetName()).IsA().GetName():
+          for primitive in inFiles[cat].Get(key.GetName()).GetListOfPrimitives():
+            if "TPad" in primitive.IsA().GetName():
+              for subprim in primitive.GetListOfPrimitives():
+                if "THStack" in subprim.IsA().GetName():
+                  inHists[cat] = subprim.GetStack().Last()
+    for cat in inHists.keys():
+      outputDir = path.join("vgHists", cat)
+      outFileName = path.join(outputDir, "histos_mcBG.root")
+      outFile = TFile(outFileName, "RECREATE")
+      inHists[cat].Write()
+      outFile.Close()
+    
+      
+    
+  else:
+    if path.exists("vgHists"):
+      rmtree ("vgHists")
+    inSigFileNames = glob("organize_DDs/signals/*.root")
+    sigNevents = getSigNevents()
+    print "sigNevents:", sigNevents
+    for inSigFileName in inSigFileNames:
+      if "650" in inSigFileName:
+        continue;
+      mass = inSigFileName.split("sig_m")[-1].split(".root")[0]
+      makeHist(inSigFileName, "btag", "signals", sigNevents[mass])
+      makeHist(inSigFileName, "antibtag", "signals", sigNevents[mass])
+    inDataName = "organize_DDs/data/ddTree_data2016SinglePhoton.root"
+    for windowEdges in [[100., 110.], [50., 70.]]:
+      makeHist(inDataName, "antibtag", "data", -999, windowEdges)
+      makeHist(inDataName, "btag", "data", -999, windowEdges)

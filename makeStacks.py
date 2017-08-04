@@ -22,6 +22,8 @@ parser.add_option("-g", action="store_true", dest="graphics"     , default=False
                   help = "turn off batch mode"                                         )
 parser.add_option("-e", dest="edges",     
                   help = "the higgs mass window edges: either 100110, 5070, or 80100"  )
+parser.add_option("-v", action="store_true", dest="vgMC", default=False,     
+                  help = "if -v is used, make a stackplot for MC BG limits"            )
 (options, args) = parser.parse_args()
 
 if options.sideband is False:
@@ -80,6 +82,10 @@ sideband = options.sideband
 showSigs = options.showSigs
 addLines = options.addLines
 useScaleFactors = options.useScaleFactors
+vgMC = options.vgMC
+if vgMC and (not useScaleFactors or sideband or not options.cutName in ["btag", "antibtag"] ):
+  print "vgMC was requested, but something is wrong... you must use scaleFactors, no sideband, and a cut of either 'btag' or 'antibtag'"
+  exit(1)
 for withBtag in [options.withBtag]:
   #print "withBtag is %r" % withBtag
   printNonempties = False
@@ -92,12 +98,12 @@ for withBtag in [options.withBtag]:
 
   sampleDirs = getSamplesDirs()
 
-  rangesDict = getRangesDict()
+  rangesDict = getRangesDict(vgMC)
   #print ""
   #print "getRangesDict:"
   #print rangesDict
 
-  higgsRangesDict = getHiggsRangesDict()
+  higgsRangesDict = getHiggsRangesDict(vgMC)
   #print ""
   #print "getHiggsRangesDict:"
   #print higgsRangesDict
@@ -127,8 +133,11 @@ for withBtag in [options.withBtag]:
       histsDir += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
     if useScaleFactors:
       histsDir += "_SF"
+    if vgMC:
+      histsDir += "_vgMC"
+
     #print "going to pass makeAllHists windowEdges", windowEdges
-    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors, windowEdges)
+    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors, windowEdges, vgMC, vgMC)
     #print "done making all histograms."
     thstacks=[]
     thstackCopies=[]
@@ -186,6 +195,8 @@ for withBtag in [options.withBtag]:
           #  dirName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
           if useScaleFactors:
             dirName += "_SF"
+          if vgMC:
+            dirName += "_vgMC"
           thisFileName = "%s/%s" % (dirName, filename)
           thisFileNameDefault = "%s/%s" % (dirName, filenameDefault)
           #print "going to use the MC background hist from file %s in building THStack " % thisFileName
@@ -226,6 +237,8 @@ for withBtag in [options.withBtag]:
           outDirName +="_sideband%i%i" %(windowEdges[0], windowEdges[1])
         if useScaleFactors:
           outDirName += "_SF"
+        if vgMC:
+          outDirName += "_vgMC"
         if not path.exists(outDirName):
           makedirs(outDirName)
         outfileName = "%s/%s_stack_%s%s.root"%(outDirName, cutName, varkey, indexLabel)
@@ -287,6 +300,8 @@ for withBtag in [options.withBtag]:
             #  rName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
             if useScaleFactors:
               rName += "_SF"
+            if vgMC:
+              rName += "_vgMC"
             outDirName = "stackplots_puppiSoftdrop_%s" % rName
             sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
             #print "adding signal file", sigfiles[-1].GetName(), "to the plot"
@@ -320,62 +335,62 @@ for withBtag in [options.withBtag]:
                   #print "found something named SinglePhoton"
                   subprim.SetLabel("data")
                   subprim.SetOption("pe")
-
-        pads.append(TPad("ratio_%s_%s%s"%(cutName, varkey, indexLabel), "ratio_%s_%s%s"%(cutName, varkey, indexLabel), 0, 0.05, 1, 0.3))
-        pads[-1].SetTopMargin(0)
-        pads[-1].SetBottomMargin(0.15)
-        pads[-1].cd()
-
-        fullStack = thstackCopies[-1].GetStack().Last()
-        fullStack.Sumw2()
-        if varkey in varDict.keys():
-          fullStack.GetXaxis().SetTitle(varDict[varkey])
-        ### HEREHERE
-        if sideband:
-          sbScale = fullStack.GetSumOfWeights()/datahists[-1].GetSumOfWeights()
-          for iBin in range(0, datahists[-1].GetNbinsX()):
-            #print "sbScale", sbScale 
-            #print "old bin content", datahists[-1].GetBinContent(iBin)
-            #print "new bin content", datahists[-1].GetBinContent(iBin)*sbScale
-            datahists[-1].SetBinContent(iBin, datahists[-1].GetBinContent(iBin)*sbScale)
-            datahistsCopies[-1].SetBinContent(iBin, datahistsCopies[-1].GetBinContent(iBin)*sbScale)
-        pads[-2].Update()
-        pads[-1].Update()
-        ### HEREHERE
-        fullStack.GetXaxis().SetLabelSize(0.10)
-        fullStack.GetXaxis().SetTitleSize(0.13)
-        fullStack.GetXaxis().SetTitleOffset(2)
-        gStyle.SetOptStat(0)
-        datahistsCopies[-1].Sumw2()
-        datahistsCopies[-1].Divide(fullStack)
-        datahistsCopies[-1].Draw("PE")
-        if addLines:
-          lines.append(TLine(fullStack.GetXaxis().GetBinLowEdge(1) , 1, fullStack.GetXaxis().GetBinUpEdge(fullStack.GetXaxis().GetNbins()) ,1))
-          lines[-1].SetLineStyle(2)
-          lines[-1].Draw("SAME")
-        datahistsCopies[-1].SetTitle("")
-        datahistsCopies[-1].GetYaxis().SetRangeUser(0,2)
-        datahistsCopies[-1].SetLineColor(kBlack)
-        datahistsCopies[-1].SetStats(kFALSE)
-        datahistsCopies[-1].GetXaxis().SetLabelSize(0.10)
-        datahistsCopies[-1].GetXaxis().SetTitleSize(0.13)
-        datahistsCopies[-1].GetXaxis().SetTitleOffset(2)
-
-        pads[-1].cd()
-        gStyle.SetOptStat(0)
-        cans[-1].cd()
         if not blindData:
-          pads[-1].Draw()
-        #for prim in pads[-1].GetListOfPrimitives():
-        #  if "Text" in prim.IsA().GetName():
-        #    prim.Delete()
-        #  if "Stats" in prim.IsA().GetName():
-        #    prim.Delete()
-        datahistsCopies[-1].GetYaxis().SetTitle("data/MC")
-        datahistsCopies[-1].GetYaxis().SetTitleSize(0.13)
-        datahistsCopies[-1].GetYaxis().SetTitleOffset(0.24)
-        datahistsCopies[-1].GetYaxis().SetLabelSize(0.08)
-        #TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
+          pads.append(TPad("ratio_%s_%s%s"%(cutName, varkey, indexLabel), "ratio_%s_%s%s"%(cutName, varkey, indexLabel), 0, 0.05, 1, 0.3))
+          pads[-1].SetTopMargin(0)
+          pads[-1].SetBottomMargin(0.15)
+          pads[-1].cd()
+
+          fullStack = thstackCopies[-1].GetStack().Last()
+          fullStack.Sumw2()
+          if varkey in varDict.keys():
+            fullStack.GetXaxis().SetTitle(varDict[varkey])
+          ### HEREHERE
+          if sideband:
+            sbScale = fullStack.GetSumOfWeights()/datahists[-1].GetSumOfWeights()
+            for iBin in range(0, datahists[-1].GetNbinsX()):
+              #print "sbScale", sbScale 
+              #print "old bin content", datahists[-1].GetBinContent(iBin)
+              #print "new bin content", datahists[-1].GetBinContent(iBin)*sbScale
+              datahists[-1].SetBinContent(iBin, datahists[-1].GetBinContent(iBin)*sbScale)
+              datahistsCopies[-1].SetBinContent(iBin, datahistsCopies[-1].GetBinContent(iBin)*sbScale)
+          pads[-2].Update()
+          pads[-1].Update()
+          ### HEREHERE
+          fullStack.GetXaxis().SetLabelSize(0.10)
+          fullStack.GetXaxis().SetTitleSize(0.13)
+          fullStack.GetXaxis().SetTitleOffset(2)
+          gStyle.SetOptStat(0)
+          datahistsCopies[-1].Sumw2()
+          datahistsCopies[-1].Divide(fullStack)
+          datahistsCopies[-1].Draw("PE")
+          if addLines:
+            lines.append(TLine(fullStack.GetXaxis().GetBinLowEdge(1) , 1, fullStack.GetXaxis().GetBinUpEdge(fullStack.GetXaxis().GetNbins()) ,1))
+            lines[-1].SetLineStyle(2)
+            lines[-1].Draw("SAME")
+          datahistsCopies[-1].SetTitle("")
+          datahistsCopies[-1].GetYaxis().SetRangeUser(0,2)
+          datahistsCopies[-1].SetLineColor(kBlack)
+          datahistsCopies[-1].SetStats(kFALSE)
+          datahistsCopies[-1].GetXaxis().SetLabelSize(0.10)
+          datahistsCopies[-1].GetXaxis().SetTitleSize(0.13)
+          datahistsCopies[-1].GetXaxis().SetTitleOffset(2)
+
+          pads[-1].cd()
+          gStyle.SetOptStat(0)
+          cans[-1].cd()
+          if not blindData:
+            pads[-1].Draw()
+          #for prim in pads[-1].GetListOfPrimitives():
+          #  if "Text" in prim.IsA().GetName():
+          #    prim.Delete()
+          #  if "Stats" in prim.IsA().GetName():
+          #    prim.Delete()
+          datahistsCopies[-1].GetYaxis().SetTitle("data/MC")
+          datahistsCopies[-1].GetYaxis().SetTitleSize(0.13)
+          datahistsCopies[-1].GetYaxis().SetTitleOffset(0.24)
+          datahistsCopies[-1].GetYaxis().SetLabelSize(0.08)
+          TDRify(pads[-1], True, "cpad_%s_%s"%(rName, sigFileName))
         outfile.cd()
         cans[-1].Write()
         outfile.Close()
