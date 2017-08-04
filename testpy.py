@@ -11,12 +11,12 @@ from os import path
 printCuts = False
 
 
-def getHiggsRangesDict():
+def getHiggsRangesDict(fineBinning):
   rangesDict = {}
   rangesDict["cosThetaStar"]                 = [[0., 1.]]
   rangesDict["phPtOverMgammaj"]              = [[0., 1.2]]
   rangesDict["leadingPhPhi"]                 = [[-3.5, 3.5]]
-  rangesDict["leadingPhPt"]                  = [[0., 2000.]]
+  rangesDict["leadingPhPt"]                  = [[0., 3000.]]
   rangesDict["leadingPhAbsEta"]              = [[0.,2.5]]
   rangesDict["leadingPhEta"]                 = [[-2.8,2.8]]
   rangesDict["antibtagSF"]                   = [[0.0, 1.0]]
@@ -30,9 +30,13 @@ def getHiggsRangesDict():
   rangesDict["%sJet_puppi_pt"%label]        = [[0., 4000.]]
   rangesDict["%sJett2t1"%label]              = [[0.0, 1.0]]
   #rangesDict["%sPrunedJetCorrMass"%label]    = [[0.,200.], [0.,1000.]]
-  rangesDict["%sPuppi_softdropJetCorrMass"%label]=[[50.,150.]]
+  #rangesDict["%sPuppi_softdropJetCorrMass"%label]=[[50.,150.]]
+  rangesDict["%sPuppi_softdropJetCorrMass"%label]    = [[0.,1000.]]
   rangesDict["phJetDeltaR_%s"%label]         = [[0.,6.]]
-  rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[[0,4000]]
+  if fineBinning:
+    rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[[700., 4700.]]
+  else:
+    rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[[0., 10000.]]
   return rangesDict
 
 ## this is for making stackplots from the ddTrees
@@ -60,9 +64,9 @@ def getHiggsRangesDict():
 #  rangesDict["phJetInvMass_puppi_softdrop_%s"%label]=[0,4000]
 #  return rangesDict
 
-def getRangesDict():
+def getRangesDict(fineBinning=False):
   rangesDict = {}
-  higgsRangesDict = getHiggsRangesDict()
+  higgsRangesDict = getHiggsRangesDict(fineBinning)
   for key in higgsRangesDict.keys():
     rangesDict[key]=higgsRangesDict[key]
   #lowFourRangesDict = getSidebandRangesDict("100110")
@@ -89,12 +93,15 @@ def getRangesDict():
 #    outFile.Close()
 #    return True
 
-def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, windowEdges=[100,110]):
+def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, windowEdges=[100,110], fineBinning=False, useReweighting=False):
+  if fineBinning != useReweighting:
+    print "there was something funny happening... fineBinning and useReweighting were different..."
+    exit(1)
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["bkgSmall3sDir"])
   #regions = ["higgs", "side100110", "side5070"]
   regions = ["higgs"]
-  rangesDict = getRangesDict()
+  rangesDict = getRangesDict(fineBinning)
   nonEmptyFilesDict={}
   for key in getWeightsDict(getSamplesDirs()["bkgSmall3sDir"]).keys():
     sampleType = getWeightsDict(getSamplesDirs()["bkgSmall3sDir"])[key][1]
@@ -119,7 +126,11 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
           histName = "hist_%s_%s_%s"%(var, region, key)
           if not firstRange:
             histName = histName.replace(".root","")+"_%i.root"%iRange
-          hist = TH1F(histName,histName,100,rng[0],rng[1])
+          if fineBinning == True:
+            nBins = 4000
+          else:
+            nBins = 100
+          hist = TH1F(histName,histName,nBins,rng[0],rng[1])
           if var == "higgsJet_HbbTag":
             hist.Rebin(5)
           #print "cutName is:", cutName
@@ -152,6 +163,8 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
           if useScaleFactors:
             if cutName in ["antibtag", "btag"]:
               cutString = "%sSF*(%s)" % (cutName, cut)
+              if useReweighting:
+                cutString = "weightFactor*(%s)"%cutString
             else:
               cutString = "1*(%s)" % (cut)
           else:
@@ -182,6 +195,9 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
           if useScaleFactors:
             directory += "_SF"
             bareDirectory += "_SF"
+          if fineBinning and useReweighting:
+            directory += "_vgMC"
+            bareDirectory += "_vgMC"
           filename = "%s/%s_%s_%s"%(directory, var, region, key)
           hackFilename = "%s/%s_%s_%s"%(bareDirectory, var, region, key)
           if not os.path.exists(directory):

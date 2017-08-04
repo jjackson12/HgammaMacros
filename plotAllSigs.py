@@ -49,9 +49,15 @@ for inFile in inFiles:
   for key in inFile.GetListOfKeys():
     print " found key %s in file %s" % (key.GetName(), inFile.GetName())
     print "key.GetName(): ", key.GetName()
-    if ("distribs_5_10_0__x" == key.GetName() and options.form == "tuple" and options.kind == "interpolated"):
+    if ("distribs_X__x" == key.GetName() and options.form == "tuple" and options.kind == "interpolated"):
+      inFile.Get(key.GetName()).SetName("distribs_%i" % index)
       if first:
         inFile.Get(key.GetName()).Draw()
+        inFile.Get(key.GetName()).SetTitle("Interpolated signals, %s category" % options.category)
+        inFile.Get(key.GetName()).GetYaxis().SetTitle("Signal events (A.U.)")
+        inFile.Get(key.GetName()).GetYaxis().SetTitleSize(0.055)
+        inFile.Get(key.GetName()).GetXaxis().SetTitle("Reconstructed m_{j#gamma} (GeV)")
+        inFile.Get(key.GetName()).GetXaxis().SetTitleSize(0.045)
         first=False
         index +=1
       else:
