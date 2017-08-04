@@ -33,7 +33,7 @@ def getSoverRootB(bkg, sig, start, goUpOrDown, withBtag):
 
 def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCans, srPads, sbCans, sbPads, stacks, sidebands, i, windowEdges):
   
-  debug=False
+  debug=True
   inFile_higgswindow     = TFile(inFileName_higgswindow)
   if debug:
     print "inFile_higgswindow is: %s" % inFile_higgswindow.GetName()
@@ -149,10 +149,10 @@ def makeOpt(inFileName_sideband, inFileName_higgswindow, upDown, withBtag, srCan
     elif "THStack" in subprim.IsA().GetName() or "THist" in subprim.IsA().GetName():
       subprim.SetName("garbage_%i_%s_%s" % (i, inFileName_sideband, subprim.GetName()))
       subprim.Delete()
-  sbNorm = stack.GetStack().Last().GetSumOfWeights()/float(sideband.GetEntries())
-  #print "number of entries in stack is   : %i" % stack.GetStack().Last().GetSumOfWeights()
-  #print "number of entries in sideband is: %i" % sideband.GetEntries()
-  #print "                       sbNorm is: %f" % sbNorm 
+  sbNorm = stack.GetStack().Last().GetSumOfWeights()/float(sideband.GetSumOfWeights())
+  print "number of entries in stack is   : %i" % stack.GetStack().Last().GetSumOfWeights()
+  print "number of entries in sideband is: %i" % sideband.GetSumOfWeights()
+  print "                       sbNorm is: %f" % sbNorm 
   for sbBin in range (1, sideband.GetXaxis().GetNbins()+1):
     sideband.SetBinContent(sbBin, sideband.GetBinContent(sbBin)*sbNorm)
   #stack = stacks[-1]
