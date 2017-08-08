@@ -81,6 +81,7 @@ if __name__=="__main__":
       outputDir = path.join("vgHists", cat)
       outFileName = path.join(outputDir, "histos_mcBG.root")
       outFile = TFile(outFileName, "RECREATE")
+      inHists[cat].SetName("distribs_X")
       inHists[cat].Write()
       outFile.Close()
     
