@@ -9,21 +9,39 @@ def getDDPrefix():
 def getSmallPrefix():
   return "smallified_"
 
-def getMCbgSampleXsects():
+def getMCbgSampleKfactors():
   sampleXsects = {}
-  sampleXsects[   "gJets100To200.root"   ]   = 9238*1.8*0.8*0.9
-  sampleXsects[   "gJets200To400.root"   ]   = 2305*1.8*0.8*0.9
-  sampleXsects[   "gJets400To600.root"   ]   = 274.4*1.4   *0.9
-  sampleXsects[   "gJets600ToInf.root"   ]   = 93.46 *1.2  *0.9
-  #sampleXsects[   "qcd200to300.root"     ]   = 1712000    
+  sampleXsects[   "gJets100To200.root"   ]   = 1.0
+  sampleXsects[   "gJets200To400.root"   ]   = 1.0
+  sampleXsects[   "gJets400To600.root"   ]   = 1.0
+  sampleXsects[   "gJets600ToInf.root"   ]   = 1.0
+  sampleXsects[   "qcd300to500.root"     ]   = 0.07
+  sampleXsects[   "qcd500to700.root"     ]   = 0.07
+  sampleXsects[   "qcd700to1000.root"    ]   = 0.07
+  sampleXsects[   "qcd1000to1500.root"   ]   = 0.07
+  sampleXsects[   "qcd1500to2000.root"   ]   = 0.07
+  sampleXsects[   "qcd2000toInf.root"    ]   = 0.07
+  #sampleXsects[   "qcd200to300.root"     ]  = 1   
+  #sampleXsects[   "dyJetsQQ-180.root"    ]  = 1.23  
+  #sampleXsects[ "wJetsQQ-180.root" ]        = 1.21*0.8 
+  return sampleXsects
+
+def getMCbgSampleXsects():
+  kFactors = getMCbgSampleKfactors()
+  sampleXsects = {}
+  sampleXsects[   "gJets100To200.root"   ]   = 9238
+  sampleXsects[   "gJets200To400.root"   ]   = 2305
+  sampleXsects[   "gJets400To600.root"   ]   = 274.4
+  sampleXsects[   "gJets600ToInf.root"   ]   = 93.46 
   sampleXsects[   "qcd300to500.root"     ]   = 347700     
   sampleXsects[   "qcd500to700.root"     ]   = 32100      
   sampleXsects[   "qcd700to1000.root"    ]    = 6831       
   sampleXsects[   "qcd1000to1500.root"   ]    = 1207       
   sampleXsects[   "qcd1500to2000.root"   ]    = 119.9      
   sampleXsects[   "qcd2000toInf.root"    ]    = 25.24      
-  #sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187*1.23  
-  #sampleXsects[ "wJetsQQ-180.root" ] = 95.14*1.21*0.8 
+  #sampleXsects[   "qcd200to300.root"     ]   = 1712000    
+  #sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187  
+  #sampleXsects[ "wJetsQQ-180.root" ] = 95.14 
   return sampleXsects
 
 def getMCbgSampleEvents(small3Dir):
@@ -56,15 +74,16 @@ def getSignalsToInclude():
           ]
 
 def getWeightsDict(bkgSmall3Dir):
-  sampleXsects = getMCbgSampleXsects() 
-  sampleEvents = getMCbgSampleEvents(bkgSmall3Dir)
+  sampleKfactors = getMCbgSampleKfactors() 
+  sampleXsects   = getMCbgSampleXsects() 
+  sampleEvents   = getMCbgSampleEvents(bkgSmall3Dir)
 
   lumi = 35900
 
   sampleWeights = {}
   for key in sampleXsects:
     expectedEvents = lumi*sampleXsects[key]
-    weight = expectedEvents/sampleEvents[key]
+    weight = sampleKfactors[key]*expectedEvents/sampleEvents[key]
     sampleWeights[key] = (weight, "bkg")
   signalWeight = .5
   #for signalToInclude in getSignalsToInclude():

@@ -202,7 +202,7 @@ void HgammaSelector::Loop(string outputFileName) {
       phoIsTight = (ph_mvaCat->at(iPh)==0 && ph_mvaVal->at(iPh)>=barrel_phoMVAcut && ph_passEleVeto->at(iPh)==1) || (ph_mvaCat->at(iPh)==1 && ph_mvaVal->at(iPh)>=endcap_phoMVAcut && ph_passEleVeto->at(iPh)==1);
       //phoEtaPassesCut = ( abs(ph_eta->at(iPh))<phoEtaMax ) && ((abs(ph_eta->at(iPh)) < 1.4442) || abs(ph_eta->at(iPh))>1.566 );
       phoEtaPassesCut = ( abs(ph_eta->at(iPh))<phoEtaMax ) && ((abs(ph_eta->at(iPh)) < 1.4442) || abs(ph_eta->at(iPh))>1.566 );
-      phoPtPassesCut = ( ph_pt->at(iPh)>100 );
+      phoPtPassesCut = ( ph_pt->at(iPh)>180 );
       eventHasTightPho |= (phoIsTight && phoEtaPassesCut && phoPtPassesCut) ;      
 
       // Fill the leading photon variables, regardless of the ID
@@ -226,7 +226,7 @@ void HgammaSelector::Loop(string outputFileName) {
     for (uint iJet = 0; iJet<jetAK8_puppi_pt->size() ; ++iJet) { 
       if (debugFlag && dumpEventInfo) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_puppi_pt->at(iJet) << endl;
  
-      if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_puppi_pt->at(iJet)>200) { 
+      if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_puppi_pt->at(iJet)>250) { 
       // Get leading jet variables, requiring tight jet ID
         tmpLeadingJet.SetPtEtaPhiE(jetAK8_puppi_pt->at(iJet), jetAK8_puppi_eta->at(iJet), jetAK8_puppi_phi->at(iJet), jetAK8_puppi_e->at(iJet));
 

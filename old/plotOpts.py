@@ -241,9 +241,9 @@ def makeOpt(inFileName, upDown, withBtag):
 
 for direction in ["up", "down"]:
   for key in getHiggsRangesDict().keys():
-    varName = "stackplots_nMinus1_withBtag_sideband/nMinus1_stack_%s.root"%key
+    varName = "stackplots_puppiSoftdrop_nMinus1_withBtag_sideband/nMinus1_stack_%s.root"%key
     makeOpt(varName, direction, True)
 for direction in ["up", "down"]:
   for key in getHiggsRangesDict().keys():
-    varName = "stackplots_nMinus1_noBtag_sideband/nMinus1_stack_%s.root"%key
+    varName = "stackplots_puppiSoftdrop_nMinus1_noBtag_sideband/nMinus1_stack_%s.root"%key
     makeOpt(varName, direction, False)
