@@ -7,7 +7,9 @@ def getCutValues():
   cutValues = {}
   cutValues["minInvMass"]     = 600.0
   cutValues["phEta"]          = 1.4442
-  cutValues["jetAbsEta"]         = 2.2
+  cutValues["phPt"]           = 200.0
+  cutValues["jetAbsEta"]      = 2.2
+  cutValues["jetPt"]          = 200.0
   cutValues["deltaR"]         = 1.1
   cutValues["ptOverM"]        = 0.35
   cutValues["Hbb"]            = 0.9
@@ -15,6 +17,7 @@ def getCutValues():
   cutValues["sidebandWindow"] = [100.0, 110.0]
   cutValues["sideband5070Window"] = [50.0, 70.0]
   cutValues["sideband80100Window"] = [80.0, 100.0]
+  cutValues["preselectionWindow"] = [30.0, 99999.9]
   return cutValues
 
 
@@ -55,6 +58,8 @@ def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
         window = "sideband5070Window"
       elif windowEdges == [80.0,100.0]:
         window = "sideband80100Window"
+      elif windowEdges == [30.0,99999.9]:
+        window = "preselectionWindow"
     cuts["higgsWindowLow"] = TCut( "higgsPuppi_softdropJetCorrMass>%f"   % cutValues[window][0] )
     cuts["higgsWindowHi"]  = TCut( "higgsPuppi_softdropJetCorrMass<%f"   % cutValues[window][1] )
     #print "will return combineCuts(cuts)=", combineCuts(cuts)
@@ -72,16 +77,15 @@ def getDefaultCuts(region, useTrigger, sideband=False, windowEdges=[100.0,110.0]
     cutValues = getCutValues()
 
     cuts = {} 
-    cuts["phEta"]           = TCut( "leadingPhAbsEta<%f"           % cutValues["phEta"]  )
+    cuts["phEta"]           = TCut( "leadingPhAbsEta<%f"           % cutValues["phEta"]      )
     cuts["ptOverM"]         = TCut( "phPtOverMgammaj>%f"           % cutValues["ptOverM"]    )
+    cuts ["phPt"]           = TCut("leadingPhPt>%f"                % cutValues["phPt"]       )
     cuts ["phPhi"]          = TCut()
     cuts ["t2t1"]           = TCut()
-    cuts ["jetPt"]          = TCut()
     cuts ["jetPhi"]         = TCut()
     cuts ["jetEta"]         = TCut()
     cuts ["btagHolder"]     = TCut()
     cuts ["cosThetaStar"]   = TCut()
-    cuts ["phPt"]           = TCut()
     if useTrigger: 
       cuts["trigger"]         = makeTrigger()
     if region is "higgs":
@@ -90,6 +94,7 @@ def getDefaultCuts(region, useTrigger, sideband=False, windowEdges=[100.0,110.0]
       cuts["jetAbsEta"]       = TCut( "higgsJet_puppi_abseta<%f"         % cutValues["jetAbsEta"]      )
       cuts["btag"]     = TCut( "higgsJet_HbbTag>%f"                % cutValues["Hbb"]            )
       cuts["antibtag"] = TCut( "higgsJet_HbbTag<%f"                % cutValues["Hbb"]            )
+      cuts ["jetPt"]          = TCut("higgsJet_puppi_pt>%f"          % cutValues["jetPt"]      )
       #cuts["higgsWindowLow"] = TCut( "higgsPuppi_softdropJetCorrMass>%f"   % cutValues["higgsWindow"][0] )
       #cuts["higgsWindowHi"]  = TCut( "higgsPuppi_softdropJetCorrMass<%f"   % cutValues["higgsWindow"][1] )
       cuts["higgsWindow"]     = makeHiggsWindow(sideband, windowEdges)
@@ -136,4 +141,14 @@ def getNminus1ComboCut(region, popVar, withBtag, useTrigger, sideband=False, win
     if not "SF" in popVar and not "weightFactor" in popVar:
       nobtagCuts.pop(getVarKeys()[popVar])
     return combineCuts(nobtagCuts)
+
+def getPreselectionComboCut(region, useTrigger, sideband=False, windowEdges=[30.0,99999.9] ):
+    preselectionCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband, windowEdges))
+    preselectionCuts.pop("phEta")
+    preselectionCuts.pop("ptOverM")
+    preselectionCuts.pop("turnon")
+    preselectionCuts.pop("btag")
+    preselectionCuts.pop("antibtag")
+    preselectionCuts.pop("jetAbsEta")
+    return combineCuts(preselectionCuts)
 
