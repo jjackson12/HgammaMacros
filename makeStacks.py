@@ -43,6 +43,9 @@ if options.sideband is True:
   else:
     print "invalid higgs mass window supplied."
     exit(1)
+if options.cutName=="preselection":
+  windowEdges=[30.0, 99999.9]
+  options.sideband=True
 
 validCutNames = ["preselection", "nobtag", "btag", "antibtag", "nMinus1"]
 if not options.cutName in validCutNames:
@@ -130,7 +133,8 @@ for withBtag in [options.withBtag]:
     else:
       histsDir = "%s/weightedMCbgHists_%s"%(getcwd(), cutName)
     if sideband:
-      histsDir += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
+      if not cutName in "preselection":
+        histsDir += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
     if useScaleFactors:
       histsDir += "_SF"
     if vgMC:
@@ -234,7 +238,8 @@ for withBtag in [options.withBtag]:
         else:
           outDirName = "stackplots_puppiSoftdrop_%s" % cutName
         if sideband:
-          outDirName +="_sideband%i%i" %(windowEdges[0], windowEdges[1])
+          if not cutName in "preselection":
+            outDirName +="_sideband%i%i" %(windowEdges[0], windowEdges[1])
         if useScaleFactors:
           outDirName += "_SF"
         if vgMC:
@@ -272,7 +277,8 @@ for withBtag in [options.withBtag]:
           else:
             dName += "_noBtag"
         if sideband:
-          dName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
+          if not cutName in "preselection":
+            dName += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
         datafiles.append(TFile("%s/%s"%(dName, dataFileName)))
         #print "going to use data file",  datafiles[-1].GetName(), "for the plot"
         datahists.append(datafiles[-1].Get("hist_%s"%dataFileName))
