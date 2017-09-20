@@ -11,7 +11,7 @@ from os import path
 printCuts = False
 
 
-def getHiggsRangesDict(fineBinning):
+def getHiggsRangesDict(fineBinning=False):
   rangesDict = {}
   rangesDict["cosThetaStar"]                 = [[0., 1.]]
   rangesDict["phPtOverMgammaj"]              = [[0., 1.2]]
@@ -144,7 +144,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
           elif cutName in "nMinus1":
             cut = getNminus1ComboCut(region, var, withBtag, useTrigger, sideband, windowEdges)
           elif cutName in "preselection":
-            cut = TCut()
+            cut = getPreselectionComboCut(region, useTrigger, sideband, [30.0, 99999.9])
           else:
             print "Invalid category: %s" % cutName
             print "Must be btag, antibtag, nMinus1, or preselection."
@@ -169,10 +169,10 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
               cutString = "1*(%s)" % (cut)
           else:
             if cutName in "preselection":
-              cutString = "leadingPhPt>-1"
+              cutString = "1*(%s)" % cut
             else:
               cutString = "1*(%s)" % (cut)
-          #print cutString
+          print "cuts:", cutString
           nEntries = tree.Draw("%s>> %s"%(var, histName), cutString, "HIST")
           directory = ""
           bareDirectory = ""
@@ -191,7 +191,8 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
               directory = "weightedMCbgHists_%s"%cutName
               bareDirectory = directory
           if sideband:
-            directory += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
+            if not cutName in "preselection":
+              directory += "_sideband%i%i" % (windowEdges[0], windowEdges[1])
           if useScaleFactors:
             directory += "_SF"
             bareDirectory += "_SF"

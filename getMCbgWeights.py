@@ -11,16 +11,16 @@ def getSmallPrefix():
 
 def getMCbgSampleKfactors():
   sampleXsects = {}
-  sampleXsects[   "gJets100To200.root"   ]   = 1.0
-  sampleXsects[   "gJets200To400.root"   ]   = 1.0
-  sampleXsects[   "gJets400To600.root"   ]   = 1.0
-  sampleXsects[   "gJets600ToInf.root"   ]   = 1.0
-  sampleXsects[   "qcd300to500.root"     ]   = 0.07
-  sampleXsects[   "qcd500to700.root"     ]   = 0.07
-  sampleXsects[   "qcd700to1000.root"    ]   = 0.07
-  sampleXsects[   "qcd1000to1500.root"   ]   = 0.07
-  sampleXsects[   "qcd1500to2000.root"   ]   = 0.07
-  sampleXsects[   "qcd2000toInf.root"    ]   = 0.07
+  sampleXsects[   "gJets100To200.root"   ]   = 1.6*0.8
+  sampleXsects[   "gJets200To400.root"   ]   = 1.6*0.8
+  sampleXsects[   "gJets400To600.root"   ]   = 1.4*0.8
+  sampleXsects[   "gJets600ToInf.root"   ]   = 1.0*0.8
+  sampleXsects[   "qcd300to500.root"     ]   = .7 *0.8
+  sampleXsects[   "qcd500to700.root"     ]   = .7 *0.8
+  sampleXsects[   "qcd700to1000.root"    ]   = .7 *0.8
+  sampleXsects[   "qcd1000to1500.root"   ]   = .7 *0.8
+  sampleXsects[   "qcd1500to2000.root"   ]   = .7 *0.8
+  sampleXsects[   "qcd2000toInf.root"    ]   = .7 *0.8
   #sampleXsects[   "qcd200to300.root"     ]  = 1   
   #sampleXsects[   "dyJetsQQ-180.root"    ]  = 1.23  
   #sampleXsects[ "wJetsQQ-180.root" ]        = 1.21*0.8 
