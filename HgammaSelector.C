@@ -1,5 +1,6 @@
 #define HgammaSelector_cxx
 #include "HgammaSelector.h"
+#include "puppiCorrector.h"
 #include "LinkDef.h"
 
 using namespace std;
@@ -46,6 +47,7 @@ void HgammaSelector::Loop(string outputFileName) {
   //  cout << "Finished GetEntry" << endl;
   //}
 
+  puppiCorrector puppiMassCorr = puppiCorrector("/Users/johakala/oct3/PuppiSoftdropMassCorr/weights/puppiCorr.root");
   TFile* outputFile                 = new TFile(outputFileName.c_str(), "RECREATE");
   outputFile->cd();
 

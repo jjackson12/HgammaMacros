@@ -27,7 +27,7 @@ for catDir in catDirs:
   for inputFile in inputFiles:
     if first:
       print "about to call the first processHg" 
-      processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), False)
+      processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs_pupCorrs"), False)
       first=False
     elif not debug:
-      processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs"), True, True)
+      processHg(inputFile, inputFile.replace("smallified", "ddTree").replace("smallifications", "DDs_pupCorrs"), True, True)
