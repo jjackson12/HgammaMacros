@@ -1,7 +1,7 @@
 from ROOT import *
 import array
 
-tfile = TFile("ddTree_singleMuon_Apr27.root")
+tfile = TFile("/home/hakala/cmssw/CMSSW_8_0_26_patch1/src/HgammaCondor/trig_74sig750_0.root")
 ttree = tfile.Get("higgs")
 
 binEdges = []
@@ -116,6 +116,6 @@ ttrigEffGraphs[2].SetFillColor(kWhite)
 ttrigEffGraphs[2].Draw("SAME")
 allCanvas.BuildLegend()
 trigEffVsInvMass175.SetTitle("Trigger efficiency")
-outFile = TFile("triggerEff2.root", "RECREATE")
+outFile = TFile("trigEff_%s.root" % inFile.replace(".root", ""), "RECREATE")
 allCanvas.Write()
 outFile.Close()
