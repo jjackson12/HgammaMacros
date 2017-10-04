@@ -1,7 +1,7 @@
 #define HgammaSelector_cxx
 #include "HgammaSelector.h"
 #include "puppiCorrector.h"
-#include "LinkDef.h"
+#include "TSystem.h"
 
 using namespace std;
 
@@ -13,10 +13,10 @@ using namespace std;
 void HgammaSelector::Loop(string outputFileName) {
   cout << "output filename is: " << outputFileName << endl;
   // Flags for running this macro
-  bool debugFlag                     =  false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
+  bool debugFlag                     =  true ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
   bool debugSF                       =  false ; 
   bool checkTrigger                  =  false ;
-  bool dumpEventInfo                 =  false ;
+  bool dumpEventInfo                 =  true ;
   //bool ignoreAllCuts                 =  false ;
   bool noHLTinfo                     =  false  ;  // This is for the 2016 MC with no HLT info
   int  entriesToCheck                =  100000000 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck
@@ -47,7 +47,9 @@ void HgammaSelector::Loop(string outputFileName) {
   //  cout << "Finished GetEntry" << endl;
   //}
 
-  puppiCorrector puppiMassCorr = puppiCorrector("/Users/johakala/oct3/PuppiSoftdropMassCorr/weights/puppiCorr.root");
+  gSystem->CompileMacro("puppiCorrector.C", "gOck");
+  gSystem->Load("puppiCorrector_C");
+  puppiCorrector puppiMassCorr = puppiCorrector("/home/hakala/puppiCorr.root");
   TFile* outputFile                 = new TFile(outputFileName.c_str(), "RECREATE");
   outputFile->cd();
 
@@ -91,7 +93,6 @@ void HgammaSelector::Loop(string outputFileName) {
   fChain->SetBranchStatus( "jetAK4_IDLoose"           ,  1 );  
   fChain->SetBranchStatus( "jetAK8_puppi_pt"                ,  1 );  
   fChain->SetBranchStatus( "jetAK8_puppi_softdrop_mass"              ,  1 );  
-  fChain->SetBranchStatus( "jetAK8_puppi_softdrop_massCorr"   ,  1 );
   fChain->SetBranchStatus( "jetAK8_puppi_softdrop_massCorr" ,  1 );  
   fChain->SetBranchStatus( "jetAK8_puppi_e"                 ,  1 );  
   fChain->SetBranchStatus( "jetAK8_puppi_eta"               ,  1 );  
@@ -138,11 +139,13 @@ void HgammaSelector::Loop(string outputFileName) {
     eventHasHiggsPuppi_softdropJet           = false ;
     leadingPhMVA                     = -999. ;
     leadingPhCat                     = -999. ;
+    puppi_softdrop_massCorr          = -999. ;
     phoIsTight                       = false ;
     phoEtaPassesCut                  = false ;
     phoPtPassesCut                   = false ;
     eventHasTightPho                 = false ;
     leadingPhE                       = 0.    ;
+    puppi_softdrop_higgsJetTau1              = -999. ;
     puppi_softdrop_higgsJetTau1              = -999. ;
     puppi_softdrop_higgsJetTau2              = -999. ;
     //puppi_softdrop_higgsJetTau3              = -999. ;
@@ -226,6 +229,12 @@ void HgammaSelector::Loop(string outputFileName) {
 
     // Loop over AK8 jets
     for (uint iJet = 0; iJet<jetAK8_puppi_pt->size() ; ++iJet) { 
+      if (iJet>=jetAK8_puppi_softdrop_massCorr->size()) {
+        std::cout << "WARNING: something fishy!" << std::endl;
+        continue;
+      }
+      puppi_softdrop_massCorr = -999.;
+      puppi_softdrop_massCorr = jetAK8_puppi_softdrop_mass->at(iJet) * puppiMassCorr.getPUPPIweight(jetAK8_puppi_pt->at(iJet), jetAK8_puppi_eta->at(iJet));  
       if (debugFlag && dumpEventInfo) cout << "    AK8 Jet " << iJet << " has pT " << jetAK8_puppi_pt->at(iJet) << endl;
  
       if (jetAK8_IDTight->at(iJet) == 1 && jetAK8_IDTightLepVeto->at(iJet) == 1 && jetAK8_puppi_pt->at(iJet)>250) { 
@@ -236,7 +245,7 @@ void HgammaSelector::Loop(string outputFileName) {
           eventHasHiggsPuppi_softdropJet = true;
           if(debugFlag && dumpEventInfo) {
             cout << "    puppi_softdrop higgs AK8 jet e is: "    << jetAK8_puppi_e->at(iJet)    << endl ;
-            cout << "    puppi_softdrop higgs AK8 jet mass is: " << jetAK8_puppi_softdrop_mass->at(iJet) << endl ;
+            cout << "    puppi_softdrop higgs AK8 jet mass is: " << puppi_softdrop_massCorr << endl ;
             cout << "    puppi_softdrop higgs AK8 jet eta is: "  << jetAK8_puppi_eta->at(iJet)  << endl ;
             cout << "    puppi_softdrop higgs AK8 jet phi is: "  << jetAK8_puppi_phi->at(iJet)  << endl ;
             cout << "    puppi_softdrop higgs AK8 jet pt is: "   << jetAK8_puppi_pt->at(iJet)   << endl ;
@@ -247,8 +256,8 @@ void HgammaSelector::Loop(string outputFileName) {
             eventHasHiggsPuppi_softdropJet = false;
           }
           else {
-            if  ( iJet<jetAK8_puppi_softdrop_massCorr->size() && abs(jetAK8_puppi_softdrop_massCorr->at(iJet) - 125) <  abs(higgsPuppi_softdropJetCorrMass -  125 )) {
-              higgsPuppi_softdropJetCorrMass = jetAK8_puppi_softdrop_massCorr->at(iJet);
+            if  ( abs(puppi_softdrop_massCorr - 125) <  abs(higgsPuppi_softdropJetCorrMass -  125 )) {
+              higgsPuppi_softdropJetCorrMass = puppi_softdrop_massCorr;
               higgsJet_HbbTag = jetAK8_Hbbtag->at(iJet);
               puppi_softdrop_higgsJetTau1 = jetAK8_puppi_tau1 ->  at(iJet) ;
               puppi_softdrop_higgsJetTau2 = jetAK8_puppi_tau2 ->  at(iJet) ;
@@ -297,6 +306,10 @@ void HgammaSelector::Loop(string outputFileName) {
         if ( phJetDeltaR_higgs<0.8 ) {
           if (debugFlag && dumpEventInfo) cout << "this event failed the DR cut!" << endl;
           continue;
+        }
+        if (higgsPuppi_softdropJetCorrMass == -999.) {
+          std::cout << "filling a bad corrected mass..." << std::endl;
+          exit(1);
         }
         //if (loadEventMap && FindEvent(EVENT_run, EVENT_lumiBlock, EVENT_event)!=0) cout << "found an event that passed selection but did not fire the trigger" << endl;
         outputTreeHiggs->Fill();

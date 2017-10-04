@@ -72,6 +72,7 @@ public :
   float leadingPhE                  =    0. ;
   float leadingPhMVA                =    0. ;
   float leadingPhCat                =    0. ;
+  float puppi_softdrop_massCorr                =    0. ;
   float matchedJett2t1              = -999. ;
   float higgsJett2t1                = -999. ;
   float higgsJet_puppi_abseta      = -999. ;
