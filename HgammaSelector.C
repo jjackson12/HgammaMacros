@@ -47,7 +47,9 @@ void HgammaSelector::Loop(string outputFileName) {
   //  cout << "Finished GetEntry" << endl;
   //}
 
-  gSystem->CompileMacro("puppiCorrector.C", "gOck");
+  int success = gSystem->CompileMacro("puppiCorrector.C", "gOck");
+  std::cout << "Success: " << success << std::endl;
+  if (success != 1) exit(1);
   gSystem->Load("puppiCorrector_C");
   puppiCorrector puppiMassCorr = puppiCorrector("/home/hakala/puppiCorr.root");
   TFile* outputFile                 = new TFile(outputFileName.c_str(), "RECREATE");
