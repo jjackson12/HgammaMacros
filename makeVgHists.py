@@ -11,7 +11,7 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
   gROOT.SetBatch()
   inFile = TFile(inFileName)
   tree = inFile.Get("higgs")
-  hist = TH1D("distribs_X", "distribs_X", 4000, 700, 4700)
+  hist = TH1D("distribs_X", "distribs_X", 4000, 800, 4800)
 
   region = "higgs"
 
@@ -30,9 +30,11 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
     useTrigger = True
     scaleFactors = False
     if category == "antibtag":
-      cut = "weightFactor*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      cut = "1*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      print "cut for antibtag is: ", cut
     elif category == "btag":
-      cut = "weightFactor*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      cut = "1*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      print "cut for btag is: ", cut
   else:
     print "invalid sample type!"
     exit(1)

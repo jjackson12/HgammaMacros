@@ -9,7 +9,7 @@ def getCutValues():
   cutValues["phEta"]          = 1.4442
   cutValues["phPt"]           = 200.0
   cutValues["jetAbsEta"]      = 2.2
-  cutValues["jetPt"]          = 200.0
+  cutValues["jetPt"]          = 250.0
   cutValues["deltaR"]         = 1.1
   cutValues["ptOverM"]        = 0.35
   cutValues["Hbb"]            = 0.9
