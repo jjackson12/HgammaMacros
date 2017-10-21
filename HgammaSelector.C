@@ -328,7 +328,22 @@ float HgammaSelector::computeOverallSF(std::string category, float jetPt, float 
 }
 
 float HgammaSelector::computePhotonSF(float photonPt, float photonEta, bool debug) {
-  return 1.;
+  if (photonEta > 0) {
+    if (photonEta < 0.8) {
+      return 0.99667 * 0.9938;
+    }
+    else {
+      return 1.01105 * 0.9938;
+    }
+  }
+  else {
+    if(photonEta > -0.8) {
+      return 0.992282 * 0.9938;
+    }
+    else {
+      return 0.995595 * 0.9938;
+    }
+  }
 }
 float HgammaSelector::computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug) {
   float mistagSF = 0.;
