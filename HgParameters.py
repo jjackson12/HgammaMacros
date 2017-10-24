@@ -17,7 +17,7 @@ def getSamplesDirs():
 
 def getNormalizations():
   normalizations = {}
-  #normalizations["650"]  = 1.0
+  normalizations["650"]  = 1.0
   normalizations["750"]  = 1.0
   normalizations["850"]  = 1.0
   normalizations["1000"] = 0.8
@@ -36,7 +36,7 @@ def getNormalizations():
 def getMassWindows():
   # TODO: this needs updating for the new signals
   massWindows = {}
-  #massWindows[650]  = [600,   700]
+  massWindows[650]  = [600,   700]
   massWindows[750]  = [700,   800]
   massWindows[850]  = [800,   900]
   massWindows[1000] = [900,  1100]
