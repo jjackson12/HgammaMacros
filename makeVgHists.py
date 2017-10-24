@@ -95,8 +95,8 @@ if __name__=="__main__":
     sigNevents = getSigNevents()
     print "sigNevents:", sigNevents
     for inSigFileName in inSigFileNames:
-      if "650" in inSigFileName:
-        continue;
+      #if "650" in inSigFileName:
+      #  continue;
       mass = inSigFileName.split("sig_m")[-1].split(".root")[0]
       makeHist(inSigFileName, "btag", "signals", sigNevents[mass])
       makeHist(inSigFileName, "antibtag", "signals", sigNevents[mass])
