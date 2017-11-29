@@ -9,7 +9,7 @@ using namespace std;
 // The trees differ in the AK8 jet mass cuts -- different windows are used for different bosons 
 // John Hakala -- May 11, 2016
 
-void HgammaSelector::Loop(string outputFileName) {
+void HgammaSelector::Loop(string outputFileName, int btagVariation=0) {
   cout << "output filename is: " << outputFileName << endl;
   // Flags for running this macro
   bool debugFlag                     =  false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
@@ -276,8 +276,8 @@ void HgammaSelector::Loop(string outputFileName) {
           cout << "                                    tau2/tau1 is: " << puppi_softdrop_higgsJetTau2/puppi_softdrop_higgsJetTau1 << endl;
         }
         higgsJett2t1 = puppi_softdrop_higgsJetTau2/puppi_softdrop_higgsJetTau1;
-        antibtagSF = computeOverallSF("antibtag" , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF);
-        btagSF     = computeOverallSF("btag"     , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF);
+        antibtagSF = computeOverallSF("antibtag" , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF, btagVariation);
+        btagSF     = computeOverallSF("btag"     , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF, btagVariation);
         weightFactor = 1/trigEffHist->GetBinContent(trigEffHist->GetXaxis()->FindBin(leadingPhoton.Pt()));
         boostedPho = leadingPhoton;
         boostedPho.Boost(-(sumVector.BoostVector()));
@@ -323,8 +323,8 @@ void HgammaSelector::Loop(string outputFileName) {
   cout << "\nCompleted output file is " << outputFileName.c_str() <<".\n" << endl;
 }
 
-float HgammaSelector::computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug) {
-  return computePhotonSF(photonPt, photonEta, debug)*computeBtagSF(category, jetPt, jetHbbTag, debug);
+float HgammaSelector::computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug, int variation=0) {
+  return computePhotonSF(photonPt, photonEta, debug)*computeBtagSF(category, jetPt, jetHbbTag, debug, variation);
 }
 
 float HgammaSelector::computePhotonSF(float photonPt, float photonEta, bool debug) {
@@ -345,10 +345,34 @@ float HgammaSelector::computePhotonSF(float photonPt, float photonEta, bool debu
     }
   }
 }
-float HgammaSelector::computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug) {
+float HgammaSelector::computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug, int variation = 0) {
+  //  variation:
+  //  0 = no variation
+  //  1 = upward variation
+  // -1 = downward variation
   float mistagSF = 0.;
-  if (jetPt < 350) { mistagSF = 0.85; }
-  else if (jetPt > 350) { mistagSF = 0.91; }
+  if (jetPt < 350) { 
+    if (variation == 0) {
+      mistagSF = 0.85; 
+    }
+    else if (variation == 1) {
+      mistagSF = 0.85 + 0.03; 
+    }
+    else if (variation == -1) {
+      mistagSF = 0.85 - 0.03; 
+    }
+  }
+  else if (jetPt > 350) {
+    if (variation == 0) {
+      mistagSF = 0.91; 
+    }
+    else if (variation == 1) {
+      mistagSF = 0.91 + 0.03; 
+    }
+    else if (variation == -1) {
+      mistagSF = 0.91 - 0.04; 
+    }
+  }
   if (mistagSF == 0.) {
     std::cout << "ERROR -- Something is awry!" << std::endl;
     exit(EXIT_FAILURE);

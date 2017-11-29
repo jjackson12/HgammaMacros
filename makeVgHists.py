@@ -26,7 +26,8 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
       cut = "%f*(btagSF*(%s))" % (normalization, getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges))
 
   elif sampleType == "data":
-    sideband   = True
+    #sideband   = True
+    sideband   = False
     useTrigger = True
     scaleFactors = False
     if category == "antibtag":
@@ -44,12 +45,12 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
     print "weights/cuts:", cut
   tree.Draw("phJetInvMass_puppi_softdrop_higgs>> distribs_X", cut)
 
-  outputDir = "vgHists/%s"%category
+  outputDir = "vgHists_unblind/%s"%category
   if not path.exists(outputDir):
     makedirs(outputDir)
 
   outFileName = inFileName.replace("organize_DDs/%s/ddTree"%sampleType, "%s/histos" % outputDir)
-  if sampleType == "data" and windowEdges is not [0.,0.]:
+  if sampleType == "data" and windowEdges != [0.,0.]:
     outFileName = outFileName.replace("data2016SinglePhoton.root", "sideband%i%i.root"%(int(windowEdges[0]), int(windowEdges[1])))
     
   outFile = TFile(outFileName, "CREATE")
@@ -79,7 +80,7 @@ if __name__=="__main__":
                   if "THStack" in subprim.IsA().GetName():
                     inHists[cat] = subprim.GetStack().Last()
       for cat in inHists.keys():
-        outputDir = path.join("vgHists", cat)
+        outputDir = path.join("vgHists_unblind", cat)
         outFileName = path.join(outputDir, "histos_mcBG.root")
         outFile = TFile(outFileName, "RECREATE")
         inHists[cat].SetName("distribs_X")
@@ -89,8 +90,8 @@ if __name__=="__main__":
         
     
   else:
-    if path.exists("vgHists"):
-      rmtree ("vgHists")
+    if path.exists("vgHists_unblind"):
+      rmtree ("vgHists_unblind")
     inSigFileNames = glob("organize_DDs/signals/*.root")
     sigNevents = getSigNevents()
     print "sigNevents:", sigNevents
@@ -101,6 +102,8 @@ if __name__=="__main__":
       makeHist(inSigFileName, "btag", "signals", sigNevents[mass])
       makeHist(inSigFileName, "antibtag", "signals", sigNevents[mass])
     inDataName = "organize_DDs/data/ddTree_data2016SinglePhoton.root"
-    for windowEdges in [[100., 110.], [50., 70.]]:
-      makeHist(inDataName, "antibtag", "data", -999, windowEdges)
-      makeHist(inDataName, "btag", "data", -999, windowEdges)
+    #for windowEdges in [[100., 110.], [50., 70.]]:
+    #  makeHist(inDataName, "antibtag", "data", -999, windowEdges)
+    #  makeHist(inDataName, "btag", "data", -999, windowEdges)
+    makeHist(inDataName, "antibtag", "data", -999, [0., 0.])
+    makeHist(inDataName, "btag", "data", -999, [0., 0.])

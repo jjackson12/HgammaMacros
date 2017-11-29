@@ -561,7 +561,7 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(string outputFileName);
+   virtual void     Loop(string outputFileName, int btagVariation=0);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
    //virtual unsigned short     FindEvent(unsigned int run, unsigned int lumiBlock, unsigned long long event);
