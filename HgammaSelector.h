@@ -567,9 +567,9 @@ public :
    //virtual unsigned short     FindEvent(unsigned int run, unsigned int lumiBlock, unsigned long long event);
 
    
-   float computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug = false);
+   float computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug = false, int btagVariation=0);
    float computePhotonSF(float photonPt, float photonEta, bool debug = false);
-   float computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug = false);
+   float computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug = false, int btagVariation=0);
 
    //leadingSubjets getLeadingSubjets(vector<float> prunedJet);
    //passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);

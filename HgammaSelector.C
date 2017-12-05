@@ -9,7 +9,7 @@ using namespace std;
 // The trees differ in the AK8 jet mass cuts -- different windows are used for different bosons 
 // John Hakala -- May 11, 2016
 
-void HgammaSelector::Loop(string outputFileName, int btagVariation=0) {
+void HgammaSelector::Loop(string outputFileName, int btagVariation) {
   cout << "output filename is: " << outputFileName << endl;
   // Flags for running this macro
   bool debugFlag                     =  false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
@@ -323,7 +323,7 @@ void HgammaSelector::Loop(string outputFileName, int btagVariation=0) {
   cout << "\nCompleted output file is " << outputFileName.c_str() <<".\n" << endl;
 }
 
-float HgammaSelector::computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug, int variation=0) {
+float HgammaSelector::computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug, int variation) {
   return computePhotonSF(photonPt, photonEta, debug)*computeBtagSF(category, jetPt, jetHbbTag, debug, variation);
 }
 
@@ -345,7 +345,7 @@ float HgammaSelector::computePhotonSF(float photonPt, float photonEta, bool debu
     }
   }
 }
-float HgammaSelector::computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug, int variation = 0) {
+float HgammaSelector::computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug, int variation) {
   //  variation:
   //  0 = no variation
   //  1 = upward variation

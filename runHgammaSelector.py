@@ -21,7 +21,7 @@ def deleteLibs(macroName):
   if os.path.exists(macroName+"_C.so"):
      os.remove(macroName+"_C.so")
 
-def processHg(inputFileName, outputFileName, load, loopMode = False):
+def processHg(inputFileName, outputFileName, load, loopMode = False, btagVariation=0):
   if inputFileName is None:
     print "\nPlease specify the input file with the -i option."
     exit(1)
@@ -62,7 +62,7 @@ def processHg(inputFileName, outputFileName, load, loopMode = False):
   tree = inputFile.Get("ntuplizer/tree")
   instance = HgammaSelector(tree)
   # run the HgammaSelector::Loop method
-  instance.Loop(outputFileName)
+  instance.Loop(outputFileName, btagVariation)
 
 if __name__=="__main__":
   from optparse import OptionParser
@@ -73,5 +73,7 @@ if __name__=="__main__":
                     help="the input file name"                                             )
   parser.add_option("-o",  dest="outputFileName",
                     help="the output file name"                                            )
+  parser.add_option("-b",  type=int, dest="btagVariation", default=0,
+                    help="vary the b-tagging SFs, 1 to vary up and -1 to vary down"        )
   (options, args) = parser.parse_args()
-  processHg(options.inputFileName, options.outputFileName, options.load)
+  processHg(options.inputFileName, options.outputFileName, options.load, options.btagVariation)

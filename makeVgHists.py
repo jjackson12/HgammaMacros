@@ -1,4 +1,5 @@
 from os import makedirs, path
+from sys import argv
 from shutil import rmtree
 from glob import glob
 from ROOT import *
@@ -6,6 +7,17 @@ from HgCuts import getAntiBtagComboCut, getBtagComboCut
 from HgParameters import getSigNevents
 
 debug = True
+#if len(argv) > 2:
+#  print "illegal number of arguments"
+#  exit(1)
+#elif len(argv) == 2:
+#  btagVariation = argv[1]
+#elif len(argv) == 1:
+#  btagVariation = "nom"
+#else:
+#  "illegal arguments"
+#  exit(1)
+btagVariation = "down"
 
 def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
   gROOT.SetBatch()
@@ -45,11 +57,11 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
     print "weights/cuts:", cut
   tree.Draw("phJetInvMass_puppi_softdrop_higgs>> distribs_X", cut)
 
-  outputDir = "vgHists_unblind/%s"%category
+  outputDir = "vgHists_btag-%s/%s"%(btagVariation, category)
   if not path.exists(outputDir):
     makedirs(outputDir)
 
-  outFileName = inFileName.replace("organize_DDs/%s/ddTree"%sampleType, "%s/histos" % outputDir)
+  outFileName = inFileName.replace("organize_DDs_btag-%s/%s/ddTree"%(btagVariation, sampleType), "%s/histos" % outputDir)
   if sampleType == "data" and windowEdges != [0.,0.]:
     outFileName = outFileName.replace("data2016SinglePhoton.root", "sideband%i%i.root"%(int(windowEdges[0]), int(windowEdges[1])))
     
@@ -80,7 +92,7 @@ if __name__=="__main__":
                   if "THStack" in subprim.IsA().GetName():
                     inHists[cat] = subprim.GetStack().Last()
       for cat in inHists.keys():
-        outputDir = path.join("vgHists_unblind", cat)
+        outputDir = path.join("vgHists_btag-%s"%btagVariation, cat)
         outFileName = path.join(outputDir, "histos_mcBG.root")
         outFile = TFile(outFileName, "RECREATE")
         inHists[cat].SetName("distribs_X")
@@ -90,9 +102,9 @@ if __name__=="__main__":
         
     
   else:
-    if path.exists("vgHists_unblind"):
-      rmtree ("vgHists_unblind")
-    inSigFileNames = glob("organize_DDs/signals/*.root")
+    if path.exists("vgHists_btag-%s"%btagVariation):
+      rmtree ("vgHists_btag-%s"%btagVariation)
+    inSigFileNames = glob("organize_DDs_btag-%s/signals/*.root" % btagVariation)
     sigNevents = getSigNevents()
     print "sigNevents:", sigNevents
     for inSigFileName in inSigFileNames:
@@ -101,7 +113,7 @@ if __name__=="__main__":
       mass = inSigFileName.split("sig_m")[-1].split(".root")[0]
       makeHist(inSigFileName, "btag", "signals", sigNevents[mass])
       makeHist(inSigFileName, "antibtag", "signals", sigNevents[mass])
-    inDataName = "organize_DDs/data/ddTree_data2016SinglePhoton.root"
+    inDataName = "organize_DDs_btag-%s/data/ddTree_data2016SinglePhoton.root" % btagVariation
     #for windowEdges in [[100., 110.], [50., 70.]]:
     #  makeHist(inDataName, "antibtag", "data", -999, windowEdges)
     #  makeHist(inDataName, "btag", "data", -999, windowEdges)
