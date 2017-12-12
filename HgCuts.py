@@ -5,7 +5,7 @@ from ROOT import TCut
 
 def getCutValues():
   cutValues = {}
-  cutValues["minInvMass"]     = 600.0
+  cutValues["minInvMass"]     = 700.0
   cutValues["phEta"]          = 1.4442
   cutValues["phPt"]           = 200.0
   cutValues["jetAbsEta"]      = 2.2

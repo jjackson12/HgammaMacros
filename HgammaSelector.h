@@ -14,6 +14,7 @@
 #include <iostream>
 #include <iomanip>
 #include <TH2.h>
+#include <TF1.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TProfile.h>
@@ -561,15 +562,15 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(string outputFileName);
+   virtual void     Loop(string outputFileName, int btagVariation=0);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
    //virtual unsigned short     FindEvent(unsigned int run, unsigned int lumiBlock, unsigned long long event);
 
    
-   float computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug = false);
+   float computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug = false, int btagVariation=0);
    float computePhotonSF(float photonPt, float photonEta, bool debug = false);
-   float computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug = false);
+   float computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug = false, int btagVariation=0);
 
    //leadingSubjets getLeadingSubjets(vector<float> prunedJet);
    //passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);

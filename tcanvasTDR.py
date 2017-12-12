@@ -12,7 +12,7 @@ def TDRify(canvas, inset, name, writeOutput=False, outputdir="~/physics/_tests")
       gStyle.SetOptStat(0)
       CMS_lumi.lumi_13TeV = "35.9 fb^{-1}"
       CMS_lumi.writeExtraText = 1
-      CMS_lumi.extraText = "Simulation"
+      CMS_lumi.extraText = "Preliminary"
       CMS_lumi.lumi_sqrtS = "13 TeV" # used with iPeriod = 0, e.g. for simulation-only plots (default is an empty string)
   
       iPos = 11
