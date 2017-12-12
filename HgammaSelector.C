@@ -110,20 +110,23 @@ void HgammaSelector::Loop(string outputFileName, int btagVariation) {
   Long64_t nentries = fChain->GetEntriesFast();
   Long64_t nbytes = 0, nb = 0;
 
-  TFile* trigEffFile = new TFile("inputs/JetTrig.root");
-  TCanvas* trigEffCan = (TCanvas*) trigEffFile->Get("effi");
-  TPad* trigEffPad = (TPad*) trigEffCan->GetPrimitive("pad1");
-  TIter it(trigEffPad->GetListOfPrimitives());
-  TH1D* trigEffHist = new TH1D();
-  while (TObject* obj = it()) {
-    if (strncmp(obj->IsA()->GetName(), "TH1D", 4)==0) {
-      if (((TH1D*)obj)->GetLineColor() == 432) {
-        trigEffHist = (TH1D*)obj;
-      }
-    }
-  }
-  trigEffFile->Close();
+  //TFile* trigEffFile = new TFile("inputs/JetTrig.root");
+  //TCanvas* trigEffCan = (TCanvas*) trigEffFile->Get("effi");
+  //TPad* trigEffPad = (TPad*) trigEffCan->GetPrimitive("pad1");
+  //TIter it(trigEffPad->GetListOfPrimitives());
+  //TH1D* trigEffHist = new TH1D();
+  //while (TObject* obj = it()) {
+  //  if (strncmp(obj->IsA()->GetName(), "TH1D", 4)==0) {
+  //    if (((TH1D*)obj)->GetLineColor() == 432) {
+  //      trigEffHist = (TH1D*)obj;
+  //    }
+  //  }
+  //}
+  //trigEffFile->Close();
 
+  TF1* turnOnCurve = new TF1("erf", "[0]*TMath::Erf((x-[1])/[2])+[3]", 0, 5000);
+  turnOnCurve->SetParameters(0.493428, 197.58, 62.6643, 0.500232);
+  
   cout << "\n\nStarting HgammaSelector::Loop().\n" << endl;
   // Loop over all events
   for (Long64_t jentry=0; jentry<nentries;++jentry) {
@@ -278,7 +281,8 @@ void HgammaSelector::Loop(string outputFileName, int btagVariation) {
         higgsJett2t1 = puppi_softdrop_higgsJetTau2/puppi_softdrop_higgsJetTau1;
         antibtagSF = computeOverallSF("antibtag" , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF, btagVariation);
         btagSF     = computeOverallSF("btag"     , higgsJet_puppi_softdrop.Pt(), higgsJet_HbbTag, leadingPhoton.Pt(), leadingPhoton.Eta(), debugSF, btagVariation);
-        weightFactor = 1/trigEffHist->GetBinContent(trigEffHist->GetXaxis()->FindBin(leadingPhoton.Pt()));
+        //weightFactor = 1/trigEffHist->GetBinContent(trigEffHist->GetXaxis()->FindBin(leadingPhoton.Pt()));
+        weightFactor = 1.0/(turnOnCurve->Eval(leadingPhoton.Pt()));
         boostedPho = leadingPhoton;
         boostedPho.Boost(-(sumVector.BoostVector()));
         boostedJet = higgsJet_puppi_softdrop;

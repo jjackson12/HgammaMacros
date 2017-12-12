@@ -6,11 +6,11 @@ from pprint import pprint
 debug = False
 first = True
 
-for variation in [("up", 1), ("down", -1)]:
-#for variation in [("test", 0)]:
+#for variation in [("nom", 0), ("up", 1), ("down", -1)]:
+for variation in [("test", 0)]:
   baseDir = path.join(getcwd(), "organize_smallifications")
-  #categories = ["backgrounds", "signals", "data"]
-  categories = ["signals"]
+  categories = ["backgrounds", "signals", "data"]
+  #categories = ["signals"]
   catDirs = {}
   for category in categories:
     catDirs[category] = path.join(baseDir, category)

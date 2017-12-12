@@ -4,19 +4,19 @@ from tcanvasTDR import TDRify
 
 
 tfile=[]
-tfile.append(TFile("rebinnedPdfs_antibtag.root"))
-tfile.append(TFile("rebinnedPdfs_btag.root"))
+tfile.append(TFile("/Users/johakala/dec11/forErrs/rebinnedPdfs_antibtag.root"))
+tfile.append(TFile("/Users/johakala/dec11/forErrs/rebinnedPdfs_btag.root"))
 anti = tfile[0].Get("masterCan_antibtag")
 antiFit = anti.GetPrimitive("dataFit_antibtag")
 antiHist = antiFit.GetPrimitive("rebinned_fit")
 antiHist.SetTitle("antibtag category") 
-antiCurve = antiFit.GetPrimitive("bkg_vvdijet1_Norm[x]")
+antiCurve = antiFit.GetPrimitive("bkg_dijetsimple2_Norm[x]")
 antiCurve.SetTitle("dijet2 fit")
 btag = tfile[1].Get("masterCan_btag")
 btagFit = btag.GetPrimitive("dataFit_btag")
 btagHist = btagFit.GetPrimitive("rebinned_fit")
 btagHist.SetTitle("btag category") 
-btagCurve = btagFit.GetPrimitive("bkg_vvdijet1_Norm[x]")
+btagCurve = btagFit.GetPrimitive("bkg_dijetsimple2_Norm[x]")
 btagCurve.SetTitle("dijet2 fit")
 
 antiErrFile = TFile("fitRes_antibtag.root")
@@ -73,14 +73,14 @@ antiRatio.cd()
 TDRify(antiRatio, True, "antiRatio")
 
 antiFit.cd()
-antiFit.GetPrimitive("bkg_vvdijet1_Norm[x]").Draw("SAME")
+antiFit.GetPrimitive("bkg_dijetsimple2_Norm[x]").Draw("SAME")
 antiFit.GetPrimitive("rebinned_fit").Draw("SAME PE")
 for prim in antiFit.GetListOfPrimitives():
   print prim.GetName()
   print prim.IsA().GetName()
   print "-------"
 btagFit.cd()
-btagFit.GetPrimitive("bkg_vvdijet1_Norm[x]").Draw("SAME")
+btagFit.GetPrimitive("bkg_dijetsimple2_Norm[x]").Draw("SAME")
 btagFit.GetPrimitive("rebinned_fit").Draw("SAME PE")
 for prim in btagFit.GetListOfPrimitives():
   print prim.GetName()

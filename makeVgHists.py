@@ -17,7 +17,7 @@ debug = True
 #else:
 #  "illegal arguments"
 #  exit(1)
-btagVariation = "down"
+btagVariation = "test"
 
 def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
   gROOT.SetBatch()
@@ -43,9 +43,11 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
     useTrigger = True
     scaleFactors = False
     if category == "antibtag":
-      cut = "weightFactor*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      #cut = "weightFactor*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      cut = "1*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
     elif category == "btag":
-      cut = "weightFactor*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      #cut = "weightFactor*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      cut = "1*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
   else:
     print "invalid sample type!"
     exit(1)
@@ -57,7 +59,7 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
     print "weights/cuts:", cut
   tree.Draw("phJetInvMass_puppi_softdrop_higgs>> distribs_X", cut)
 
-  outputDir = "vgHists_btag-%s/%s"%(btagVariation, category)
+  outputDir = "vgHists_fixTurnOn_btag-%s/%s"%(btagVariation, category)
   if not path.exists(outputDir):
     makedirs(outputDir)
 
@@ -92,7 +94,7 @@ if __name__=="__main__":
                   if "THStack" in subprim.IsA().GetName():
                     inHists[cat] = subprim.GetStack().Last()
       for cat in inHists.keys():
-        outputDir = path.join("vgHists_btag-%s"%btagVariation, cat)
+        outputDir = path.join("vgHists_fixTurnOn_btag-%s"%btagVariation, cat)
         outFileName = path.join(outputDir, "histos_mcBG.root")
         outFile = TFile(outFileName, "RECREATE")
         inHists[cat].SetName("distribs_X")
@@ -102,8 +104,8 @@ if __name__=="__main__":
         
     
   else:
-    if path.exists("vgHists_btag-%s"%btagVariation):
-      rmtree ("vgHists_btag-%s"%btagVariation)
+    if path.exists("vgHists_fixTurnOn_btag-%s"%btagVariation):
+      rmtree ("vgHists_fixTurnOn_btag-%s"%btagVariation)
     inSigFileNames = glob("organize_DDs_btag-%s/signals/*.root" % btagVariation)
     sigNevents = getSigNevents()
     print "sigNevents:", sigNevents

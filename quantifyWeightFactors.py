@@ -3,8 +3,8 @@ from ROOT import *
 for category in ["btag", "antibtag"]:
 
   inFiles = {}
-  inFiles["weighted"] = TFile("vgHists_btag-nom/%s/histos_data2016SinglePhoton.root" % category)
-  inFiles["unweighted"] = TFile("vgHists_btag-test/%s/histos_data2016SinglePhoton.root" % category)
+  inFiles["weighted"] = TFile("vgHists_fixTurnOn_btag-nom/%s/histos_data2016SinglePhoton.root" % category)
+  inFiles["unweighted"] = TFile("vgHists_fixTurnOn_btag-test/%s/histos_data2016SinglePhoton.root" % category)
   
   hists = {}
   for inFile in inFiles:
@@ -25,4 +25,4 @@ for category in ["btag", "antibtag"]:
   diff.GetYaxis().SetLabelSize(0.028)
   diff.GetYaxis().SetTitleOffset(1.3)
   diff.Draw("hist")
-  can.Print("weightFactor_effect-%s.pdf" % category)
+  can.Print("weightFactor_effect_new-%s.pdf" % category)

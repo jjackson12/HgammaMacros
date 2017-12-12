@@ -14,6 +14,7 @@
 #include <iostream>
 #include <iomanip>
 #include <TH2.h>
+#include <TF1.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TProfile.h>
