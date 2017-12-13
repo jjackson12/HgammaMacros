@@ -17,13 +17,13 @@ debug = True
 #else:
 #  "illegal arguments"
 #  exit(1)
-btagVariation = "test"
+btagVariation = "nom"
 
 def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
   gROOT.SetBatch()
   inFile = TFile(inFileName)
   tree = inFile.Get("higgs")
-  hist = TH1D("distribs_X", "distribs_X", 4000, 700, 4700)
+  hist = TH1D("distribs_X", "distribs_X", 4300, 400, 4700)
 
   region = "higgs"
 
@@ -59,7 +59,7 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
     print "weights/cuts:", cut
   tree.Draw("phJetInvMass_puppi_softdrop_higgs>> distribs_X", cut)
 
-  outputDir = "vgHists_fixTurnOn_btag-%s/%s"%(btagVariation, category)
+  outputDir = "vgHists_turnOnTest_btag-%s/%s"%(btagVariation, category)
   if not path.exists(outputDir):
     makedirs(outputDir)
 
@@ -94,7 +94,7 @@ if __name__=="__main__":
                   if "THStack" in subprim.IsA().GetName():
                     inHists[cat] = subprim.GetStack().Last()
       for cat in inHists.keys():
-        outputDir = path.join("vgHists_fixTurnOn_btag-%s"%btagVariation, cat)
+        outputDir = path.join("vgHists_turnOnTest_btag-%s"%btagVariation, cat)
         outFileName = path.join(outputDir, "histos_mcBG.root")
         outFile = TFile(outFileName, "RECREATE")
         inHists[cat].SetName("distribs_X")
@@ -104,8 +104,8 @@ if __name__=="__main__":
         
     
   else:
-    if path.exists("vgHists_fixTurnOn_btag-%s"%btagVariation):
-      rmtree ("vgHists_fixTurnOn_btag-%s"%btagVariation)
+    if path.exists("vgHists_turnOnTest_btag-%s"%btagVariation):
+      rmtree ("vgHists_turnOnTest_btag-%s"%btagVariation)
     inSigFileNames = glob("organize_DDs_btag-%s/signals/*.root" % btagVariation)
     sigNevents = getSigNevents()
     print "sigNevents:", sigNevents
