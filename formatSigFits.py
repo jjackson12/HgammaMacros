@@ -101,11 +101,12 @@ def makeCrystalBall(mass, category):
 #  return formula
 
 gStyle.SetOptStat(0)
-if not path.exists("outSigFits"):
-  makedirs("outSigFits")
-outFile = TFile("outSigFits/prettyFits_%s.root" % options.category, "RECREATE")
+outDir = "outSigFitsTest"
+if not path.exists(outDir):
+  makedirs(outDir)
+outFile = TFile("%s/prettyFits_%s.root" % (outDir, options.category), "RECREATE")
 #def getIntegral(curve, xLow, xHi, crystalBall=TF1(), gauss=TF1()):
-def getIntegral(curve, xLow, xHi, crystalBall=TF1()):
+def getIntegral(xLow, xHi, crystalBall):
   #integral = Double(0)
   #yLow  = Double(curve.Eval(xLow))
   #yHi   = Double(curve.Eval(xHi) )
@@ -238,7 +239,7 @@ for fullsimMC in fullsimMCs:
   pullHist.SetName("ratio_%i" % fullsimMC)
   for iBin in range(1,hist.GetXaxis().GetNbins()):
     #integral = getIntegral(fullsimCurve, hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), crystalBall, gaussian)
-    integral = getIntegral(fullsimCurve, hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), crystalBall)
+    integral = getIntegral(hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), crystalBall)
     #print "bin content from %f to %f is: %f" % (hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), hist.GetBinContent(iBin))
     #print "adjusted from x=%f to %f is: %f" % (hist.GetXaxis().GetBinLowEdge(iBin), hist.GetXaxis().GetBinUpEdge(iBin), integral/hist.GetXaxis().GetBinWidth(iBin))
     if not hist.GetBinError(iBin) == 0 :
@@ -313,8 +314,18 @@ for fullsimMC in fullsimMCs:
   topPad.GetPrimitive("TPave").SetY1NDC(topPad.GetPrimitive("TPave").GetY1NDC() * .6)
   outFile.cd()
   outCan.Write()
-  outCan.SaveAs("outSigFits/%s_%i.pdf" % (options.category, fullsimMC))
+  outCan.SaveAs("%s/%s_%i.pdf" % (outDir, options.category, fullsimMC))
+  canvasTest = TCanvas()
+  canvasTest.cd()
+  cloneHist.SetLineColor(kBlue)
+  cloneHist.Draw()
+  hist.SetLineColor(kGreen)
+  hist.Draw("SAME")
+  ksHist.SetLineColor(kRed)
+  ksHist.Draw("SAME")
+  fullsimCurve.Draw("SAME")
+  canvasTest.Print("testKS/testKS_%s_%i.pdf"%(options.category, fullsimMC))
 #outFile.Close()
-pprint(ksTestResults)
-pprint(stdDevs)
-  
+with open("testKS/binWidth_%i_%s.txt" % (options.binWidth, options.category), 'w') as f: 
+  pprint(ksTestResults, f)
+#pprint(stdDevs)
