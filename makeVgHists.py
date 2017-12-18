@@ -43,11 +43,11 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
     useTrigger = True
     scaleFactors = False
     if category == "antibtag":
-      #cut = "weightFactor*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
-      cut = "1*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      cut = "weightFactor*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      #cut = "1*(%s)" % getAntiBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
     elif category == "btag":
-      #cut = "weightFactor*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
-      cut = "1*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      cut = "weightFactor*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
+      #cut = "1*(%s)" % getBtagComboCut(region, useTrigger, sideband, scaleFactors, windowEdges)
   else:
     print "invalid sample type!"
     exit(1)
