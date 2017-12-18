@@ -65,25 +65,34 @@ for inFile in inFiles:
           print "adding %s to the plot" % inFile.GetName()
           inFile.Get(key.GetName()).Draw("SAME")
         index+=1
-    if  ( options.form == "workspace" and options.kind == "fullsim"):
+    #if  ( options.form == "workspace" and options.kind == "fullsim"):
+    if  ( options.form == "workspace" and "w_signal" in inFile.GetName()):
       rooWS = inFile.Get("Vg")
-      xVar = rooWS.var("x")
-      framesList.append(xVar.frame())
       pdfs = rooWS.allPdfs()
       it = pdfs.iterator()
       pdf = it.Next()
       while pdf:
+        if first:
+          xVar = rooWS.var("x")
+          frame = xVar.frame()
+          can = TCanvas()
+          can.cd()
+          first = False
+          frame.Draw()
         print "found pdf %s in workspace %s of file %s" % (pdf.GetName(), rooWS.GetName(), inFile.GetName())
         if "signal_fixed" in pdf.GetName() and options.category in pdf.GetName():
           print " --> this one will be added to the plots"
           pdfsList.append(pdf.Clone())
-          pdfsList[-1].plotOn(framesList[-1])
-          canvases.append(TCanvas())
-          canvases[-1].cd()
-          framesList[-1].Draw()
+          pdfsList[-1].plotOn(frame)
+          #pdfsList[-1].plotOn(framesList[-1])
+          #canvases.append(TCanvas())
+          #canvases[-1].cd()
+          #framesList[-1].Draw()
+          
         pdf = it.Next()
+      #framesList.append(xVar.frame())
         
-      
+frame.Draw()
 outFile = TFile(options.outFile, "RECREATE")
 outFile.cd()
 can.Write()  
