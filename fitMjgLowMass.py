@@ -22,8 +22,8 @@ if not path.exists(outDir):
   makedirs(outDir)
   
 
-#inFile = TFile("organize_DDs_btag-nom/data/ddTree_data2016SinglePhoton.root")
-inFile = TFile("organize_DDs_btag-nom/backgrounds/ddTree_gJets400To600.root")
+inFile = TFile("organize_DDs_btag-nom/data/ddTree_data2016SinglePhoton.root")
+#inFile = TFile("organize_DDs_btag-nom/backgrounds/ddTree_gJets400To600.root")
 tree = inFile.Get("higgs")
 hist = TH1F("hist", "m_{j#gamma}", 500, 0, 5000)
 hist.GetXaxis().SetRangeUser(400, 1400)
