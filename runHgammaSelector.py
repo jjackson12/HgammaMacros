@@ -11,6 +11,8 @@ import os
 
 
 from ROOT import *
+from getMCbgWeights import getMCbgWeightsDict
+from HgParameters import getSamplesDirs
 
 def deleteLibs(macroName):
   # remove the previously compiled libraries
@@ -58,11 +60,22 @@ def processHg(inputFileName, outputFileName, load, loopMode = False, btagVariati
      gSystem.Load('HgammaSelector_C')
   inputFile = TFile(inputFileName)
   
+  print "testing"
+  from pprint import pprint
+  from os.path import basename
+  sampleDirs = getSamplesDirs()
+  weights = getMCbgWeightsDict(sampleDirs["bkgSmall3sDir"])
+  pprint(weights)
+  shortName = basename(inputFile.GetName()).replace("smallified_", "")
+  print shortName
+  weight = weights[shortName][0]
+  print weight
+  
   # get the ntuplizer/tree tree from the file specified by argument 1
   tree = inputFile.Get("ntuplizer/tree")
   instance = HgammaSelector(tree)
   # run the HgammaSelector::Loop method
-  instance.Loop(outputFileName, btagVariation)
+  instance.Loop(outputFileName, btagVariation, weight)
 
 if __name__=="__main__":
   from optparse import OptionParser
