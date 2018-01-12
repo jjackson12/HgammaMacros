@@ -9,7 +9,7 @@ using namespace std;
 // The trees differ in the AK8 jet mass cuts -- different windows are used for different bosons 
 // John Hakala -- May 11, 2016
 
-void HgammaSelector::Loop(string outputFileName, int btagVariation) {
+void HgammaSelector::Loop(string outputFileName, int btagVariation, float mcWeight) {
   cout << "output filename is: " << outputFileName << endl;
   // Flags for running this macro
   bool debugFlag                     =  false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
@@ -73,6 +73,7 @@ void HgammaSelector::Loop(string outputFileName, int btagVariation) {
   outputTreeHiggs->Branch("antibtagSF", &antibtagSF);
   outputTreeHiggs->Branch("btagSF", &btagSF);
   outputTreeHiggs->Branch("weightFactor", &weightFactor);
+  outputTreeHiggs->Branch("mcWeight", &mcWeight);
 
 
   // Branches from EXOVVNtuplizer tree

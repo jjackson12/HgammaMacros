@@ -17,13 +17,13 @@ debug = True
 #else:
 #  "illegal arguments"
 #  exit(1)
-btagVariation = "test"
+btagVariation = "nom"
 
-def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
+def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.], outputShortName="vgHists_test"):
   gROOT.SetBatch()
   inFile = TFile(inFileName)
   tree = inFile.Get("higgs")
-  hist = TH1D("distribs_X", "distribs_X", 4000, 700, 4700)
+  hist = TH1D("distribs_X", "distribs_X", 4000, 720, 4720)
 
   region = "higgs"
 
@@ -59,7 +59,7 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
     print "weights/cuts:", cut
   tree.Draw("phJetInvMass_puppi_softdrop_higgs>> distribs_X", cut)
 
-  outputDir = "vgHists_fixTurnOn_btag-%s/%s"%(btagVariation, category)
+  outputDir = "%s_btag-%s/%s"%(outputShortName, btagVariation, category)
   if not path.exists(outputDir):
     makedirs(outputDir)
 
@@ -74,6 +74,7 @@ def makeHist(inFileName, category, sampleType, sigNevents, windowEdges=[0.,0.]):
 
 if __name__=="__main__":
   from sys import argv
+  outputShortName = "vgHists_lowerBound720"
   if len(argv) > 1 :
     if argv[1] == "vgMC":
       inDirs = ["stackplots_puppiSoftdrop_antibtag_SF_vgMC","stackplots_puppiSoftdrop_btag_SF_vgMC"]
@@ -94,7 +95,7 @@ if __name__=="__main__":
                   if "THStack" in subprim.IsA().GetName():
                     inHists[cat] = subprim.GetStack().Last()
       for cat in inHists.keys():
-        outputDir = path.join("vgHists_fixTurnOn_btag-%s"%btagVariation, cat)
+        outputDir = path.join("%s_btag-%s"%(outputShortName,btagVariation), cat)
         outFileName = path.join(outputDir, "histos_mcBG.root")
         outFile = TFile(outFileName, "RECREATE")
         inHists[cat].SetName("distribs_X")
@@ -104,8 +105,8 @@ if __name__=="__main__":
         
     
   else:
-    if path.exists("vgHists_fixTurnOn_btag-%s"%btagVariation):
-      rmtree ("vgHists_fixTurnOn_btag-%s"%btagVariation)
+    if path.exists("%s_btag-%s"%(outputShortName, btagVariation)):
+      rmtree ("%s_btag-%s"%(outputShortName, btagVariation))
     inSigFileNames = glob("organize_DDs_btag-%s/signals/*.root" % btagVariation)
     sigNevents = getSigNevents()
     print "sigNevents:", sigNevents
@@ -113,11 +114,11 @@ if __name__=="__main__":
       #if "650" in inSigFileName:
       #  continue;
       mass = inSigFileName.split("sig_m")[-1].split(".root")[0]
-      makeHist(inSigFileName, "btag", "signals", sigNevents[mass])
-      makeHist(inSigFileName, "antibtag", "signals", sigNevents[mass])
+      makeHist(inSigFileName, "btag", "signals", sigNevents[mass], [110., 140.], outputShortName)
+      makeHist(inSigFileName, "antibtag", "signals", sigNevents[mass], [110., 140.], outputShortName)
     inDataName = "organize_DDs_btag-%s/data/ddTree_data2016SinglePhoton.root" % btagVariation
     #for windowEdges in [[100., 110.], [50., 70.]]:
-    #  makeHist(inDataName, "antibtag", "data", -999, windowEdges)
-    #  makeHist(inDataName, "btag", "data", -999, windowEdges)
-    makeHist(inDataName, "antibtag", "data", -999, [0., 0.])
-    makeHist(inDataName, "btag", "data", -999, [0., 0.])
+    #  makeHist(inDataName, "antibtag", "data", -999, windowEdges, outputShortName)
+    #  makeHist(inDataName, "btag", "data", -999, windowEdges, outputShortName)
+    makeHist(inDataName, "antibtag", "data", -999, [110., 140.], outputShortName)
+    makeHist(inDataName, "btag", "data", -999, [110., 140.], outputShortName)

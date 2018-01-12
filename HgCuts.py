@@ -5,7 +5,7 @@ from ROOT import TCut
 
 def getCutValues():
   cutValues = {}
-  cutValues["minInvMass"]     = 700.0
+  cutValues["minInvMass"]     = 720.0
   cutValues["phEta"]          = 1.4442
   cutValues["phPt"]           = 200.0
   cutValues["jetAbsEta"]      = 2.2
@@ -13,11 +13,11 @@ def getCutValues():
   cutValues["deltaR"]         = 1.1
   cutValues["ptOverM"]        = 0.35
   cutValues["Hbb"]            = 0.9
-  cutValues["higgsWindow"]    = [110.0, 140.0]
-  cutValues["sidebandWindow"] = [100.0, 110.0]
-  cutValues["sideband5070Window"] = [50.0, 70.0]
-  cutValues["sideband80100Window"] = [80.0, 100.0]
-  cutValues["preselectionWindow"] = [30.0, 99999.9]
+  #cutValues["higgsWindow"]    = [110.0, 140.0]
+  #cutValues["sidebandWindow"] = [100.0, 110.0]
+  #cutValues["sideband5070Window"] = [50.0, 70.0]
+  #cutValues["sideband80100Window"] = [80.0, 100.0]
+  #cutValues["preselectionWindow"] = [30.0, 99999.9]
   return cutValues
 
 
@@ -50,18 +50,18 @@ def makeHiggsWindow(sideband=False, windowEdges=[100.0,110.0]):
     #print "makeHiggsWindow got sideband =", sideband, "and windowEdges =", windowEdges
     cutValues = getCutValues()
     cuts = {}
-    window = "higgsWindow"
-    if sideband:
-      if windowEdges == [100.0,110.0]:
-        window = "sidebandWindow"
-      elif windowEdges == [50.0,70.0]:
-        window = "sideband5070Window"
-      elif windowEdges == [80.0,100.0]:
-        window = "sideband80100Window"
-      elif windowEdges == [30.0,99999.9]:
-        window = "preselectionWindow"
-    cuts["higgsWindowLow"] = TCut( "higgsPuppi_softdropJetCorrMass>%f"   % cutValues[window][0] )
-    cuts["higgsWindowHi"]  = TCut( "higgsPuppi_softdropJetCorrMass<%f"   % cutValues[window][1] )
+    #window = "higgsWindow"
+    #if sideband:
+    #  if windowEdges == [100.0,110.0]:
+    #    window = "sidebandWindow"
+    #  elif windowEdges == [50.0,70.0]:
+    #    window = "sideband5070Window"
+    #  elif windowEdges == [80.0,100.0]:
+    #    window = "sideband80100Window"
+    #  elif windowEdges == [30.0,99999.9]:
+    #    window = "preselectionWindow"
+    cuts["higgsWindowLow"] = TCut( "higgsPuppi_softdropJetCorrMass>%f"   % windowEdges[0] )
+    cuts["higgsWindowHi"]  = TCut( "higgsPuppi_softdropJetCorrMass<%f"   % windowEdges[1] )
     #print "will return combineCuts(cuts)=", combineCuts(cuts)
     return combineCuts(cuts)
 
