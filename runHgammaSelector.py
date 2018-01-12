@@ -68,8 +68,10 @@ def processHg(inputFileName, outputFileName, load, loopMode = False, btagVariati
   pprint(weights)
   shortName = basename(inputFile.GetName()).replace("smallified_", "")
   print shortName
-  weight = weights[shortName][0]
-  print weight
+  weight = 1.
+  if shortName in weights.keys():
+    weight = weights[shortName][0]
+  print "weight for this sample:", weight
   
   # get the ntuplizer/tree tree from the file specified by argument 1
   tree = inputFile.Get("ntuplizer/tree")

@@ -7,7 +7,7 @@ debug = False
 first = True
 
 #for variation in [("nom", 0), ("up", 1), ("down", -1)]:
-for variation in [("test", 0)]:
+for variation in [("nom", 0)]:
   baseDir = path.join(getcwd(), "organize_smallifications")
   categories = ["backgrounds", "signals", "data"]
   #categories = ["signals"]
@@ -17,7 +17,7 @@ for variation in [("test", 0)]:
   
   pprint(catDirs)
   
-  outDir = baseDir.replace("smallifications", "mcDDs_btag-%s" % variation[0])
+  outDir = baseDir.replace("smallifications", "DDs_btag-%s" % variation[0])
   if not path.exists(outDir):
     makedirs(outDir)
   print "catDirs", catDirs
