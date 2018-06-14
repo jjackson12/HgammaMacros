@@ -9,6 +9,7 @@ def getDDPrefix():
 def getSmallPrefix():
   return "smallified_"
 
+#TODO: Set to 1 for now
 def getMCbgSampleKfactors():
   sampleXsects = {}
   sampleXsects[   "gJets100To200.root"   ]   = 1.6*0.8
@@ -26,6 +27,7 @@ def getMCbgSampleKfactors():
   #sampleXsects[ "wJetsQQ-180.root" ]        = 1.21*0.8 
   return sampleXsects
 
+#TODO: Update list
 def getMCbgSampleXsects():
   kFactors = getMCbgSampleKfactors()
   sampleXsects = {}
@@ -44,6 +46,7 @@ def getMCbgSampleXsects():
   #sampleXsects[ "wJetsQQ-180.root" ] = 95.14 
   return sampleXsects
 
+#NOTE: "small3Dir" is the directory in which all of the background root files are held.
 def getMCbgSampleEvents(small3Dir):
   sampleXsects=getMCbgSampleXsects()
   sampleEvents = {}

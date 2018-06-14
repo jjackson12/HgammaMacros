@@ -2,7 +2,7 @@ from glob import glob
 from pprint import pprint
 
 def parseConfigs(show = False):
-  configFiles =  glob("../VgammaTuplizer/Ntuplizer/crabconfigs/*.ini")
+  configFiles =  glob("../HgammaCondor/singlePhoton_Apr21.ini")
   configsDict={}
 
   from ConfigParser import RawConfigParser
@@ -77,5 +77,4 @@ def haddTogetherAllDatasets(outDir, haddDatasets = True, mergeData = True, show 
       print getoutput(incantationPhotons)
       print getoutput(incantationMuons)
 
-if __name__ == "__main__":
-  haddTogetherAllDatasets("smallifications_May2", True, True, True)
+haddTogetherAllDatasets("smallifications_May2", True, True, True)
