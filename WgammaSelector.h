@@ -5,8 +5,8 @@
 // found on file: flatTuple.root
 //////////////////////////////////////////////////////////
 
-#ifndef HgammaSelector_h
-#define HgammaSelector_h
+#ifndef WgammaSelector_h
+#define WgammaSelector_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -25,11 +25,11 @@
 #include "map"
 #include "unordered_map"
 
-class HgammaSelector {
+class WgammaSelector {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
-
+  // TODO: Update with variables added in WgammaSelector
   // Variables calculated using events
   bool  triggerFired_175                 = false ; 
   bool  triggerFired_165HE10             = false ; 
@@ -39,7 +39,7 @@ public :
   bool  phoEtaPassesCut                  = false ; 
   bool  phoPtPassesCut                   = false ; 
   bool  eventHasTightPho                 = false ; 
-  bool  eventHasHiggsPuppi_softdropJet           = false ; 
+  bool  eventHasWPuppi_softdropJet           = false ; 
   int   eventsPassingTrigger_175         =    0  ;
   int   eventsPassingTrigger_165HE10     =    0  ;
   //int   eventsWithTightPho               =    0  ;
@@ -56,17 +56,17 @@ public :
   //float HT                             =    0. ;
   //float HT_ak4                         =    0. ;
   float leadingJetTau1                   = -999. ;
-  float higgsPuppi_softdropJetCorrMass           = -999. ;
-  float higgsJet_HbbTag                  = -999. ;
+  float WPuppi_softdropJetCorrMass           = -999. ;
+  //float WJet_HbbTag                  = -999. ;
   //float test_looseloose                = -1.   ;
-  //bool higgs_looseloose                = false ;
-  float higgsSoftdropJetCorrMass    = -999. ;
-  float puppi_softdrop_higgsJetTau1         = -999. ;
+  //bool W_looseloose                = false ;
+  float WSoftdropJetCorrMass    = -999. ;
+  float puppi_softdrop_WJetTau1         = -999. ;
   float leadingJetTau2              = -999. ;
-  float puppi_softdrop_higgsJetTau2         = -999. ;
-  float softdrop_higgsJetTau2       = -999. ;
+  float puppi_softdrop_WJetTau2         = -999. ;
+  float softdrop_WJetTau2       = -999. ;
   float leadingJetTau3              = -999. ;
-  //float pruned_higgsJetTau3         = -999. ;
+  //float pruned_WJetTau3         = -999. ;
   float leadingPhPt                 =    0. ;
   float leadingPhEta                =    0. ;
   float leadingPhPhi                =    0. ;
@@ -74,44 +74,45 @@ public :
   float leadingPhMVA                =    0. ;
   float leadingPhCat                =    0. ;
   float matchedJett2t1              = -999. ;
-  float higgsJett2t1                = -999. ;
-  float higgsJet_puppi_abseta      = -999. ;
-  float higgsJet_puppi_eta         = -999. ;
-  float higgsJet_puppi_phi         = -999. ;
-  float higgsJet_puppi_pt          = -999. ;
+  float WJetTau21                = -999. ;
+  float WJetPtOverMgammaj       = -99. ;
+  float WJet_puppi_abseta      = -999. ;
+  float WJet_puppi_eta         = -999. ;
+  float WJet_puppi_phi         = -999. ;
+  float WJet_puppi_pt          = -999. ;
   float leadingPhAbsEta             = -999. ;
   float cosThetaStar                =  -99. ;
   float phPtOverMgammaj             =  -99. ;
-  float phJetInvMass_puppi_softdrop_higgs   =  -99. ;
-  float phJetDeltaR_higgs           =  -99. ;
-  float antibtagSF                  =  -99. ;
-  float btagSF                      =  -99. ;
+  float phJetInvMass_puppi_softdrop_W   =  -99. ;
+  float phJetDeltaR_W           =  -99. ;
+  //float antibtagSF                  =  -99. ;
+  //float btagSF                      =  -99. ;
   float weightFactor                =  -99. ;
 
   TLorentzVector leadingPhoton              ;
   TLorentzVector tmpLeadingJet              ;
-  TLorentzVector higgsJet_puppi_softdrop            ;
+  TLorentzVector WJet_puppi_softdrop            ;
   TLorentzVector sumVector                  ;
   TLorentzVector boostedJet                 ;
   TLorentzVector boostedPho                 ;
   
-  //structs for b-tagging
-   struct leadingSubjets {
-     float leading;
-     float subleading;
-   };
-   struct passSubjetCuts {
-     bool loose_loose;
-     bool medium_loose;
-     bool medium_medium;
-     bool tight_loose;
-     bool tight_medium;
-     bool tight_tight;
-   }; 
-   leadingSubjets higgs_csvValues;
-   leadingSubjets sideLowFour_csvValues;
-   passSubjetCuts higgs_subjetCutDecisions;
-   passSubjetCuts sideLowFour_subjetCutDecisions;
+ // //structs for b-tagging
+ //  struct leadingSubjets {
+ //    float leading;
+ //    float subleading;
+ //  };
+ //  struct passSubjetCuts {
+ //    bool loose_loose;
+ //    bool medium_loose;
+ //    bool medium_medium;
+ //    bool tight_loose;
+ //    bool tight_medium;
+ //    bool tight_tight;
+ //  }; 
+ //  leadingSubjets W_csvValues;
+ //  leadingSubjets sideLowFour_csvValues;
+ //  passSubjetCuts W_subjetCutDecisions;
+ //  passSubjetCuts sideLowFour_subjetCutDecisions;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
    const Int_t kMaxpassFilter_HBHE = 1;
@@ -342,6 +343,7 @@ public :
    //vector<float>   *PV_rho;
    //vector<float>   *PV_z;
 
+   //TODO: What's with all the b_*?
    // List of branches
    //TBranch        *b_genParticle_N;   //!
    //TBranch        *b_genParticle_pt;   //!
@@ -556,21 +558,20 @@ public :
 
    //std::unordered_map<unsigned int, std::unordered_map<unsigned int, std::vector<unsigned long long> > >* eventMap;
 
-   HgammaSelector(TTree *tree=0);
-   virtual ~HgammaSelector();
+   WgammaSelector(TTree *tree=0);
+   virtual ~WgammaSelector();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(string outputFileName, int btagVariation=0, float mcWeight=1);
+   virtual void     Loop(string outputFileName, float mcWeight=1);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
    //virtual unsigned short     FindEvent(unsigned int run, unsigned int lumiBlock, unsigned long long event);
 
    
-   float computeOverallSF(std::string category, float jetPt, float jetHbbTag, float photonPt, float photonEta, bool debug = false, int btagVariation=0);
+   float computeOverallSF(std::string category, float jetPt, float photonPt, float photonEta, bool debug = false);
    float computePhotonSF(float photonPt, float photonEta, bool debug = false);
-   float computeBtagSF(std::string category, float jetPt, float jetHbbTag, bool debug = false, int btagVariation=0);
 
    //leadingSubjets getLeadingSubjets(vector<float> prunedJet);
    //passSubjetCuts getSubjetCutDecisions(leadingSubjets subjets);
@@ -578,8 +579,8 @@ public :
 
 #endif
 
-#ifdef HgammaSelector_cxx
-HgammaSelector::HgammaSelector(TTree *tree) : fChain(0) 
+#ifdef WgammaSelector_cxx
+WgammaSelector::WgammaSelector(TTree *tree) : fChain(0) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -590,19 +591,19 @@ HgammaSelector::HgammaSelector(TTree *tree) : fChain(0)
    Init(tree);
 }
 
-HgammaSelector::~HgammaSelector()
+WgammaSelector::~WgammaSelector()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 }
 
-Int_t HgammaSelector::GetEntry(Long64_t entry)
+Int_t WgammaSelector::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
-Long64_t HgammaSelector::LoadTree(Long64_t entry)
+Long64_t WgammaSelector::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -615,7 +616,7 @@ Long64_t HgammaSelector::LoadTree(Long64_t entry)
    return centry;
 }
 
-void HgammaSelector::Init(TTree *tree)
+void WgammaSelector::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -1014,7 +1015,7 @@ void HgammaSelector::Init(TTree *tree)
    Notify();
 }
 
-Bool_t HgammaSelector::Notify()
+Bool_t WgammaSelector::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -1025,18 +1026,18 @@ Bool_t HgammaSelector::Notify()
    return kTRUE;
 }
 
-void HgammaSelector::Show(Long64_t entry)
+void WgammaSelector::Show(Long64_t entry)
 {
 // Print contents of entry.
 // If entry is not specified, print current entry
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t HgammaSelector::Cut(Long64_t entry)
+Int_t WgammaSelector::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.
 // returns -1 otherwise.
    return 1;
 }
-#endif // #ifdef HgammaSelector_cxx
+#endif // #ifdef WgammaSelector_cxx

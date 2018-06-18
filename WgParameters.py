@@ -1,13 +1,14 @@
 # functions to centrally store Hgamma parameters
 # John Hakala -  May 16, 2016
+# Jacob Jackson - June 18, 2018
 from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["signalsSmall3sDir"] = "/Users/johakala/HgammaMacros/organize_smallifications/signals"
-  response["bkgSmall3sDir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/backgrounds"
-  response["dataSmall3Dir"]       = "/Users/johakala/HgammaMacros/organize_smallifications/data"
-  response["dataSmall3File"]       = "/Users/johakala/HgammaMacros/organize_smallifications/smallification_data2016SinglePhoton.root"
+  response["signalsSmall3sDir"] = "../MC/Signal"
+  response["bkgSmall3sDir"]       = "../MC/Background/smallified"
+  response["dataSmall3Dir"]       = "../WgammaCondor/smallified_data"
+  response["dataSmall3File"]       = "../WgammaCondor/smallified_data/smallified_singlePhoton2016.root"
 
   response["bkgDDdir"]            = "/Users/johakala/HgammaMacros/organize_DDs/backgrounds"
   response["sigDDdir"]         = "/Users/johakala/HgammaMacros/organize_DDs/signals"
@@ -15,6 +16,7 @@ def getSamplesDirs():
   response["dataDDFile"]          = "/Users/johakala/HgammaMacros/organize_DDs/data/ddTree_data2016SinglePhoton.root"
   return response
 
+#TODO: What
 def getNormalizations():
   normalizations = {}
   normalizations["650"]  = 1.0
