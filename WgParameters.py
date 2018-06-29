@@ -5,15 +5,16 @@ from ROOT import *
 
 def getSamplesDirs():
   response = {}
-  response["signalsSmall3sDir"] = "../MC/Signal"
+  response["sigSmall3sDir"] = "../MC/Signal/smallified"
   response["bkgSmall3sDir"]       = "../MC/Background/smallified"
-  response["dataSmall3Dir"]       = "../WgammaCondor/smallified_data"
+  response["dataSmall3sDir"]       = "../WgammaCondor/smallified_data"
+
   response["dataSmall3File"]       = "../WgammaCondor/smallified_data/smallified_singlePhoton2016.root"
 
-  response["bkgDDdir"]            = "/Users/johakala/HgammaMacros/organize_DDs/backgrounds"
-  response["sigDDdir"]         = "/Users/johakala/HgammaMacros/organize_DDs/signals"
-  response["dataDDdir"]          = "/Users/johakala/HgammaMacros/organize_DDs/data/"
-  response["dataDDFile"]          = "/Users/johakala/HgammaMacros/organize_DDs/data/ddTree_data2016SinglePhoton.root"
+  response["bkgDDdir"]            = "../MC/Background/selected"
+  response["sigDDdir"]         = "../MC/Signal/selected"
+  response["dataDDdir"]          = "./"
+  response["dataDDFile"]          = "selected_singlePhoton2016.root"
   return response
 
 #TODO: What
@@ -52,7 +53,8 @@ def getMassWindows():
   massWindows[2450] = [2200, 2700]
   massWindows[2850] = [2600, 3100]
   massWindows[3250] = [3000, 3500]
-  return massWindows
+  #return massWindows
+  return []
 
 def getSigNevents():
   sigNevents = {}
@@ -64,21 +66,21 @@ def getSigNevents():
 
 def getVariableDict():
   varDict = {}
-  varDict["higgsJet_puppi_abseta"]    = "#||{#eta_{J}}"
-  varDict["higgsJet_puppi_eta"]       = "#eta_{J}"
-  varDict["higgsJet_puppi_phi"]       = "#phi_{J}"
-  varDict["higgsJet_puppi_pt"]        = "p_{T}^{J}"
+  varDict["WJet_puppi_abseta"]    = "#||{#eta_{J}}"
+  varDict["WJet_puppi_eta"]       = "#eta_{J}"
+  varDict["WJet_puppi_phi"]       = "#phi_{J}"
+  varDict["WJet_puppi_pt"]        = "p_{T}^{J}"
   varDict["leadingPhEta"]              = "#eta_{#gamma}"
-  varDict["higgsJet_HbbTag"]           = "Hb#bar{b} tagger discriminant"
-  varDict["phJetDeltaR_higgs"]         = "#DeltaR(#gamma, jet)"
+  varDict["phJetDeltaR_W"]         = "#DeltaR(#gamma, jet)"
   varDict["leadingPhPt"]               = "p_{T}^{#gamma} (GeV)"
-  varDict["higgsJett2t1"]              = "#tau_{21}"
+  varDict["WJetTau21"]              = "#tau_{21}"
   varDict["leadingPhAbsEta"]           = "#||{#eta_{#gamma}}"
   varDict["phPtOverMgammaj"]           = "p_{T}^{#gamma}/m_{#gammaJ}  "
+  varDict["WJetPtOverMgammaj"]           = "W^{#gamma}/m_{#gammaJ}  "
   varDict["leadingPhPhi"]              = "#phi_{#gamma}"
   varDict["cosThetaStar"]              = "#||{cos(#theta*)}"
-  varDict["phJetInvMass_puppi_softdrop_higgs"] = "m_{#gammaJ} (GeV)"
-  varDict["higgsPuppi_softdropJetCorrMass"]    = "m_{J}^{PUPPI+SD} (GeV)"
+  varDict["phJetInvMass_puppi_softdrop_W"] = "m_{#gammaJ} (GeV)"
+  varDict["WPuppi_softdropJetCorrMass"]    = "m_{J}^{PUPPI+SD} (GeV)"
   return varDict
 
 

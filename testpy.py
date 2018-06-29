@@ -1,8 +1,8 @@
 from ROOT import *
 from pyrootTools import *
 from getMCbgWeights import *
-from HgParameters import *
-from HgCuts import *
+from WgParameters import *
+from WgCuts import *
 from os import path
 
 # John Hakala, 12/1/2016
@@ -11,24 +11,23 @@ from os import path
 printCuts = False
 
 
-def getHiggsRangesDict(fineBinning=False):
+def getWRangesDict(fineBinning=False):
+  # TODO: Play around with ranges
   rangesDict = {}
   rangesDict["cosThetaStar"]                 = [[0., 1.]]
   rangesDict["phPtOverMgammaj"]              = [[0., 1.2]]
+  rangesDict["WJetPtOverMgammaj"]              = [[0., 1.2]]
   rangesDict["leadingPhPhi"]                 = [[-3.5, 3.5]]
-  rangesDict["leadingPhPt"]                  = [[0., 3000.]]
+  rangesDict["phPt"]                  = [[0., 3000.]]
   rangesDict["leadingPhAbsEta"]              = [[0.,2.5]]
   rangesDict["leadingPhEta"]                 = [[-2.8,2.8]]
-  rangesDict["antibtagSF"]                   = [[0.0, 1.0]]
-  rangesDict["btagSF"]                       = [[0.0, 1.0]]
   rangesDict["weightFactor"]                 = [[0.0, 2.0]]
-  label = "higgs"
-  rangesDict["%sJet_HbbTag"%label]           = [[-1. , 1.]]
+  label = "W"
   rangesDict["%sJet_puppi_abseta"%label]=[[0., 3]]
   rangesDict["%sJet_puppi_eta"%label]       = [[-3., 3.]]
   rangesDict["%sJet_puppi_phi"%label]       = [[-3.5, 3.5]]
   rangesDict["%sJet_puppi_pt"%label]        = [[0., 4000.]]
-  rangesDict["%sJett2t1"%label]              = [[0.0, 1.0]]
+  rangesDict["%sJetTau21"%label]              = [[0.0, 1.0]]
   #rangesDict["%sPrunedJetCorrMass"%label]    = [[0.,200.], [0.,1000.]]
   #rangesDict["%sPuppi_softdropJetCorrMass"%label]=[[50.,150.]]
   rangesDict["%sPuppi_softdropJetCorrMass"%label]    = [[0.,1000.]]
@@ -65,19 +64,8 @@ def getHiggsRangesDict(fineBinning=False):
 #  return rangesDict
 
 def getRangesDict(fineBinning=False):
-  rangesDict = {}
-  higgsRangesDict = getHiggsRangesDict(fineBinning)
-  for key in higgsRangesDict.keys():
-    rangesDict[key]=higgsRangesDict[key]
-  #lowFourRangesDict = getSidebandRangesDict("100110")
-  #for key in lowFourRangesDict.keys():
-  #  rangesDict[key]=lowFourRangesDict[key]
-  #lowThreeRangesDict = getSidebandRangesDict("5070")
-  ##print lowThreeRangesDict
-  #for key in lowThreeRangesDict.keys():
-  #  rangesDict[key]=lowThreeRangesDict[key]
-  #print rangesDict
-  return rangesDict
+  WRangesDict = getWRangesDict(fineBinning)
+  return WRangesDict
 
 #def makeHist(tree, hist, var, key, region):
 #  nEntries = tree.Draw("%s>> hist"%var, getAntiBtagComboCut(region))
@@ -93,17 +81,18 @@ def getRangesDict(fineBinning=False):
 #    outFile.Close()
 #    return True
 
-def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, windowEdges=[100,110], fineBinning=False, useReweighting=False):
+def makeAllHists(cutName, sideband=False, useScaleFactors=False, windowEdges=[70,90], fineBinning=False, useReweighting=False):
   if fineBinning != useReweighting:
     print "there was something funny happening... fineBinning and useReweighting were different..."
     exit(1)
   sampleDirs = getSamplesDirs()
   weightsDict = getWeightsDict(sampleDirs["bkgSmall3sDir"])
   #regions = ["higgs", "side100110", "side5070"]
-  regions = ["higgs"]
+  regions = ["Wgam"]
   rangesDict = getRangesDict(fineBinning)
   nonEmptyFilesDict={}
-  for key in getWeightsDict(getSamplesDirs()["bkgSmall3sDir"]).keys():
+  #for key in getWeightsDict(getSamplesDirs()["bkgSmall3sDir"]).keys():
+  for key in getMCWeightsDict(getSamplesDirs()["bkgSmall3sDir"]).keys():
     sampleType = getWeightsDict(getSamplesDirs()["bkgSmall3sDir"])[key][1]
     useTrigger = True
     if sampleType == "sig":
@@ -113,16 +102,18 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
     for region in regions:
       pre = getDDPrefix()
       tfile = TFile(path.join(sampleDirs["%sDDdir" % sampleType], pre+key))
-      #print "tfile is: ", tfile.GetName(), tfile
+      print "tfile is: ", tfile.GetName(), tfile
       tree = tfile.Get(region)
       varNames = []
       for branch in tree.GetListOfBranches():
-        if not "csvValues" in branch.GetName() and not "subjetCut" in branch.GetName() and not "triggerFired" in branch.GetName():
+        if not "csvValues" in branch.GetName() and not "subjetCut" in branch.GetName() and not "triggerFired" in branch.GetName() and not "mcWeight" in branch.GetName():
           varNames.append(branch.GetName())
+      print varNames
       for var in varNames:
         iRange = 1
         firstRange = True
         for rng in rangesDict[var]:
+          #TODO: Doesn't this have to have "preselection" in it?
           histName = "hist_%s_%s_%s"%(var, region, key)
           if not firstRange:
             histName = histName.replace(".root","")+"_%i.root"%iRange
@@ -131,17 +122,8 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
           else:
             nBins = 100
           hist = TH1F(histName,histName,nBins,rng[0],rng[1])
-          if var == "higgsJet_HbbTag":
-            hist.Rebin(5)
-          #print "cutName is:", cutName
-          if   cutName in "btag":
-            cut = getBtagComboCut(region, useTrigger, sideband, useScaleFactors, windowEdges)
-          elif cutName in "antibtag":
-            cut = getAntiBtagComboCut(region, useTrigger, sideband, useScaleFactors, windowEdges)
-          elif cutName in "nobtag":
-            #print "going to pass getNoBtagComboCut windowEdges" 
-            cut = getNoBtagComboCut(region, useTrigger, sideband, windowEdges)
-          elif cutName in "nMinus1":
+          #TODO: Select Cuts here, maybe preselection?
+          if cutName in "nMinus1":
             cut = getNminus1ComboCut(region, var, withBtag, useTrigger, sideband, windowEdges)
           elif cutName in "preselection":
             cut = getPreselectionComboCut(region, useTrigger, sideband, [30.0, 99999.9])
@@ -151,15 +133,12 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
             exit(1)
           if useTrigger:
             cut += makeTrigger()
-          #print "cut is now", cut
             
-          #if cutName is "preselection":
-          #  nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)
-          #  filename = "weightedMCbgHists_%s/%s_%s_%s"%("preselection", var, region, key)
+          if cutName is "preselection":
+            nEntries = tree.Draw("%s>> hist_preselection_%s_%s_%s"%(var, var, region, key), cut)
+            filename = "weightedMCbgHists_%s/%s_%s_%s"%("preselection", var, region, key)
           #elif not preselection:
           #histName = "hist_%s_%s_%s"%(var, region, key)
-          #print "cut is: " 
-          #print cut
           if useScaleFactors:
             if cutName in ["antibtag", "btag"]:
               cutString = "%sSF*(%s)" % (cutName, cut)
@@ -167,7 +146,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
                 cutString = "weightFactor*(%s)"%cutString
             else:
               cutString = "1*(%s)" % (cut)
-          else:
+          else: #TODO: What is this syntax?
             if cutName in "preselection":
               cutString = "1*(%s)" % cut
             else:
@@ -212,6 +191,7 @@ def makeAllHists(cutName, withBtag=True, sideband=False, useScaleFactors=False, 
             #print "applying weight %s to sample %s" % (weightsDict[key][0], filename )
             #print " weightsDict has keys: " 
             #print weightsDict.keys()
+            #Scale hist
             for histBin in range(0,hist.GetXaxis().GetNbins()):
               hist.SetBinContent(histBin, hist.GetBinContent(histBin)*weightsDict[key][0])  
             hist.Write()

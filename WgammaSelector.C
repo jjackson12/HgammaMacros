@@ -13,10 +13,10 @@ using namespace std;
 void WgammaSelector::Loop(string outputFileName, float mcWeight) {
   cout << "output filename is: " << outputFileName << endl;
   // Flags for running this macro
-  bool debugFlag                     =  true ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
+  bool debugFlag                     =  false ;  // If debugFlag is false, the trigger checking couts won't appear and the loop won't stop when it reaches entriesToCheck
   bool debugSF                       =  false ; 
   bool checkTrigger                  =  false ;
-  bool dumpEventInfo                 =  true ;
+  bool dumpEventInfo                 =  false ;
   //bool ignoreAllCuts                 =  false ;
   bool noHLTinfo                     =  true  ;  // This is for the 2016 MC with no HLT info
   int  entriesToCheck                =  600000000000000 ;  // If debugFlag = true, stop once the number of checked entries reaches entriesToCheck

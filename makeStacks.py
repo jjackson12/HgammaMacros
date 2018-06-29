@@ -4,12 +4,12 @@ from copy import deepcopy
 
 # new script to make all stackplots.
 # John Hakala 7/14/16
+# python makeStacks.py -c preselection 
+
 
 parser = OptionParser()
 parser.add_option("-c", "--cutName", dest="cutName",
                   help="the set of cuts to apply"                                      )
-parser.add_option("-w", action="store_true", dest="withBtag"  , default=False,
-                  help="if -w is used, then apply the btag cut"                        )
 parser.add_option("-r", action="store_false", dest="showSigs" , default=True,
                   help="if -r is used, then do not show signals overlaid."             )
 parser.add_option("-s", action="store_true", dest="sideband"  , default=False,
@@ -26,26 +26,27 @@ parser.add_option("-v", action="store_true", dest="vgMC", default=False,
                   help = "if -v is used, make a stackplot for MC BG limits"            )
 (options, args) = parser.parse_args()
 
-if options.sideband is False:
-  windowEdges=[0,0]
-if options.edges is not None and options.sideband is False:
-  print "cannot specify a sideband window without the -s option."
-  exit(1)
-if options.edges is None and options.sideband is True:
-  options.edges = "100110"
-if options.sideband is True:
-  if options.edges in "100110":
-    windowEdges = [100.0,110.0]
-  elif options.edges in "5070":
-    windowEdges = [50.0,70.0]
-  elif options.edges in "80100":
-    windowEdges = [80.0,100.0]
-  else:
-    print "invalid higgs mass window supplied."
-    exit(1)
+#if options.sideband is False:
+#  windowEdges=[0,0]
+#if options.edges is not None and options.sideband is False:
+#  print "cannot specify a sideband window without the -s option."
+#  exit(1)
+#if options.edges is None and options.sideband is True:
+#  options.edges = "100110"
+#if options.sideband is True:
+#  if options.edges in "100110":
+#    windowEdges = [100.0,110.0]
+#  elif options.edges in "5070":
+#    windowEdges = [50.0,70.0]
+#  elif options.edges in "80100":
+#    windowEdges = [80.0,100.0]
+#  else:
+#    print "invalid higgs mass window supplied."
+#    exit(1)
 if options.cutName=="preselection":
   windowEdges=[30.0, 99999.9]
-  options.sideband=True
+  #TODO: sideband?
+  #options.sideband=True
 
 validCutNames = ["preselection", "nobtag", "btag", "antibtag", "nMinus1"]
 if not options.cutName in validCutNames:
@@ -60,10 +61,6 @@ def isOrIsNot(boolean, singularOrPlural):
 
 print "Making stackplots for %s cuts." % options.cutName,
 if options.cutName != "preselection":
-  print "The btagging cut %s being applied%s" % (
-         isOrIsNot(options.withBtag, "singular"), 
-         "and btagging scalefactors %s being used."%isOrIsNot(options.useScaleFactors, "plural") if options.withBtag else "."
-        ),
   if options.sideband:
     print "Data %s shown in the mass window." % isOrIsNot(True, "singular"), windowEdges,
   print "MC backgrounds",
@@ -76,11 +73,10 @@ if not options.graphics:
   gROOT.SetBatch()
 
 from pyrootTools import getSortedDictKeys, drawInNewCanvas
-from testpy import getRangesDict, getHiggsRangesDict, makeAllHists
-from HgParameters import getSamplesDirs, getVariableDict
+from testpy import getRangesDict, getWRangesDict, makeAllHists
+from WgParameters import getSamplesDirs, getVariableDict
 from getMCbgWeights import getWeightsDict, getMCbgWeightsDict, getMCbgColors, getMCbgOrderedList, getMCbgLabels
 from tcanvasTDR import TDRify
-#for withBtag in [True, False]:
 sideband = options.sideband
 showSigs = options.showSigs
 addLines = options.addLines
@@ -89,16 +85,16 @@ vgMC = options.vgMC
 if vgMC and (not useScaleFactors or sideband or not options.cutName in ["btag", "antibtag"] ):
   print "vgMC was requested, but something is wrong... you must use scaleFactors, no sideband, and a cut of either 'btag' or 'antibtag'"
   exit(1)
-for withBtag in [options.withBtag]:
+for withBtag in [False]:
   #print "withBtag is %r" % withBtag
-  printNonempties = False
-  printFileNames  = False
+  printNonempties = True
+  printFileNames  = True
 
-  if options.cutName=="preselection" or sideband:
-    blindData       = False
-  else:
-    blindData    = True
-
+#  if options.cutName=="preselection" or sideband:
+#    blindData       = False
+#  else:
+#    blindData    = True
+  blindData = True
   sampleDirs = getSamplesDirs()
 
   rangesDict = getRangesDict(vgMC)
@@ -106,10 +102,10 @@ for withBtag in [options.withBtag]:
   #print "getRangesDict:"
   #print rangesDict
 
-  higgsRangesDict = getHiggsRangesDict(vgMC)
+  WRangesDict = getWRangesDict(vgMC)
   #print ""
   #print "getHiggsRangesDict:"
-  #print higgsRangesDict
+  #print WRangesDict
 
   #for sideband in ['100110','5070']:
   #  SidebandRangesDict = getSidebandRangesDict(sideband)
@@ -123,7 +119,7 @@ for withBtag in [options.withBtag]:
   #print "getMCbgWeights(): "
   mcBgWeights = getMCbgWeightsDict(sampleDirs["bkgSmall3sDir"])
   #print mcBgWeights
-  treekey="higgs"
+  treekey="Wgam"
   for cutName in [options.cutName]:
     if cutName in [ "nMinus1" ]:
       if withBtag:
@@ -141,7 +137,7 @@ for withBtag in [options.withBtag]:
       histsDir += "_vgMC"
 
     #print "going to pass makeAllHists windowEdges", windowEdges
-    nonEmptyFilesDict = makeAllHists(cutName, withBtag, sideband, useScaleFactors, windowEdges, vgMC, vgMC)
+    nonEmptyFilesDict = makeAllHists(cutName, sideband, useScaleFactors, windowEdges, vgMC, vgMC)
     #print "done making all histograms."
     thstacks=[]
     thstackCopies=[]
@@ -158,16 +154,16 @@ for withBtag in [options.withBtag]:
     legendLabels = getMCbgLabels()
     varDict = getVariableDict()
 
-    #for varkey in [higgsRangesDict.keys()[0]]:
+    #for varkey in [WRangesDict.keys()[0]]:
     if "antibtag" in cutName and not useScaleFactors:
-      for varkey in higgsRangesDict.keys():
+      for varkey in WRangesDict.keys():
         if "SF" in varkey:
-          #print "about to get rid of ", varkey, "from the higgsRangesDict"
-          higgsRangesDict.pop(varkey)
-    for varkey in higgsRangesDict.keys():
+          #print "about to get rid of ", varkey, "from the WRangesDict"
+          WRangesDict.pop(varkey)
+    for varkey in WRangesDict.keys():
       iRange = 1
       first = True
-      for rng in higgsRangesDict[varkey]:
+      for rng in WRangesDict[varkey]:
         #print "working on range", rng, "for varkey", varkey
         indexLabel = ""
         if not first:
@@ -254,6 +250,7 @@ for withBtag in [options.withBtag]:
           pads[-1].SetLogy()
         pads[-1].cd()
         thstacks[-1].Draw("hist")
+        #TODO: What is this???
         thstacks[-1].SetMinimum(0.08)
         thstacks[-1].SetMaximum(thstacks[-1].GetMaximum()*45)
         #print thstacks[-1]
@@ -285,17 +282,18 @@ for withBtag in [options.withBtag]:
         #print datahists[-1]
         if not blindData:
           datahists[-1].Draw("PE SAME")
-        datahists[-1].SetMarkerStyle(20)
-        datahistsCopies.append(datahists[-1].Clone())
+          datahists[-1].SetMarkerStyle(20)
+          datahistsCopies.append(datahists[-1].Clone())
         #for sigMass in [650, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000]:
         if showSigs:
           colors={}
-          colors[750]=kCyan-6
+          colors[600]=kCyan-6
+          colors[800]=kCyan+6
           colors[1000]=kOrange
-          colors[2050]=kMagenta
-          colors[3250]=kRed
-          for sigMass in [750, 1000, 2050, 3250]:
-            sigFileName = varkey+"_"+treekey+"_sig_m%i%s.root"%(sigMass, indexLabel)
+          colors[2000]=kMagenta
+          colors[3500]=kRed
+          for sigMass in colors.keys():
+            sigFileName = varkey+"_"+treekey+"_flatTuple_WGammaSig_m%i%s.root"%(sigMass, indexLabel)
             rName = "weightedMCbgHists_%s" % cutName
             if cutName in "nMinus1":
               if withBtag:
@@ -309,13 +307,14 @@ for withBtag in [options.withBtag]:
             if vgMC:
               rName += "_vgMC"
             outDirName = "stackplots_puppiSoftdrop_%s" % rName
+            print "opening %s/%s"%(rName,sigFileName)
             sigfiles.append(TFile("%s/%s"%(rName, sigFileName)))
-            #print "adding signal file", sigfiles[-1].GetName(), "to the plot"
+            print "adding signal file", sigfiles[-1].GetName(), "to the plot"
             sighists.append(sigfiles[-1].Get("hist_%s"%sigFileName))
             sighists[-1].SetLineStyle(3)
             sighists[-1].SetLineWidth(2)
             sighists[-1].SetLineColor(colors[sigMass])
-            sighists[-1].SetTitle("H#gamma(%r TeV)"%(sigMass/float(1000)))
+            sighists[-1].SetTitle("W#gamma(%r TeV)"%(sigMass/float(1000)))
             sighists[-1].SetMarkerSize(0)
             sighists[-1].Draw("hist SAME")
 

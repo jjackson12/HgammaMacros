@@ -31,8 +31,8 @@ weightDict = getMCbgWeightsDict(bkgDir)
 
 
 
-observables = ["tau21", "ph_pt","jetAK8_pt","jetAK8_puppi_softdrop_mass"]#TODO, ADD: costheta*, John's poor-man's verson, think of others
-observablesToTry = ["cosThetaStar","phPtoverMWgamma","jetAK8_puppi_softdrop_eta","leadingJet_eta","leadingPh_eta","phJetDeltaR","Ht"] #Ht = total hadronic energy in event
+observables = ["tau21", "ph_pt","jetAK8_pt","jetAK8_puppi_softdrop_mass"]
+observablesToTry = ["cosThetaStar","phPtoverMWgamma","leadingJet_eta","leadingPh_eta","phJetDeltaR","Ht","WJet_Tau21"] #Ht = total hadronic energy in event
 # See ph_eta cuts for ECAL endcap/barrel transition, 1.44 < eta < 1.57
 #TODO: Make sure tau21 is taking from LEADING jets
 
