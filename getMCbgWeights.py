@@ -1,5 +1,5 @@
 from ROOT import *
-
+from os import listdir
 # janky methods for mapping the samples cross sections, the sample's small3 tree, and the sample's treeChecker tree
 # John Hakala 5/11/2016
 
@@ -12,19 +12,20 @@ def getSmallPrefix():
 #TODO: Bring back other bkgs commented out
 def getMCbgSampleKfactors():
   sampleXsects = {}
-  sampleXsects[   "gJets100To200.root"   ]   = 1.6*0.8
-  sampleXsects[   "gJets200To400.root"   ]   = 1.6*0.8
-  sampleXsects[   "gJets400To600.root"   ]   = 1.4*0.8
-  sampleXsects[   "gJets600ToInf.root"   ]   = 1.0*0.8
-  sampleXsects[   "qcd300To500.root"     ]   = .7 *0.8
-  sampleXsects[   "qcd500To700.root"     ]   = .7 *0.8
-  sampleXsects[   "qcd700To1000.root"    ]   = .7 *0.8
-  sampleXsects[   "qcd1000To1500.root"   ]   = .7 *0.8
-  sampleXsects[   "qcd1500To2000.root"   ]   = .7 *0.8
-  sampleXsects[   "qcd2000ToInf.root"    ]   = .7 *0.8
+  sampleXsects[   "gJets100To200.root"   ]   = 1.6
+  sampleXsects[   "gJets200To400.root"   ]   = 1.6
+  sampleXsects[   "gJets400To600.root"   ]   = 1.4
+  sampleXsects[   "gJets600ToInf.root"   ]   = 1.0
+  sampleXsects[   "qcd300To500.root"     ]   = .7 
+  sampleXsects[   "qcd500To700.root"     ]   = .7 
+  sampleXsects[   "qcd700To1000.root"    ]   = .7 
+  sampleXsects[   "qcd1000To1500.root"   ]   = .7 
+  sampleXsects[   "qcd1500To2000.root"   ]   = .7 
+  sampleXsects[   "qcd2000ToInf.root"    ]   = .7 
   sampleXsects[   "qcd200To300.root"     ]  = 1   
   sampleXsects[   "dyJetsQQ-180.root"    ]  = 1.23  
-  sampleXsects[ "wJetsQQ-180.root" ]        = 1.21*0.8 
+  sampleXsects[ "wJetsQQ-180.root" ]        = 1.21 
+  sampleXsects[ "wJets600toInf"]              = 1.21
   return sampleXsects
 
 def getMCbgSampleXsects():
@@ -43,14 +44,18 @@ def getMCbgSampleXsects():
   sampleXsects[   "qcd200To300.root"     ]   = 1712000    
   sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187  
   sampleXsects[ "wJetsQQ-180.root" ] = 95.14 
+  #TODO:
+  sampleXsects[ "wJets600toInf"]      = -1
   return sampleXsects
 
 def getMCbgSampleEvents(small3Dir):
   sampleXsects=getMCbgSampleXsects()
   sampleEvents = {}
-  for key in sampleXsects:
+  #for key in sampleXsects:
+  for name in listdir(small3Dir):
+    key = name[11:]
     mcBGfileName = "%s/%s%s" % (small3Dir, getSmallPrefix(), key)
-    #print "the small3 input filename is: %s" % mcBGfileName
+    print "the small3 input filename is: %s" % mcBGfileName
     mcBGfile = TFile( mcBGfileName )
     #print mcBGfile
     hCounter = mcBGfile.Get("ntuplizer/hCounter")
@@ -58,7 +63,6 @@ def getMCbgSampleEvents(small3Dir):
     sampleEvents[key]=nEvents;
   return sampleEvents
 
-#TODO:
 def getSignalsToInclude():
   return [   "flatTuple_WGammaSig_m600.root",
              "flatTuple_WGammaSig_m800.root",
@@ -76,7 +80,9 @@ def getWeightsDict(bkgSmall3Dir):
   lumi = 35900
 
   sampleWeights = {}
-  for key in sampleXsects:
+  #for key in sampleXsects:
+  for name in listdir(bkgSmall3Dir):
+    key = name[11:]
     expectedEvents = lumi*sampleXsects[key]
     weight = sampleKfactors[key]*expectedEvents/sampleEvents[key]
     sampleWeights[key] = (weight, "bkg")
@@ -107,6 +113,7 @@ def getMCbgWeightsDict(bkgSmall3Dir):
 def getMCbgOrderedList():
   return [ 
     "dyJetsQQ-180.root"   ,
+    "dyJets600toInf.root"   ,
     "wJetsQQ-180.root"    ,
     "qcd2000ToInf.root"     ,
     "qcd1500To2000.root"    ,
@@ -138,6 +145,7 @@ def getMCbgColors():
   sampleColors["qcd2000ToInf.root"  ] = color.GetColor(.16, .5, 0.3)
   sampleColors["dyJetsQQ-180.root"  ] = color.GetColor(.6, .2, .2)
   sampleColors["wJetsQQ-180.root"   ] = color.GetColor(.85, .85, 0.3)
+  sampleColors["wJets600toInf.root"   ] = color.GetColor(.95, .95, 0.4)
   return sampleColors
 
 def getMCbgLabels():
