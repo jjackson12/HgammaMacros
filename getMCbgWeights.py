@@ -10,8 +10,9 @@ def getSmallPrefix():
   return "smallified_"
 
 #TODO: Bring back other bkgs commented out
-def getMCbgSampleKfactors():
+def getMCbgSampleKfactor(bkg):
   sampleXsects = {}
+  scale = 0.9
   sampleXsects[   "gJets100To200.root"   ]   = 1.6
   sampleXsects[   "gJets200To400.root"   ]   = 1.6
   sampleXsects[   "gJets400To600.root"   ]   = 1.4
@@ -25,11 +26,10 @@ def getMCbgSampleKfactors():
   sampleXsects[   "qcd200To300.root"     ]  = 1   
   sampleXsects[   "dyJetsQQ-180.root"    ]  = 1.23  
   sampleXsects[ "wJetsQQ-180.root" ]        = 1.21 
-  sampleXsects[ "wJets600toInf"]              = 1.21
-  return sampleXsects
+  sampleXsects[ "wJets600toInf.root"]              = 1.21
+  return sampleXsects[bkg]*scale
 
 def getMCbgSampleXsects():
-  kFactors = getMCbgSampleKfactors()
   sampleXsects = {}
   sampleXsects[   "gJets100To200.root"   ]   = 9238
   sampleXsects[   "gJets200To400.root"   ]   = 2305
@@ -45,7 +45,7 @@ def getMCbgSampleXsects():
   sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187  
   sampleXsects[ "wJetsQQ-180.root" ] = 95.14 
   #TODO:
-  sampleXsects[ "wJets600toInf"]      = -1
+  sampleXsects[ "wJets600toInf.root"]      = 96
   return sampleXsects
 
 def getMCbgSampleEvents(small3Dir):
@@ -73,7 +73,6 @@ def getSignalsToInclude():
  
 #TODO: signal weights
 def getWeightsDict(bkgSmall3Dir):
-  sampleKfactors = getMCbgSampleKfactors() 
   sampleXsects   = getMCbgSampleXsects() 
   sampleEvents   = getMCbgSampleEvents(bkgSmall3Dir)
   #TODO: Update for 2017
@@ -84,7 +83,7 @@ def getWeightsDict(bkgSmall3Dir):
   for name in listdir(bkgSmall3Dir):
     key = name[11:]
     expectedEvents = lumi*sampleXsects[key]
-    weight = sampleKfactors[key]*expectedEvents/sampleEvents[key]
+    weight = getMCbgSampleKfactor(key)*expectedEvents/sampleEvents[key]
     sampleWeights[key] = (weight, "bkg")
   signalWeight = .5
   #for signalToInclude in getSignalsToInclude():
@@ -164,7 +163,7 @@ def getMCbgLabels():
   legendLabels["qcd2000ToInf.root"  ] = "QCD[2000,#infty]"
   legendLabels["dyJetsQQ-180.root"  ] = "DY#plusjets[180,#infty]"
   legendLabels["wJetsQQ-180.root"   ] = "W#plusjets[600,#infty]"
-  legendLabels["QCD_HT100to200"       ] = "QCD[100,200]"
+  legendLabels["QCD_HT100to200.root"       ] = "QCD[100,200]"
   return legendLabels
 
 def getSmall3ddTreeDict(ddDir):

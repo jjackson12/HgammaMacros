@@ -207,7 +207,7 @@ def plotComparison(observable):
 
 
 
-#for ob in histRanges.keys():
-  #plotComparison(ob)
+for ob in histRanges.keys():
+  plotComparison(ob)
 
-plotComparison("ph_pt")
+#plotComparison("jetAK8_puppi_softdrop_mass")
