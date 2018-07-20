@@ -12,21 +12,21 @@ def getSmallPrefix():
 #TODO: Bring back other bkgs commented out
 def getMCbgSampleKfactor(bkg):
   sampleXsects = {}
-  scale = 0.9
+  scale = 0.92	
   sampleXsects[   "gJets100To200.root"   ]   = 1.6
   sampleXsects[   "gJets200To400.root"   ]   = 1.6
-  sampleXsects[   "gJets400To600.root"   ]   = 1.4
-  sampleXsects[   "gJets600ToInf.root"   ]   = 1.0
-  sampleXsects[   "qcd300To500.root"     ]   = .7 
-  sampleXsects[   "qcd500To700.root"     ]   = .7 
-  sampleXsects[   "qcd700To1000.root"    ]   = .7 
-  sampleXsects[   "qcd1000To1500.root"   ]   = .7 
-  sampleXsects[   "qcd1500To2000.root"   ]   = .7 
-  sampleXsects[   "qcd2000ToInf.root"    ]   = .7 
-  sampleXsects[   "qcd200To300.root"     ]  = 1   
+  sampleXsects[   "gJets400To600.root"   ]   = 1.4*1.1
+  sampleXsects[   "gJets600ToInf.root"   ]   = 1.15
+  sampleXsects[   "qcd300to500.root"     ]   = 0.8
+  sampleXsects[   "qcd500to700.root"     ]   = 0.7
+  sampleXsects[   "qcd700to1000.root"    ]   = 0.8
+  sampleXsects[   "qcd1000to1500.root"   ]   = 0.6
+  sampleXsects[   "qcd1500to2000.root"   ]   = 0.7
+  sampleXsects[   "qcd2000toInf.root"    ]   = 0.6
+  sampleXsects[   "qcd200to300.root"     ]  = 0   
   sampleXsects[   "dyJetsQQ-180.root"    ]  = 1.23  
-  sampleXsects[ "wJetsQQ-180.root" ]        = 1.21 
-  sampleXsects[ "wJets600toInf.root"]              = 1.21
+  #sampleXsects[ "wJetsQQ-180.root" ]        = 1.21 
+#  sampleXsects[ "wJets600toInf.root"]              = 1.21
   return sampleXsects[bkg]*scale
 
 def getMCbgSampleXsects():
@@ -35,13 +35,13 @@ def getMCbgSampleXsects():
   sampleXsects[   "gJets200To400.root"   ]   = 2305
   sampleXsects[   "gJets400To600.root"   ]   = 274.4
   sampleXsects[   "gJets600ToInf.root"   ]   = 93.46 
-  sampleXsects[   "qcd300To500.root"     ]   = 347700     
-  sampleXsects[   "qcd500To700.root"     ]   = 32100      
-  sampleXsects[   "qcd700To1000.root"    ]    = 6831       
-  sampleXsects[   "qcd1000To1500.root"   ]    = 1207       
-  sampleXsects[   "qcd1500To2000.root"   ]    = 119.9      
-  sampleXsects[   "qcd2000ToInf.root"    ]    = 25.24      
-  sampleXsects[   "qcd200To300.root"     ]   = 1712000    
+  sampleXsects[   "qcd300to500.root"     ]   = 347700     
+  sampleXsects[   "qcd500to700.root"     ]   = 32100      
+  sampleXsects[   "qcd700to1000.root"    ]    = 6831       
+  sampleXsects[   "qcd1000to1500.root"   ]    = 1207       
+  sampleXsects[   "qcd1500to2000.root"   ]    = 119.9      
+  sampleXsects[   "qcd2000toInf.root"    ]    = 25.24      
+  sampleXsects[   "qcd200to300.root"     ]   = 1712000    
   sampleXsects[   "dyJetsQQ-180.root"    ]    = 1187  
   sampleXsects[ "wJetsQQ-180.root" ] = 95.14 
   #TODO:
@@ -55,7 +55,7 @@ def getMCbgSampleEvents(small3Dir):
   for name in listdir(small3Dir):
     key = name[11:]
     mcBGfileName = "%s/%s%s" % (small3Dir, getSmallPrefix(), key)
-    print "the small3 input filename is: %s" % mcBGfileName
+    #print "the small3 input filename is: %s" % mcBGfileName
     mcBGfile = TFile( mcBGfileName )
     #print mcBGfile
     hCounter = mcBGfile.Get("ntuplizer/hCounter")
@@ -114,13 +114,13 @@ def getMCbgOrderedList():
     "dyJetsQQ-180.root"   ,
     "dyJets600toInf.root"   ,
     "wJetsQQ-180.root"    ,
-    "qcd2000ToInf.root"     ,
-    "qcd1500To2000.root"    ,
-    "qcd1000To1500.root"    ,
-    "qcd700To1000.root"     ,
-    "qcd500To700.root"      ,
-    "qcd300To500.root"      ,
-    "qcd200To300.root"      ,
+    "qcd2000toInf.root"     ,
+    "qcd1500to2000.root"    ,
+    "qcd1000to1500.root"    ,
+    "qcd700to1000.root"     ,
+    "qcd500to700.root"      ,
+    "qcd300to500.root"      ,
+    "qcd200to300.root"      ,
     "gJets600ToInf.root"    ,
     "gJets400To600.root"    ,
     "gJets200To400.root"    ,
@@ -135,13 +135,13 @@ def getMCbgColors():
   sampleColors["gJets200To400.root" ] = color.GetColor(.475, .6, 1.0)
   sampleColors["gJets400To600.root" ] = color.GetColor(.35, .5, 0.85)
   sampleColors["gJets600ToInf.root" ] = color.GetColor(.225, .3, 0.7) 
-  sampleColors["qcd200To300.root"   ] = color.GetColor(.31*1.2, 1.0, 0.425*1.2)
-  sampleColors["qcd300To500.root"   ] = color.GetColor(.31, .95, 0.425)
-  sampleColors["qcd500To700.root"   ] = color.GetColor(.28, .9, 0.4)
-  sampleColors["qcd700To1000.root"  ] = color.GetColor(.25, .8, 0.375)
-  sampleColors["qcd1000To1500.root" ] = color.GetColor(.22, .7, 0.35)
-  sampleColors["qcd1500To2000.root" ] = color.GetColor(.19, .6, 0.325)
-  sampleColors["qcd2000ToInf.root"  ] = color.GetColor(.16, .5, 0.3)
+  sampleColors["qcd200to300.root"   ] = color.GetColor(.31*1.2, 1.0, 0.425*1.2)
+  sampleColors["qcd300to500.root"   ] = color.GetColor(.31, .95, 0.425)
+  sampleColors["qcd500to700.root"   ] = color.GetColor(.28, .9, 0.4)
+  sampleColors["qcd700to1000.root"  ] = color.GetColor(.25, .8, 0.375)
+  sampleColors["qcd1000to1500.root" ] = color.GetColor(.22, .7, 0.35)
+  sampleColors["qcd1500to2000.root" ] = color.GetColor(.19, .6, 0.325)
+  sampleColors["qcd2000toInf.root"  ] = color.GetColor(.16, .5, 0.3)
   sampleColors["dyJetsQQ-180.root"  ] = color.GetColor(.6, .2, .2)
   sampleColors["wJetsQQ-180.root"   ] = color.GetColor(.85, .85, 0.3)
   sampleColors["wJets600toInf.root"   ] = color.GetColor(.95, .95, 0.4)
@@ -154,13 +154,13 @@ def getMCbgLabels():
   legendLabels["gJets200To400.root" ] = "#gamma#plusjets[200,400]"
   legendLabels["gJets400To600.root" ] = "#gamma#plusjets[400,600]"
   legendLabels["gJets600ToInf.root" ] = "#gamma#plusjets[600,#infty]"
-  legendLabels["qcd200To300.root"   ] = "QCD[200,300]"
-  legendLabels["qcd300To500.root"   ] = "QCD[300,500]"
-  legendLabels["qcd500To700.root"   ] = "QCD[500,700]"
-  legendLabels["qcd700To1000.root"  ] = "QCD[700,1000]"
-  legendLabels["qcd1000To1500.root" ] = "QCD[1000,1500]"
-  legendLabels["qcd1500To2000.root" ] = "QCD[1500,2000]"
-  legendLabels["qcd2000ToInf.root"  ] = "QCD[2000,#infty]"
+  legendLabels["qcd200to300.root"   ] = "QCD[200,300]"
+  legendLabels["qcd300to500.root"   ] = "QCD[300,500]"
+  legendLabels["qcd500to700.root"   ] = "QCD[500,700]"
+  legendLabels["qcd700to1000.root"  ] = "QCD[700,1000]"
+  legendLabels["qcd1000to1500.root" ] = "QCD[1000,1500]"
+  legendLabels["qcd1500to2000.root" ] = "QCD[1500,2000]"
+  legendLabels["qcd2000toInf.root"  ] = "QCD[2000,#infty]"
   legendLabels["dyJetsQQ-180.root"  ] = "DY#plusjets[180,#infty]"
   legendLabels["wJetsQQ-180.root"   ] = "W#plusjets[600,#infty]"
   legendLabels["QCD_HT100to200.root"       ] = "QCD[100,200]"
@@ -174,13 +174,13 @@ def getSmall3ddTreeDict(ddDir):
   s3dd["gJets200To400.root" ] = "%s/ddTree_gJets200To400"  % ddDir
   s3dd["gJets400To600.root" ] = "%s/ddTree_gJets400To600"  % ddDir
   s3dd["gJets600ToInf.root" ] = "%s/ddTree_gJets600ToInf"  % ddDir
-  s3dd["qcd200To300.root"   ] = "%s/ddTree_qcd200To300"    % ddDir
-  s3dd["qcd300To500.root"   ] = "%s/ddTree_qcd300To500"    % ddDir
-  s3dd["qcd500To700.root"   ] = "%s/ddTree_qcd500To700"    % ddDir
-  s3dd["qcd700To1000.root"  ] = "%s/ddTree_qcd700To1000"   % ddDir
-  s3dd["qcd1000To1500.root" ] = "%s/ddTree_qcd1000To1500"  % ddDir
-  s3dd["qcd1500To2000.root" ] = "%s/ddTree_qcd1500To2000"  % ddDir
-  s3dd["qcd2000ToInf.root"  ] = "%s/ddTree_qcd2000ToInf"   % ddDir
+  s3dd["qcd200to300.root"   ] = "%s/ddTree_qcd200to300"    % ddDir
+  s3dd["qcd300to500.root"   ] = "%s/ddTree_qcd300to500"    % ddDir
+  s3dd["qcd500to700.root"   ] = "%s/ddTree_qcd500to700"    % ddDir
+  s3dd["qcd700to1000.root"  ] = "%s/ddTree_qcd700to1000"   % ddDir
+  s3dd["qcd1000to1500.root" ] = "%s/ddTree_qcd1000to1500"  % ddDir
+  s3dd["qcd1500to2000.root" ] = "%s/ddTree_qcd1500to2000"  % ddDir
+  s3dd["qcd2000toInf.root"  ] = "%s/ddTree_qcd2000toInf"   % ddDir
   s3dd["dyJetsQQ-180.root"  ] = "%s/ddTree_dyJetsQQ-180"   % ddDir
   s3dd["wJetsQQ-180.root"   ] = "%s/ddTree_wJetsQQ-180"    % ddDir
 

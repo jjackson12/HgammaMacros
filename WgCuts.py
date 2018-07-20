@@ -8,10 +8,12 @@ from ROOT import TCut
 def getCutValues():
   cutValues = {}
   cutValues["minInvMass"]     = 600
+  #cutValues["minWJetMass"]    = 30
   cutValues["phEta"]          = 1.4442
-  cutValues["phPt"]           = 200.0
-  cutValues["jetAbsEta"]      = 2.6
-  cutValues["jetPt"]          = 200.0
+  #cutValues['phEta']           = 2.2
+  cutValues["phPt"]           = 180.0
+  cutValues["jetAbsEta"]      = 2.2
+  cutValues["jetPt"]          = 220.0
   cutValues["deltaR"]         = 1.1
   #cutValues["phPtOverM"]      = -1	
   #cutValues["WPtOverM"]       = -1
@@ -33,11 +35,12 @@ def getDirections():
   directions = {}
   directions["minInvMass"] = "up"
   directions["Tau21"] = "down"
-  directions["cosThetaStar"] = "both"
-  directions["phPtOverM"] = "both"
-  directions["WPtOverM"] = "both"
+  directions["cosThetaStar"] = "down"
+  directions["phPtOverM"] = "up"
+  directions["WPtOverM"] = "down"
   #FOR SIDEBAND: directions["phEta"] = "down"
   directions["phPt"] = "up"
+  directions["phEta"] = "down"
   #directions["deltaR"] = "up"
   directions["jetEta"] = "down"
   directions["jetPhi"] = "both"
@@ -96,44 +99,37 @@ def makeTrigger(which = "OR"):
   return combineCuts(cuts)
     
 
-def getDefaultCuts(region, useTrigger, sideband=False, windowEdges=[70,90]):
+def getDefaultCuts( useTrigger, sideband=False, windowEdges=[70,90]):
     cutValues = getCutValues()
-    print "region = %s"%region
+    print "sideband = %s"%sideband
     cuts = {} 
     cuts["phEta"]           = TCut( "leadingPhAbsEta<%f"           % cutValues["phEta"]      )
     #cuts["phPtOverM"]         = TCut( "phPtOverMgammaj>%f"           % cutValues["phPtOverM"]    )
     #cuts["WPtOverM"]         = TCut( "WPtOverMgammaj>%f"           % cutValues["WPtOverM"]    )
     cuts ["phPt"]           = TCut("leadingPhPt>%f"                % cutValues["phPt"]       )
+    cuts["deltaR"]   = TCut( "phJetDeltaR_W>%f"              % cutValues["deltaR"]         )
+    cuts["jetAbsEta"]       = TCut( "WJet_puppi_abseta<%f"         % cutValues["jetAbsEta"]      )
+    cuts ["jetPt"]          = TCut("WJet_puppi_pt>%f"          % cutValues["jetPt"]      )
     cuts ["phPhi"]          = TCut()
     cuts ["Tau21"]           = TCut()
     cuts ["jetPhi"]         = TCut()
     #cuts ["jetEta"]         = TCut()
     cuts ["cosThetaStar"]   = TCut()
+    if(not(len(windowEdges)==0)):
+      cuts["WWindow"]     = makeWWindow(sideband, windowEdges)
+    #else:
+      #cuts["minWJetMass"] = TCut("WPuppi_softdropJetCorrMass>%f"  % cutValues["minWJetMass"])
     if useTrigger: 
       cuts["trigger"]         = makeTrigger()
-    if region is "Wgam":
       #cuts["turnon"]   = TCut( "phJetInvMass_puppi_softdrop_W>%f"      % cutValues["minInvMass"]     )
-      cuts["deltaR"]   = TCut( "phJetDeltaR_W>%f"              % cutValues["deltaR"]         )
-      cuts["jetAbsEta"]       = TCut( "WJet_puppi_abseta<%f"         % cutValues["jetAbsEta"]      )
-      cuts ["jetPt"]          = TCut("WJet_puppi_pt>%f"          % cutValues["jetPt"]      )
+
       #cuts["WWindowLow"] = TCut( "WPuppi_softdropJetCorrMass>%f"   % cutValues["WWindow"][0] )
       #cuts["WWindowHi"]  = TCut( "WPuppi_softdropJetCorrMass<%f"   % cutValues["WWindow"][1] )
-      cuts["WWindow"]     = makeWWindow(sideband, windowEdges)
-    elif region is "side5070" or region is "side100110":
-      if region is "side5070":
-        index = "Three"
-      else:
-        index = "Four"
-      cuts["turnon"]   = TCut( "phJetInvMass_puppi_softdrop_sideLow%s>%f" % (index, cutValues["minInvMass"] ))
-      cuts["deltaR"]   = TCut( "phJetDeltaR_sideLow%s>%f"         % (index, cutValues["deltaR"]     ))
-      cuts["jetEta"]   = TCut( "sideLow%sJet_puppi_abseta<%f"    % (index, cutValues["jetEta"]     ))
-    else:
-      print "Invalid region!!!"
-      quit()
+
     return cuts
     
-def getPreselectionComboCut(region="Wgam", useTrigger=False, sideband=False, windowEdges=[70,90] ):
-    preselectionCuts = copy.deepcopy(getDefaultCuts(region, useTrigger, sideband, windowEdges))
+def getPreselectionComboCut(useTrigger=False, sideband=False, windowEdges=[70,90] ):
+    preselectionCuts = copy.deepcopy(getDefaultCuts(useTrigger, sideband, windowEdges))
     #         #Included
    # preselectionCuts.pop("phPt")
    # preselectionCuts.pop("phPhi") UNSET
